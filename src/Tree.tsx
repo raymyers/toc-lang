@@ -22,11 +22,11 @@ export default function Tree({ ast }) {
   g.setDefaultEdgeLabel(function () {
     return {};
   });
-  const createNode = ({ key, label, shape, primary, statusPercentage }) => {
+  const createNode = ({ key, label, shape="ellipse", primary=false, statusPercentage=null }) => {
     // function to break string into lines on word boundaries
     const breakString = (str, width) => {
       const words = str.split(" ");
-      const lines = [];
+      const lines:string[] = [];
       let line = "";
       words.forEach((word, i) => {
         if (line.length + word.length > width) {
@@ -47,7 +47,7 @@ export default function Tree({ ast }) {
       label: breakString(label, 20).join("\n"),
       // width: 70,
       // height: 60,
-      shape: shape || "ellipse",
+      shape: shape,
       style: "stroke: black; fill:white; stroke-width: 1px; ",
       labelStyle: fontStyle + "fill: black;",
     };
@@ -83,7 +83,7 @@ export default function Tree({ ast }) {
     let inner = svg.select("g");
 
     // Create the renderer
-    var render = new dagreD3.render();
+    var render = dagreD3.render();
     var container = d3.select("#tree-svg-container");
     if (!container || !container.node()) {
       return;
@@ -186,7 +186,7 @@ export default function Tree({ ast }) {
       return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
     };
     const edgeMidPoint = (from, to) => {
-      const edge = g.edge({ v: from, w: to });
+      const edge = g.edge(from, to, null);
       const firstPoint = edge.points[0];
       const lastPoint = edge.points[edge.points.length - 1];
       return midPoint(firstPoint, lastPoint);

@@ -35,7 +35,6 @@ retain requires marketSalary and morale
 // - text: the text to edit
 // - onChange: a function to call when the text changes
 // - placeholder: the placeholder text to display when the text is empty
-// - className: the CSS class to apply to the text area
 // - style: the CSS style to apply to the text area
 // - rows: the number of rows to display
 // - cols: the number of columns to display
@@ -44,12 +43,11 @@ retain requires marketSalary and morale
 
 export const Editor = ({
   onChange,
-  placeholder,
-  className,
-  rows,
-  cols,
-  disabled,
-  autoFocus,
+  placeholder = "",
+  rows = null,
+  cols = null,
+  disabled = false,
+  autoFocus = false,
   error,
 }) => {
   const [text, setText] = React.useState(exampleText);
@@ -67,7 +65,6 @@ export const Editor = ({
   return (
     <div className="editor">
       <textarea
-        className={className}
         style={{ width: "100%", height: "100%", resize: "none" }}
         rows={rows}
         // cols={cols}
