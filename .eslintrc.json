@@ -9,6 +9,12 @@
         "standard-with-typescript"
     ],
     "overrides": [
+        {
+            "files": ["**/*.ts", "**/*.tsx"],
+            "rules": {
+                "@typescript-eslint/quotes": "off"
+            }
+        }
     ],
     "parserOptions": {
         "ecmaVersion": "latest",

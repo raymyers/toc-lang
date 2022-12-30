@@ -1,23 +1,23 @@
-import "./App.css";
-import React from "react";
-import Tree from "./Tree";
-import Editor from "./Editor";
-import { parseTextToAst, checkSemantics } from "./interpreter";
+import "./App.css"
+import React from "react"
+import Tree from "./Tree"
+import Editor from "./Editor"
+import { parseTextToAst, checkSemantics } from "./interpreter"
 
-function App() {
-  const [ast, setAst] = React.useState(null);
-  const [error, setError] = React.useState("");
+function App () {
+  const [ast, setAst] = React.useState(null)
+  const [error, setError] = React.useState("")
   const onEditorChange = async (value) => {
     try {
-      const parsed = await parseTextToAst(value);
-      checkSemantics(parsed);
-      console.log(parsed);
-      setAst(parsed);
-      setError("");
+      const parsed = await parseTextToAst(value)
+      checkSemantics(parsed)
+      console.log(parsed)
+      setAst(parsed)
+      setError("")
     } catch (e) {
-      setError(e.toString());
+      setError(e.toString())
     }
-  };
+  }
   return (
     <div className="App">
       <div className="flex-row">
@@ -29,7 +29,7 @@ function App() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 //   return (
 //     <div className="App">
@@ -49,4 +49,4 @@ function App() {
 //   )
 // }
 
-export default App;
+export default App

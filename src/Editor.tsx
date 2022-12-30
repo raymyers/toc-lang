@@ -1,15 +1,15 @@
-import React from "react";
+import React from "react"
 
 const debounce = (func, wait) => {
-  let timeout;
+  let timeout
   return (...args) => {
     const later = () => {
-      func(...args);
-    };
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-  };
-};
+      func(...args)
+    }
+    clearTimeout(timeout)
+    timeout = setTimeout(later, wait)
+  }
+}
 const exampleText = `Goal is "Make money now and in the future"
 CSF revUp is "Generate more revenue"
 CSF costsDown is "Control costs"
@@ -28,7 +28,7 @@ features requires retain
 revUp requires newCust and keepCust
 costsDown requires reduceInfra
 retain requires marketSalary and morale
-`;
+`
 // React functional component to edit text and make the result available to the parent
 
 // Props:
@@ -48,19 +48,19 @@ export const Editor = ({
   cols = null,
   disabled = false,
   autoFocus = false,
-  error,
+  error
 }) => {
-  const [text, setText] = React.useState(exampleText);
+  const [text, setText] = React.useState(exampleText)
   React.useEffect(() => {
     // Run once.
-    onChange(exampleText);
-  }, []);
+    onChange(exampleText)
+  }, [])
   const handleChange = (event) => {
-    setText(event.target.value);
+    setText(event.target.value)
     // Call the onChange function with the new text, debounced by 500ms
     // debounce(onChange, 500)(event.target.value);
-    onChange(event.target.value);
-  };
+    onChange(event.target.value)
+  }
 
   return (
     <div className="editor">
@@ -76,7 +76,7 @@ export const Editor = ({
       />
       <p className={`edit-result ${error ? "error" : ""}`}>{error}</p>
     </div>
-  );
-};
+  )
+}
 
-export default Editor;
+export default Editor
