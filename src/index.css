@@ -27,9 +27,9 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  /* place-items: center; */
+  /* min-width: 320px;
+  min-height: 100vh; */
 }
 
 h1 {
@@ -67,4 +67,80 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+#root-reset {
+  width: 100%;
+}
+
+.App {
+  padding: 10px;
+}
+
+#resizeHandler {
+  cursor: col-resize;
+  padding: 0 2px;
+}
+.flex {
+  display: flex;
+}
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+.flex-1 {
+  flex: 1 1 100%;
+  /* flex-grow: 1; */
+  /* flex-basis: max-content; */
+}
+.editor {
+  text-align: left;
+  padding-right: 10px;
+}
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.edit-result {
+  border-radius: 0.5em;
+  -moz-border-radius: .5em;
+  padding: 0.5em 1em;
+  min-height: 3em;
+}
+.error {
+  background-color: orange;
+}
+.overflow-hidden {
+  overflow: hidden;
+}
+.shadow-2xl {
+  --tw-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+  --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+  box-shadow: var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow);
+}
+
+
+.shadow-2xl {
+    --tw-shadow: 0 25px 50px -12px rgba(0,0,0,.25);
+    --tw-shadow-colored: 0 25px 50px -12px var(--tw-shadow-color);
+}
+.shadow-2xl, .shadow-lg {
+    box-shadow: var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow);
+}
+.rounded {
+    border-radius: 0.25rem;
+}
+.flex-none {
+  flex: none;
+}
+
+.card-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: var(--padding-card,2rem);
+}
+.h-full {
+  height: 100%;
 }
