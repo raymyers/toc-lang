@@ -1,5 +1,5 @@
-import './App.css'
-import React from 'react'
+import "./App.css";
+import React from "react";
 import Tree from "./Tree";
 import Editor from "./Editor";
 import { parseTextToAst, checkSemantics } from "./interpreter";
@@ -9,11 +9,11 @@ function App() {
   const [error, setError] = React.useState("");
   const onEditorChange = async (value) => {
     try {
-    const parsed = await parseTextToAst(value);
-    checkSemantics(parsed);
-    console.log(parsed);
-    setAst(parsed);
-    setError("");
+      const parsed = await parseTextToAst(value);
+      checkSemantics(parsed);
+      console.log(parsed);
+      setAst(parsed);
+      setError("");
     } catch (e) {
       setError(e.toString());
     }
@@ -22,14 +22,12 @@ function App() {
     <div className="App">
       <div className="flex-row">
         <div className="flex-1">
-          <Editor onChange={onEditorChange} cols="50" rows="20" error={error}/>
+          <Editor onChange={onEditorChange} cols="50" rows="20" error={error} />
         </div>
         <div className="flex-1">
           <Tree ast={ast} />
         </div>
-        
       </div>
-      
     </div>
   );
 }
@@ -51,4 +49,4 @@ function App() {
 //   )
 // }
 
-export default App
+export default App;
