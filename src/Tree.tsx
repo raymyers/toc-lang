@@ -103,13 +103,13 @@ export default function Tree({ ast }) {
     var width = boundingWidth;
     var height = boundingHeight;
 
+    const heightMagicRatio = 0.20;
+    const widthMagicRatio = 0.24;
     // Calculate applicable scale for zoom
-    zoomScale = Math.min(width / graphWidth, height / graphHeight);
+    zoomScale = Math.min(widthMagicRatio * (width / graphWidth), heightMagicRatio * (height / graphHeight));
     console.log("zoomScale: ", zoomScale);
 
-    const weirdMagicRatio = 0.24;
-    const scaleBy = zoomScale * weirdMagicRatio;
-    inner.attr("transform", `scale(${scaleBy},${scaleBy})`);
+    inner.attr("transform", `scale(${zoomScale},${zoomScale})`);
     ////// END RESIZE MAGIC
 
     inner
@@ -123,7 +123,6 @@ export default function Tree({ ast }) {
       })
       .each(function (v) {
         console.log("node details :", v);
-        // $(this).tipsy({ gravity: 'w', opacity: 1, html: true });
       });
   });
 
