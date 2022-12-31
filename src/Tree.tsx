@@ -22,7 +22,15 @@ export default function Tree ({ ast }) {
   g.setDefaultEdgeLabel(function () {
     return {}
   })
-  const createNode = ({ key, label, shape = "ellipse", primary = false, statusPercentage = null }) => {
+
+  // The shapes are rect, circle, ellipse, diamond.
+  const createNode = ({
+    key,
+    label,
+    shape = "ellipse",
+    primary = false,
+    statusPercentage = null
+  }) => {
     // function to break string into lines on word boundaries
     const breakString = (str, width) => {
       const words = str.split(" ")
@@ -40,7 +48,9 @@ export default function Tree ({ ast }) {
       })
       return lines
     }
-
+    // Transform gives more space for the label
+    const styleCommon =
+      "transform: scale(1.1); stroke: black; stroke-width: 1px;"
     const fontFamily = '"trebuchet ms",verdana,arial,sans-serif'
     const fontStyle = `font: 300 16px, ${fontFamily};`
     const config = {
@@ -48,22 +58,22 @@ export default function Tree ({ ast }) {
       // width: 70,
       // height: 60,
       shape,
-      style: "stroke: black; fill:white; stroke-width: 1px; ",
-      labelStyle: fontStyle + "fill: black;"
+      style: `${styleCommon} fill:white;`,
+      labelStyle: fontStyle + "fill: black; margin: 5px;"
     }
     if (primary) {
-      config.style = "stroke: black; fill:blue; stroke-width: 1px; "
+      config.style = `${styleCommon} fill:blue;`
       config.labelStyle = fontStyle + "fill: white;"
     }
     if (statusPercentage && statusPercentage >= 70) {
-      config.style = "stroke: black; fill:green; stroke-width: 1px; "
+      config.style = `${styleCommon} fill:green;`
       config.labelStyle = fontStyle + "fill: white;"
     }
     if (statusPercentage && statusPercentage < 70 && statusPercentage > 30) {
-      config.style = "stroke: black; fill:yellow; stroke-width: 1px; "
+      config.style = `${styleCommon} fill:yellow;`
     }
     if (statusPercentage && statusPercentage <= 30) {
-      config.style = "stroke: black; fill:red; stroke-width: 1px; "
+      config.style = `${styleCommon} fill:red;`
       config.labelStyle = fontStyle + "fill: white;"
     }
     console.log("creating node ", key)
@@ -103,13 +113,19 @@ export default function Tree ({ ast }) {
     const width = boundingWidth
     const height = boundingHeight
 
-    const heightMagicRatio = 0.20
+    const heightMagicRatio = 0.2
     const widthMagicRatio = 0.24
     // Calculate applicable scale for zoom
-    zoomScale = Math.min(widthMagicRatio * (width / graphWidth), heightMagicRatio * (height / graphHeight))
+    zoomScale = Math.min(
+      widthMagicRatio * (width / graphWidth),
+      heightMagicRatio * (height / graphHeight)
+    )
     console.log("zoomScale: ", zoomScale)
 
-    inner.attr("transform", `scale(${zoomScale},${zoomScale})`)
+    inner.attr(
+      "transform",
+      `scale(${zoomScale},${zoomScale}), translate(10,10)`
+    )
     /// /// END RESIZE MAGIC
 
     inner

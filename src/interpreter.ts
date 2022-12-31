@@ -1,9 +1,20 @@
 import peggy from "peggy"
 import peggyGrammarUrl from "./assets/goal-tree.peggy"
 
-const grammarPromise = fetch(peggyGrammarUrl).then(async (response) =>
-  await response.text()
-)
+const loadFile = async (url) => {
+  if (process.env.NODE_ENV === "test") {
+    // Load the file from the filesystem
+    const fs = require("fs")
+    // project root
+    const root = process.cwd()
+    return fs.readFileSync(root + url, "utf8")
+  } else {
+    const response = await fetch(url)
+    return await response.text()
+  }
+}
+
+const grammarPromise = loadFile(peggyGrammarUrl)
 const parserPromise = grammarPromise.then((peggyGrammar) => {
   return peggy.generate(peggyGrammar)
 })
