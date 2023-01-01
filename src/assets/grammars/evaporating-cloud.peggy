@@ -7,7 +7,7 @@ start
   };
 }
 
-statement = labelStatement / relationStatement / injectStatement
+statement = labelStatement / relationStatement / injectStatement / conflictStatement
 
 labelStatement = _ ident:ident _ "is" _ str:string
   {
@@ -20,7 +20,6 @@ labelStatement = _ ident:ident _ "is" _ str:string
 
 relationStatement = 
   _ ident1:ident _ "requires" _ ident2:ident _ "," _ str:string
-
   {
     return {
       type: "requirement",
@@ -29,12 +28,22 @@ relationStatement =
       id2Text: str
     };
   }
-injectStatement = "inject" _ str:string
+
+injectStatement = _ "inject" _ str:string
 {
 	return {
     	type: "inject",
-        text: str
+      text: str
     };
+}
+
+conflictStatement = _ ident1:ident _ "conflicts" _ "with" _ ident2:ident
+{
+  return {
+    	type: "conflict",
+      id1: ident1,
+      id2: ident2,
+  };
 }
 
 ident = id:([a-zA-Z0-9']+)

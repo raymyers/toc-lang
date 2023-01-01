@@ -1,15 +1,15 @@
-import React from "react"
+import React from "react";
 
 const debounce = (func, wait) => {
-  let timeout
+  let timeout;
   return (...args) => {
     const later = () => {
-      func(...args)
-    }
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
-  }
-}
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
 
 // React functional component to edit text and make the result available to the parent
 
@@ -31,19 +31,18 @@ export const Editor = ({
   autoFocus = false,
   text,
   setText,
-  error
+  error,
 }) => {
-  
   React.useEffect(() => {
     // Run once.
-    onChange(text)
-  }, [])
+    onChange(text);
+  }, []);
   const handleChange = (event) => {
-    setText(event.target.value)
+    setText(event.target.value);
     // Call the onChange function with the new text, debounced by 500ms
     // debounce(onChange, 500)(event.target.value);
-    onChange(event.target.value)
-  }
+    onChange(event.target.value);
+  };
 
   return (
     <div className="editor">
@@ -58,7 +57,7 @@ export const Editor = ({
       />
       <p className={`edit-result ${error ? "error" : ""}`}>{error}</p>
     </div>
-  )
-}
+  );
+};
 
-export default Editor
+export default Editor;

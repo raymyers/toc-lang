@@ -9,7 +9,7 @@ describe("interpreter", () => {
         goal: { text: "win" },
         statements: [],
       };
-      expect(await parseTextToAst('goalTree', text)).toStrictEqual(expected);
+      expect(await parseTextToAst("goalTree", text)).toStrictEqual(expected);
     });
 
     it("with CSF and NCs", async () => {
@@ -65,7 +65,7 @@ describe("interpreter", () => {
           },
         ],
       };
-      expect(await parseTextToAst('goalTree', text)).toStrictEqual(expected);
+      expect(await parseTextToAst("goalTree", text)).toStrictEqual(expected);
     });
   });
 });

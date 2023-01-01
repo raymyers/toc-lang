@@ -1,13 +1,12 @@
 svg {
-    font-family: "trebuchet ms",verdana,arial,sans-serif;
-    font-size: 13px;
-   
+  font-family: "trebuchet ms", verdana, arial, sans-serif;
+  font-size: 13px;
 }
 svg text {
-   fill: black;
+  fill: black;
 }
 svg rect {
-    fill:white;
-    stroke:black;
-    stroke-width: 2;
+  fill: white;
+  stroke: black;
+  stroke-width: 2;
 }

@@ -1,28 +1,28 @@
 // https://github.com/dagrejs/dagre/wiki
-import React from "react"
+import React from "react";
 
-import * as d3 from "d3"
-import * as dagreD3 from "dagre-d3-es"
+import * as d3 from "d3";
+import * as dagreD3 from "dagre-d3-es";
 // import ast from "./goal-tree-example-ast.json";
-import { wrapLines }  from "./util"
+import { wrapLines } from "./util";
 
 // functional component Tree with prop ast
-export default function Tree ({ ast }) {
-  console.log("rendering tree with ast: ", ast)
+export default function Tree({ ast }) {
+  console.log("rendering tree with ast: ", ast);
   // Create a new directed graph
-  const g = new dagreD3.graphlib.Graph({ directed: true })
+  const g = new dagreD3.graphlib.Graph({ directed: true });
 
   // Set an object for the graph label
-  g.setGraph({})
+  g.setGraph({});
 
-  g.graph().rankdir = "TD"
-  g.graph().ranksep = 30
-  g.graph().nodesep = 20
+  g.graph().rankdir = "TD";
+  g.graph().ranksep = 30;
+  g.graph().nodesep = 20;
 
   // Default to assigning a new object as a label for each new edge.
   g.setDefaultEdgeLabel(function () {
-    return {}
-  })
+    return {};
+  });
 
   // The shapes are rect, circle, ellipse, diamond.
   const createNode = ({
@@ -30,86 +30,86 @@ export default function Tree ({ ast }) {
     label,
     shape = "ellipse",
     primary = false,
-    statusPercentage = null
+    statusPercentage = null,
   }) => {
     // Transform gives more space for the label
     const styleCommon =
-      "transform: scale(1.1); stroke: black; stroke-width: 1px;"
-    const fontFamily = '"trebuchet ms",verdana,arial,sans-serif'
-    const fontStyle = `font: 300 16px, ${fontFamily};`
+      "transform: scale(1.1); stroke: black; stroke-width: 1px;";
+    const fontFamily = '"trebuchet ms",verdana,arial,sans-serif';
+    const fontStyle = `font: 300 16px, ${fontFamily};`;
     const config = {
       label: wrapLines(label, 20).join("\n"),
       // width: 70,
       // height: 60,
       shape,
       style: `${styleCommon} fill:white;`,
-      labelStyle: fontStyle + "fill: black; margin: 5px;"
-    }
+      labelStyle: fontStyle + "fill: black; margin: 5px;",
+    };
     if (primary) {
-      config.style = `${styleCommon} fill:blue;`
-      config.labelStyle = fontStyle + "fill: white;"
+      config.style = `${styleCommon} fill:blue;`;
+      config.labelStyle = fontStyle + "fill: white;";
     }
     if (statusPercentage && statusPercentage >= 70) {
-      config.style = `${styleCommon} fill:green;`
-      config.labelStyle = fontStyle + "fill: white;"
+      config.style = `${styleCommon} fill:green;`;
+      config.labelStyle = fontStyle + "fill: white;";
     }
     if (statusPercentage && statusPercentage < 70 && statusPercentage > 30) {
-      config.style = `${styleCommon} fill:yellow;`
+      config.style = `${styleCommon} fill:yellow;`;
     }
     if (statusPercentage && statusPercentage <= 30) {
-      config.style = `${styleCommon} fill:red;`
-      config.labelStyle = fontStyle + "fill: white;"
+      config.style = `${styleCommon} fill:red;`;
+      config.labelStyle = fontStyle + "fill: white;";
     }
-    console.log("creating node ", key)
-    g.setNode(key, config)
-  }
+    console.log("creating node ", key);
+    g.setNode(key, config);
+  };
   const createEdge = ({ from, to }) => {
     g.setEdge(from, to, {
       curve: d3.curveBasis,
-      style: "stroke: gray; fill:none; stroke-width: 1px;"
+      style: "stroke: gray; fill:none; stroke-width: 1px;",
       // minlen: 1,
       // arrowheadStyle: "fill: gray"
-    })
-  }
+    });
+  };
   React.useEffect(() => {
     // Run after React render
-    const svg = d3.select("svg")
-    const inner = svg.select("g")
+    const svg = d3.select("svg");
+    const inner = svg.select("g");
 
     // Create the renderer
-    const render = dagreD3.render()
-    const container = d3.select("#tree-svg-container")
+    const render = dagreD3.render();
+    const container = d3.select("#tree-svg-container");
     if (!container || !container.node()) {
-      return
+      return;
     }
-    const size = container.node().getBoundingClientRect()
-    const boundingWidth = size.width
-    const boundingHeight = size.height
+    const size = container.node().getBoundingClientRect();
+    const boundingWidth = size.width;
+    const boundingHeight = size.height;
     // Run the renderer. This is what draws the final graph.
-    render(inner, g)
+    render(inner, g);
     /// /// RESIZE MAGIC
-    let zoomScale = 1
+    let zoomScale = 1;
     // Get Dagre Graph dimensions
-    const graphWidth = g.graph().width + 0.0
-    const graphHeight = g.graph().height + 0.0
-    console.log("graph h w: ", graphHeight, graphWidth)
-    console.log("bounding h w: ", boundingHeight, boundingWidth)
-    const width = boundingWidth
-    const height = boundingHeight
+    const graphWidth = g.graph().width + 0.0;
+    const graphHeight = g.graph().height + 0.0;
+    console.log("graph h w: ", graphHeight, graphWidth);
+    console.log("bounding h w: ", boundingHeight, boundingWidth);
+    const width = boundingWidth;
+    const height = boundingHeight;
 
-    const heightMagicRatio = 0.2
-    const widthMagicRatio = 0.24
+    const heightMagicRatio = 0.2;
+    const widthMagicRatio = 0.24;
     // Calculate applicable scale for zoom
     zoomScale = Math.min(
       widthMagicRatio * (width / graphWidth),
       heightMagicRatio * (height / graphHeight)
-    )
-    console.log("zoomScale: ", zoomScale)
+    );
+    console.log("zoomScale: ", zoomScale);
 
     inner.attr(
       "transform",
       `scale(${zoomScale},${zoomScale}), translate(10,10)`
-    )
+    );
     /// /// END RESIZE MAGIC
 
     inner
@@ -119,50 +119,50 @@ export default function Tree ({ ast }) {
           "<p class='name'>" +
           v +
           "</p><p class='description'> some random description </p>"
-        )
+        );
       })
       .each(function (v) {
-        console.log("node details :", v)
-      })
-  })
+        console.log("node details :", v);
+      });
+  });
 
   if (!ast) {
     // Check for goal because it's possible for us to get the wrong diagram type
-    return <div> No AST </div>
+    return <div> No AST </div>;
   }
-  const nodeStatusPercentage = {}
+  const nodeStatusPercentage = {};
 
   ast.statements
     .filter((s) => s.type === "status")
     .forEach((statement) => {
-      const nodeKey = statement.id
-      nodeStatusPercentage[nodeKey] = statement.percentage
-    })
+      const nodeKey = statement.id;
+      nodeStatusPercentage[nodeKey] = statement.percentage;
+    });
 
-  createNode({ key: "goal", label: ast.goal.text, primary: true })
+  createNode({ key: "goal", label: ast.goal.text, primary: true });
   ast.statements
     .filter((s) => s.type === "CSF")
     .forEach((statement) => {
-      createNode({ key: statement.id, label: statement.text, primary: true })
-      createEdge({ from: "goal", to: statement.id })
-    })
+      createNode({ key: statement.id, label: statement.text, primary: true });
+      createEdge({ from: "goal", to: statement.id });
+    });
   ast.statements
     .filter((s) => s.type === "NC")
     .forEach((statement) => {
       createNode({
         key: statement.id,
         label: statement.text,
-        statusPercentage: nodeStatusPercentage[statement.id]
-      })
-    })
+        statusPercentage: nodeStatusPercentage[statement.id],
+      });
+    });
   ast.statements
     .filter((s) => s.type === "requirement")
     .forEach((statement) => {
-      const nodeKey = statement.id
+      const nodeKey = statement.id;
       for (const reqKey of statement.requirements) {
-        createEdge({ from: nodeKey, to: reqKey })
+        createEdge({ from: nodeKey, to: reqKey });
       }
-    })
+    });
 
   // inner
   //   .selectAll("g.edge")
@@ -174,26 +174,26 @@ export default function Tree ({ ast }) {
   // });
 
   const drawRelation = (inner, parent, child1, child2) => {
-    const parentNode = g.node(parent)
-    console.log("Node " + parent + ": " + JSON.stringify(parentNode))
+    const parentNode = g.node(parent);
+    console.log("Node " + parent + ": " + JSON.stringify(parentNode));
     const midPoint = (p1, p2) => {
       return {
         x: p1.x + (p2.x - p1.x) / 2,
-        y: p1.y + (p2.y - p1.y) / 2
-      }
-    }
+        y: p1.y + (p2.y - p1.y) / 2,
+      };
+    };
     const distanceBetween = (p1, p2) => {
-      return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
-    }
+      return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+    };
     const edgeMidPoint = (from, to) => {
-      const edge = g.edge(from, to, null)
-      const firstPoint = edge.points[0]
-      const lastPoint = edge.points[edge.points.length - 1]
-      return midPoint(firstPoint, lastPoint)
-    }
-    const p1 = edgeMidPoint(parent, child1)
-    const p2 = edgeMidPoint(parent, child2)
-    const center = midPoint(p1, p2)
+      const edge = g.edge(from, to, null);
+      const firstPoint = edge.points[0];
+      const lastPoint = edge.points[edge.points.length - 1];
+      return midPoint(firstPoint, lastPoint);
+    };
+    const p1 = edgeMidPoint(parent, child1);
+    const p2 = edgeMidPoint(parent, child2);
+    const center = midPoint(p1, p2);
     inner
       .append("ellipse")
       .attr("cx", center.x)
@@ -201,9 +201,9 @@ export default function Tree ({ ast }) {
       .attr("rx", distanceBetween(p1, p2))
       .attr("ry", 5)
       .attr("stroke", "#000")
-      .attr("fill", "none")
+      .attr("fill", "none");
     // console.log("Edge " + e.v + " -> " + e.w + ": " + JSON.stringify(edge));
-  }
+  };
   // drawRelation(inner, 'root', 'put', 'ttc');
   return (
     <div id="tree-svg-container" style={{ width: "100%", height: "500" }}>
@@ -220,5 +220,5 @@ export default function Tree ({ ast }) {
         <g />
       </svg>
     </div>
-  )
+  );
 }
