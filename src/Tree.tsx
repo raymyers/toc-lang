@@ -4,6 +4,7 @@ import React from "react"
 import * as d3 from "d3"
 import * as dagreD3 from "dagre-d3-es"
 // import ast from "./goal-tree-example-ast.json";
+import { wrapLines }  from "./util"
 
 // functional component Tree with prop ast
 export default function Tree ({ ast }) {
@@ -31,30 +32,13 @@ export default function Tree ({ ast }) {
     primary = false,
     statusPercentage = null
   }) => {
-    // function to break string into lines on word boundaries
-    const breakString = (str, width) => {
-      const words = str.split(" ")
-      const lines: string[] = []
-      let line = ""
-      words.forEach((word, i) => {
-        if (line.length + word.length > width) {
-          lines.push(line)
-          line = ""
-        }
-        line += word + " "
-        if (i === words.length - 1) {
-          lines.push(line)
-        }
-      })
-      return lines
-    }
     // Transform gives more space for the label
     const styleCommon =
       "transform: scale(1.1); stroke: black; stroke-width: 1px;"
     const fontFamily = '"trebuchet ms",verdana,arial,sans-serif'
     const fontStyle = `font: 300 16px, ${fontFamily};`
     const config = {
-      label: breakString(label, 20).join("\n"),
+      label: wrapLines(label, 20).join("\n"),
       // width: 70,
       // height: 60,
       shape,
@@ -143,6 +127,7 @@ export default function Tree ({ ast }) {
   })
 
   if (!ast) {
+    // Check for goal because it's possible for us to get the wrong diagram type
     return <div> No AST </div>
   }
   const nodeStatusPercentage = {}

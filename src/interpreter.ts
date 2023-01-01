@@ -1,5 +1,6 @@
 import peggy from "peggy"
-import peggyGrammarUrl from "./assets/goal-tree.peggy"
+import goalTreeGrammarUrl from "./assets/grammars/goal-tree.peggy"
+import evaporatingCloudGrammarUrl from "./assets/grammars/evaporating-cloud.peggy"
 
 const loadFile = async (url) => {
   if (process.env.NODE_ENV === "test") {
@@ -14,12 +15,22 @@ const loadFile = async (url) => {
   }
 }
 
-const grammarPromise = loadFile(peggyGrammarUrl)
-const parserPromise = grammarPromise.then((peggyGrammar) => {
+const evaporatingCloudParserPromise = loadFile(evaporatingCloudGrammarUrl).then((peggyGrammar) => {
   return peggy.generate(peggyGrammar)
 })
 
-const checkSemantics = (ast) => {
+const goalTreeParserPromise = loadFile(goalTreeGrammarUrl).then((peggyGrammar) => {
+  return peggy.generate(peggyGrammar)
+})
+
+const parsersPromise = Promise.all([
+  evaporatingCloudParserPromise, 
+  goalTreeParserPromise]
+  ).then(([evaporatingCloud, goalTree]) => {
+  return {evaporatingCloud, goalTree}
+});
+
+const checkGoalTreeSemantics = (ast) => {
   if (!ast) {
     throw new Error("ast is null")
   }
@@ -63,9 +74,11 @@ const checkSemantics = (ast) => {
   nodeIds.add("goal")
 }
 
-const parseTextToAst = async (code) => {
-  const ast = (await parserPromise).parse(code)
+const parseTextToAst = async (parserType, code) => {
+  const parser = (await parsersPromise)[parserType];
+  // handle null parser as unknown parser type
+  const ast = parser.parse(code)
   return ast
 }
 
-export { parseTextToAst, checkSemantics }
+export { parseTextToAst, checkGoalTreeSemantics }

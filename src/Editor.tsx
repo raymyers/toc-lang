@@ -10,25 +10,7 @@ const debounce = (func, wait) => {
     timeout = setTimeout(later, wait)
   }
 }
-const exampleText = `Goal is "Make money now and in the future"
-CSF revUp is "Generate more revenue"
-CSF costsDown is "Control costs"
-NC keepCust is "Protect relationship with existing customers"
-NC newCust is "Acquire new customers"
 
-NC reduceInfra is "Reduce infrastructure spending"
-NC retain is "Retain employees"
-NC marketSalary is "Keep up with market salaries"
-
-NC morale is "Maintain employee morale"
-NC features is "Develop new features"
-
-newCust requires features
-features requires retain
-revUp requires newCust and keepCust
-costsDown requires reduceInfra
-retain requires marketSalary and morale
-`
 // React functional component to edit text and make the result available to the parent
 
 // Props:
@@ -44,16 +26,17 @@ retain requires marketSalary and morale
 export const Editor = ({
   onChange,
   placeholder = "",
-  rows = null,
-  cols = null,
+  rows = 20,
   disabled = false,
   autoFocus = false,
+  text,
+  setText,
   error
 }) => {
-  const [text, setText] = React.useState(exampleText)
+  
   React.useEffect(() => {
     // Run once.
-    onChange(exampleText)
+    onChange(text)
   }, [])
   const handleChange = (event) => {
     setText(event.target.value)
@@ -67,7 +50,6 @@ export const Editor = ({
       <textarea
         style={{ width: "100%", height: "100%", resize: "none" }}
         rows={rows}
-        // cols={cols}
         value={text}
         onChange={handleChange}
         placeholder={placeholder}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseTextToAst, checkSemantics } from "../interpreter";
+import { parseTextToAst, checkGoalTreeSemantics } from "../interpreter";
 
 describe("interpreter", () => {
   describe("parses ast for input", () => {
@@ -9,7 +9,7 @@ describe("interpreter", () => {
         goal: { text: "win" },
         statements: [],
       };
-      expect(await parseTextToAst(text)).toStrictEqual(expected);
+      expect(await parseTextToAst('goalTree', text)).toStrictEqual(expected);
     });
 
     it("with CSF and NCs", async () => {
@@ -65,7 +65,7 @@ describe("interpreter", () => {
           },
         ],
       };
-      expect(await parseTextToAst(text)).toStrictEqual(expected);
+      expect(await parseTextToAst('goalTree', text)).toStrictEqual(expected);
     });
   });
 });
