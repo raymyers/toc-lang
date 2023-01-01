@@ -3,9 +3,7 @@ import React from "react"
 
 import * as d3 from "d3"
 import * as dagreD3 from "dagre-d3-es"
-// import ast from "./goal-tree-example-ast.json";
 import { computeResizeTransform, wrapLines } from "./util"
-import { transcode } from "buffer"
 
 // functional component Tree with prop ast
 export default function Tree ({ ast }) {
@@ -30,7 +28,6 @@ export default function Tree ({ ast }) {
     key,
     label,
     shape = "ellipse",
-    primary = false,
     statusPercentage = null
   }) => {
     // Transform gives more space for the label
@@ -43,23 +40,23 @@ export default function Tree ({ ast }) {
       // width: 70,
       // height: 60,
       shape,
-      style: `${styleCommon} fill:white;`,
+      style: `${styleCommon} fill:#dff8ff;`, // Blue
       labelStyle: fontStyle + "fill: black; margin: 5px;"
     }
-    if (primary) {
-      config.style = `${styleCommon} fill:blue;`
-      config.labelStyle = fontStyle + "fill: white;"
-    }
+
     if (statusPercentage && statusPercentage >= 70) {
-      config.style = `${styleCommon} fill:green;`
-      config.labelStyle = fontStyle + "fill: white;"
+      // Green
+      config.style = `${styleCommon} fill:#95f795;`
+      config.labelStyle = fontStyle + "fill: black;"
     }
     if (statusPercentage && statusPercentage < 70 && statusPercentage > 30) {
-      config.style = `${styleCommon} fill:yellow;`
+      // Yellow
+      config.style = `${styleCommon} fill:#fdfdbe;`
     }
     if (statusPercentage && statusPercentage <= 30) {
-      config.style = `${styleCommon} fill:red;`
-      config.labelStyle = fontStyle + "fill: white;"
+      // Red
+      config.style = `${styleCommon} fill:#ffb2b2;`
+      config.labelStyle = fontStyle + "fill: black;"
     }
     console.log("creating node ", key)
     g.setNode(key, config)
@@ -118,11 +115,11 @@ export default function Tree ({ ast }) {
       nodeStatusPercentage[nodeKey] = statement.percentage
     })
 
-  createNode({ key: "goal", label: ast.goal.text, primary: true })
+  createNode({ key: "goal", label: ast.goal.text })
   ast.statements
     .filter((s) => s.type === "CSF")
     .forEach((statement) => {
-      createNode({ key: statement.id, label: statement.text, primary: true })
+      createNode({ key: statement.id, label: statement.text })
       createEdge({ from: "goal", to: statement.id })
     })
   ast.statements
