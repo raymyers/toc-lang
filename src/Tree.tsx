@@ -87,7 +87,8 @@ export default function Tree ({ ast }) {
     render(inner, g)
     inner.attr(
       "transform",
-      computeResizeTransform(inner.node(), container.node(), 10, 10)+ ", translate(10, 10)"
+      computeResizeTransform(inner.node(), container.node(), 10, 10) +
+        ", translate(10, 10)"
     )
 
     inner
@@ -200,5 +201,3 @@ export default function Tree ({ ast }) {
     </div>
   )
 }
-
-
