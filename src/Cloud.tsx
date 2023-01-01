@@ -1,6 +1,6 @@
 import React from "react"
 import "./Cloud.css"
-import { wrapLines } from "./util"
+import { computeResizeTransform, wrapLines } from "./util"
 
 const intermediatePoint = (start, end, distance) => {
   const dx = end.x - start.x
@@ -155,100 +155,118 @@ export default function Cloud ({ ast }) {
   const conflictEdgePointsString = conflictEdgePoints
     .map((p) => `${p.x},${p.y}`)
     .join(" ")
+  React.useEffect(() => {
+    const g = document.getElementById("cloudSvgInner")
+    const svgContainer = document.getElementById("cloudSvgContainer")
+    g?.setAttribute(
+      "transform",
+      computeResizeTransform(g, svgContainer, 10, 0) + ", translate(-20, 0)"
+    )
+  });
   return (
-    <svg id="cloudSvg" width="800" height="800">
-      <defs>
-        <marker
-          id="arrowhead"
-          markerWidth="10"
-          markerHeight="7"
-          refX="0"
-          refY="1.75"
-          orient="auto"
-        >
-          <polygon points="0 0, 10 3.5, 0 7" transform="scale(0.5 0.5)" />
-        </marker>
-        <marker
-          id="startarrow"
-          markerWidth="10"
-          markerHeight="7"
-          refX="5"
-          refY="1.75"
-          orient="auto"
-        >
-          <polygon
-            points="10 0, 10 7, 0 3.5"
-            fill=""
-            transform="scale(0.5 0.5)"
-          />
-        </marker>
-        <marker
-          id="endarrow"
-          markerWidth="10"
-          markerHeight="7"
-          refX="0"
-          refY="1.75"
-          orient="auto"
-          markerUnits="strokeWidth"
-        >
-          <polygon
-            points="0 0, 10 3.5, 0 7"
-            fill=""
-            transform="scale(0.5 0.5)"
-          />
-        </marker>
-      </defs>
-      <CloudNode
-        text={nodeLabels.A}
-        x={nodeA.x}
-        y={nodeA.y}
-        width={nodeWidth}
-        height={nodeHeight}
-      />
-      <CloudNode
-        text={nodeLabels.B}
-        x={nodeB.x}
-        y={nodeB.y}
-        width={nodeWidth}
-        height={nodeHeight}
-      />
-      <CloudNode
-        text={nodeLabels.C}
-        x={nodeC.x}
-        y={nodeC.y}
-        width={nodeWidth}
-        height={nodeHeight}
-      />
-      <CloudNode
-        text={nodeLabels.D}
-        x={nodeD.x}
-        y={nodeD.y}
-        width={nodeWidth}
-        height={nodeHeight}
-      />
-      <CloudNode
-        text={nodeLabels["D'"]}
-        x={nodeDp.x}
-        y={nodeDp.y}
-        width={nodeWidth}
-        height={nodeHeight}
-      />
-      <CloudEdge edge={edgeAB} />
-      <CloudEdge edge={edgeAC} />
-      <CloudEdge edge={edgeBD} />
-      <CloudEdge edge={edgeCDp} />
-      <Injection text={injections["A-B"]} edge={edgeAB} dx={-100} dy={-125} />
-      <Injection text={injections["A-C"]} edge={edgeAC} dx={-100} dy={125} />
-      <Injection text={injections["B-D"]} edge={edgeBD} dx={0} dy={-75} />
-      <Injection text={injections["C-D'"]} edge={edgeCDp} dx={0} dy={75} />
-      <Injection text={injections["D-D'"]} edge={edgeDDp} dx={120} dy={20} />
-      <polyline
-        points={conflictEdgePointsString}
-        markerStart="url(#startarrow)"
-        markerEnd="url(#endarrow)"
-        style={{ fill: "none", stroke: "black", strokeWidth: 3 }}
-      />
-    </svg>
+    <div id="cloudSvgContainer" style={{ width: "100%", height: "500" }}>
+      <svg
+       id="cloudSvg" width="100%" height="100%"
+       version="1.1"
+       preserveAspectRatio="xMinYMin"
+       viewBox="0 0 100 100"
+       xmlns="http://www.w3.org/2000/svg"
+      >
+        <g id="cloudSvgInner">
+        <defs>
+          <marker
+            id="arrowhead"
+            markerWidth="10"
+            markerHeight="7"
+            refX="0"
+            refY="1.75"
+            orient="auto"
+          >
+            <polygon points="0 0, 10 3.5, 0 7" transform="scale(0.5 0.5)" />
+          </marker>
+          <marker
+            id="startarrow"
+            markerWidth="10"
+            markerHeight="7"
+            refX="5"
+            refY="1.75"
+            orient="auto"
+          >
+            <polygon
+              points="10 0, 10 7, 0 3.5"
+              fill=""
+              transform="scale(0.5 0.5)"
+            />
+          </marker>
+          <marker
+            id="endarrow"
+            markerWidth="10"
+            markerHeight="7"
+            refX="0"
+            refY="1.75"
+            orient="auto"
+            markerUnits="strokeWidth"
+          >
+            <polygon
+              points="0 0, 10 3.5, 0 7"
+              fill=""
+              transform="scale(0.5 0.5)"
+            />
+          </marker>
+        </defs>
+        <CloudNode
+          text={nodeLabels.A}
+          x={nodeA.x}
+          y={nodeA.y}
+          width={nodeWidth}
+          height={nodeHeight}
+        />
+        <CloudNode
+          text={nodeLabels.B}
+          x={nodeB.x}
+          y={nodeB.y}
+          width={nodeWidth}
+          height={nodeHeight}
+        />
+        <CloudNode
+          text={nodeLabels.C}
+          x={nodeC.x}
+          y={nodeC.y}
+          width={nodeWidth}
+          height={nodeHeight}
+        />
+        <CloudNode
+          text={nodeLabels.D}
+          x={nodeD.x}
+          y={nodeD.y}
+          width={nodeWidth}
+          height={nodeHeight}
+        />
+        <CloudNode
+          text={nodeLabels["D'"]}
+          x={nodeDp.x}
+          y={nodeDp.y}
+          width={nodeWidth}
+          height={nodeHeight}
+        />
+        <CloudEdge edge={edgeAB} />
+        <CloudEdge edge={edgeAC} />
+        <CloudEdge edge={edgeBD} />
+        <CloudEdge edge={edgeCDp} />
+        <Injection text={injections["A-B"]} edge={edgeAB} dx={-100} dy={-125} />
+        <Injection text={injections["A-C"]} edge={edgeAC} dx={-100} dy={125} />
+        <Injection text={injections["B-D"]} edge={edgeBD} dx={0} dy={-75} />
+        <Injection text={injections["C-D'"]} edge={edgeCDp} dx={0} dy={75} />
+        <Injection text={injections["D-D'"]} edge={edgeDDp} dx={120} dy={20} />
+        <polyline
+          points={conflictEdgePointsString}
+          markerStart="url(#startarrow)"
+          markerEnd="url(#endarrow)"
+          style={{ fill: "none", stroke: "black", strokeWidth: 3 }}
+        />
+        </g>
+      </svg>
+    </div>
   )
 }
 function createEdge (

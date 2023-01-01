@@ -1,0 +1,10 @@
+Goal is "Drive adoption of TOC in software"
+CSF devFriendly is "Thinking Processes are Dev Friendly"
+
+NC openTool is "Open source tooling"
+NC wellFormed is "Diagrams are well formed"
+NC versioning is "Diagrams can be version controlled"
+NC textRep is "Diagrams have a textual representation"
+
+devFriendly requires openTool and wellFormed and versioning
+versioning requires textRep

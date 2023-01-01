@@ -4,7 +4,8 @@ import React from "react"
 import * as d3 from "d3"
 import * as dagreD3 from "dagre-d3-es"
 // import ast from "./goal-tree-example-ast.json";
-import { wrapLines } from "./util"
+import { computeResizeTransform, wrapLines } from "./util"
+import { transcode } from "buffer"
 
 // functional component Tree with prop ast
 export default function Tree ({ ast }) {
@@ -82,35 +83,12 @@ export default function Tree ({ ast }) {
     if (!container || !container.node()) {
       return
     }
-    const size = container.node().getBoundingClientRect()
-    const boundingWidth = size.width
-    const boundingHeight = size.height
     // Run the renderer. This is what draws the final graph.
     render(inner, g)
-    /// /// RESIZE MAGIC
-    let zoomScale = 1
-    // Get Dagre Graph dimensions
-    const graphWidth = g.graph().width + 0.0
-    const graphHeight = g.graph().height + 0.0
-    console.log("graph h w: ", graphHeight, graphWidth)
-    console.log("bounding h w: ", boundingHeight, boundingWidth)
-    const width = boundingWidth
-    const height = boundingHeight
-
-    const heightMagicRatio = 0.2
-    const widthMagicRatio = 0.24
-    // Calculate applicable scale for zoom
-    zoomScale = Math.min(
-      widthMagicRatio * (width / graphWidth),
-      heightMagicRatio * (height / graphHeight)
-    )
-    console.log("zoomScale: ", zoomScale)
-
     inner.attr(
       "transform",
-      `scale(${zoomScale},${zoomScale}), translate(10,10)`
+      computeResizeTransform(inner.node(), container.node(), 10, 10)+ ", translate(10, 10)"
     )
-    /// /// END RESIZE MAGIC
 
     inner
       .selectAll("g.node")
@@ -222,3 +200,5 @@ export default function Tree ({ ast }) {
     </div>
   )
 }
+
+
