@@ -1,24 +1,24 @@
-import React from "react"
-import { computeResizeTransform, saveSvgUrl, wrapLines } from "./util"
+import React from "react";
+import { computeResizeTransform, saveSvgUrl, wrapLines } from "./util";
 
 const intermediatePoint = (start, end, distance) => {
-  const dx = end.x - start.x
-  const dy = end.y - start.y
-  const length = Math.sqrt(dx * dx + dy * dy)
-  const ratio = distance / length
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const length = Math.sqrt(dx * dx + dy * dy);
+  const ratio = distance / length;
   return {
     x: start.x + dx * ratio,
-    y: start.y + dy * ratio
-  }
-}
+    y: start.y + dy * ratio,
+  };
+};
 
 const CloudNode = ({ text, x, y, width, height }) => {
-  const lines = wrapLines(text, 20)
-  const lineHeight = 16
-  const textMargin = 12
-  const textHeight = lines.length * lineHeight
-  const textY = y + height / 2 - textHeight / 2 - 4
-  const textX = x + textMargin
+  const lines = wrapLines(text, 20);
+  const lineHeight = 16;
+  const textMargin = 12;
+  const textHeight = lines.length * lineHeight;
+  const textY = y + height / 2 - textHeight / 2 - 4;
+  const textX = x + textMargin;
   return (
     <>
       <rect x={x} y={y} rx="10" ry="10" width={width} height={height} />
@@ -28,12 +28,12 @@ const CloudNode = ({ text, x, y, width, height }) => {
             <tspan key={i} x={textX} dy={lineHeight}>
               {line}
             </tspan>
-          )
+          );
         })}
       </text>
     </>
-  )
-}
+  );
+};
 
 const CloudEdge = ({ edge }) => {
   return (
@@ -46,24 +46,24 @@ const CloudEdge = ({ edge }) => {
       strokeWidth="3"
       markerStart="url(#startarrow)"
     />
-  )
-}
+  );
+};
 
 const Injection = ({ text, edge, dx, dy }) => {
   if (!text) {
-    return <></>
+    return <></>;
   }
-  const lines = wrapLines(text, 35)
-  const edgeMidPoint = midPoint(edge.start, edge.end)
-  const lineHeight = 16
-  const textCenterX = edgeMidPoint.x + dx
-  const textX = textCenterX - 75
-  const textY = edgeMidPoint.y + dy
-  const dYMagnitude = dy / Math.abs(dy)
-  const textBottomY = textY + lines.length * lineHeight + 7
-  const textTopY = textY
-  const lineStartY = dYMagnitude === 1 ? textTopY : textBottomY
-  const lineStartX = textCenterX
+  const lines = wrapLines(text, 35);
+  const edgeMidPoint = midPoint(edge.start, edge.end);
+  const lineHeight = 16;
+  const textCenterX = edgeMidPoint.x + dx;
+  const textX = textCenterX - 75;
+  const textY = edgeMidPoint.y + dy;
+  const dYMagnitude = dy / Math.abs(dy);
+  const textBottomY = textY + lines.length * lineHeight + 7;
+  const textTopY = textY;
+  const lineStartY = dYMagnitude === 1 ? textTopY : textBottomY;
+  const lineStartX = textCenterX;
   return (
     <>
       <text x={textX} y={textY}>
@@ -72,7 +72,7 @@ const Injection = ({ text, edge, dx, dy }) => {
             <tspan key={i} x={textX} dy={lineHeight}>
               {line}
             </tspan>
-          )
+          );
         })}
       </text>
       <line
@@ -85,85 +85,85 @@ const Injection = ({ text, edge, dx, dy }) => {
         strokeWidth="2"
       />
     </>
-  )
-}
+  );
+};
 
-export default function Cloud ({ ast }) {
-  const [downloadUrl, setDownloadUrl] = React.useState<string | null>(null)
+export default function Cloud({ ast }) {
+  const [downloadUrl, setDownloadUrl] = React.useState<string | null>(null);
   const nodeLabels = {
     A: "A",
     B: "B",
     C: "C",
     D: "D",
-    "D'": "D'"
-  }
-  const injections = new Map<string, string>()
+    "D'": "D'",
+  };
+  const injections = new Map<string, string>();
   if (ast) {
     ast.statements
       .filter((statement) => statement.type === "label")
       .forEach((statement) => {
-        nodeLabels[statement.id] = statement.text
-      })
+        nodeLabels[statement.id] = statement.text;
+      });
     ast.statements
       .filter((statement) => statement.type === "requirement")
       .forEach((statement) => {
-        nodeLabels[statement.id2] = statement.id2Text
-      })
-    let prevEdgeName = null as string | null
+        nodeLabels[statement.id2] = statement.id2Text;
+      });
+    let prevEdgeName = null as string | null;
     ast.statements.forEach((statement) => {
       if (statement.type === "inject" && prevEdgeName) {
-        injections[prevEdgeName] = statement.text
+        injections[prevEdgeName] = statement.text;
       }
       if (statement.type === "requirement" || statement.type === "conflict") {
-        prevEdgeName = `${statement.id1}-${statement.id2}`
+        prevEdgeName = `${statement.id1}-${statement.id2}`;
       } else {
-        prevEdgeName = null
+        prevEdgeName = null;
       }
-    })
-    console.log("injections", injections)
+    });
+    console.log("injections", injections);
   }
-  const x1 = 25
-  const x2 = 250
-  const x3 = 500
-  const y1 = 50
-  const y3 = 300
-  const y2 = (y1 + y3) / 2
-  const nodeWidth = 150
-  const nodeHeight = 75
-  const nodeA = { x: x1, y: y2, w: nodeWidth, h: nodeHeight }
-  const nodeB = { x: x2, y: y1, w: nodeWidth, h: nodeHeight }
-  const nodeC = { x: x2, y: y3, w: nodeWidth, h: nodeHeight }
-  const nodeD = { x: x3, y: y1, w: nodeWidth, h: nodeHeight }
-  const nodeDp = { x: x3, y: y3, w: nodeWidth, h: nodeHeight }
-  const edgeAB = createEdge(nodeA, nodeB)
-  const edgeAC = createEdge(nodeA, nodeC)
-  const edgeBD = createEdge(nodeB, nodeD)
-  const edgeCDp = createEdge(nodeC, nodeDp)
-  const conflictStart = nodeBottomCenterPont(nodeD)
-  const conflictEnd = nodeTopCenterPont(nodeDp)
-  const conflictMid = midPoint(conflictStart, conflictEnd)
+  const x1 = 25;
+  const x2 = 250;
+  const x3 = 500;
+  const y1 = 50;
+  const y3 = 300;
+  const y2 = (y1 + y3) / 2;
+  const nodeWidth = 150;
+  const nodeHeight = 75;
+  const nodeA = { x: x1, y: y2, w: nodeWidth, h: nodeHeight };
+  const nodeB = { x: x2, y: y1, w: nodeWidth, h: nodeHeight };
+  const nodeC = { x: x2, y: y3, w: nodeWidth, h: nodeHeight };
+  const nodeD = { x: x3, y: y1, w: nodeWidth, h: nodeHeight };
+  const nodeDp = { x: x3, y: y3, w: nodeWidth, h: nodeHeight };
+  const edgeAB = createEdge(nodeA, nodeB);
+  const edgeAC = createEdge(nodeA, nodeC);
+  const edgeBD = createEdge(nodeB, nodeD);
+  const edgeCDp = createEdge(nodeC, nodeDp);
+  const conflictStart = nodeBottomCenterPont(nodeD);
+  const conflictEnd = nodeTopCenterPont(nodeDp);
+  const conflictMid = midPoint(conflictStart, conflictEnd);
   const conflictEdgePoints = [
     displacePoint(conflictStart, 0, 16),
     displacePoint(conflictMid, -15, 5),
     displacePoint(conflictMid, 15, -5),
-    displacePoint(conflictEnd, 0, -16)
-  ]
+    displacePoint(conflictEnd, 0, -16),
+  ];
   const edgeDDp = {
     start: conflictEdgePoints[0],
-    end: conflictEdgePoints[3]
-  }
+    end: conflictEdgePoints[3],
+  };
   const conflictEdgePointsString = conflictEdgePoints
     .map((p) => `${p.x},${p.y}`)
-    .join(" ")
+    .join(" ");
   React.useEffect(() => {
-    const g = document.getElementById("cloudSvgInner")
-    const svgContainer = document.getElementById("cloudSvgContainer")
+    const g = document.getElementById("cloudSvgInner");
+    const svgContainer = document.getElementById("cloudSvgContainer");
     g?.setAttribute(
       "transform",
       computeResizeTransform(g, svgContainer, 10, 0) + ", translate(-20, 0)"
-    )
-    setDownloadUrl(saveSvgUrl(document.getElementById("cloudSvg")))
-  }, [ast])
+    );
+    setDownloadUrl(saveSvgUrl(document.getElementById("cloudSvg")));
+  }, [ast]);
   const style = `
   svg {
     font-family: "trebuchet ms", verdana, arial, sans-serif;
@@ -177,7 +177,7 @@ export default function Cloud ({ ast }) {
     stroke: black;
     stroke-width: 2;
   }
-  `
+  `;
   return (
     <div id="cloudSvgContainer" style={{ width: "100%", height: "500" }}>
       {downloadUrl && (
@@ -305,67 +305,67 @@ export default function Cloud ({ ast }) {
         </g>
       </svg>
     </div>
-  )
+  );
 }
-function createEdge (
-  startNode: { x: number, y: number, h: number, w: number },
-  endNode: { x: number, y: number, h: number, w: number }
+function createEdge(
+  startNode: { x: number; y: number; h: number; w: number },
+  endNode: { x: number; y: number; h: number; w: number }
 ) {
   const edge = {
     start: {
       x: startNode.x + startNode.w,
-      y: startNode.y + startNode.h / 2
+      y: startNode.y + startNode.h / 2,
     },
     adjStart: { x: 0, y: 0 },
     end: {
       x: endNode.x,
-      y: endNode.y + endNode.h / 2
-    }
-  }
-  edge.adjStart = intermediatePoint(edge.start, edge.end, 16)
-  return edge
+      y: endNode.y + endNode.h / 2,
+    },
+  };
+  edge.adjStart = intermediatePoint(edge.start, edge.end, 16);
+  return edge;
 }
 
-function nodeBottomCenterPont (node: {
-  x: number
-  y: number
-  w: number
-  h: number
+function nodeBottomCenterPont(node: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }) {
   return {
     x: node.x + node.w / 2,
-    y: node.y + node.h
-  }
+    y: node.y + node.h,
+  };
 }
 
-function nodeTopCenterPont (node: {
-  x: number
-  y: number
-  w: number
-  h: number
+function nodeTopCenterPont(node: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }) {
   return {
     x: node.x + node.w / 2,
-    y: node.y
-  }
+    y: node.y,
+  };
 }
-function midPoint (
-  start: { x: number, y: number },
-  end: { x: number, y: number }
+function midPoint(
+  start: { x: number; y: number },
+  end: { x: number; y: number }
 ) {
   return {
     x: (start.x + end.x) / 2,
-    y: (start.y + end.y) / 2
-  }
+    y: (start.y + end.y) / 2,
+  };
 }
 
-function displacePoint (
-  point: { x: number, y: number },
+function displacePoint(
+  point: { x: number; y: number },
   xDelta: number,
   yDelta: number
 ) {
   return {
     x: point.x + xDelta,
-    y: point.y + yDelta
-  }
+    y: point.y + yDelta,
+  };
 }
