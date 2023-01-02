@@ -6,20 +6,29 @@
 }
 
 start
-  = EOL? goalStatement:goalStatement statement:(EOL @statement)* EOL? _
+  = statement:statement? moreStatements:(EOL @statement)* EOL? _
 {
+  const statements = statement ? [statement, ...moreStatements] : moreStatements;
   return {
-    goal: goalStatement,
-    statements: statement
+    goal: statements.find(s => s.type === "goal") || null,
+    statements: statements
   };
 }
 
 goalStatement = "The"? _ "Goal" _ "is" _ str:string
 {
-  return {text: str};
+  return {type: "goal", text: str};
 }
 
-statement = CSFStatement / NCStatement / requirementStatement / statusStatement
+statement = commentLine / goalStatement / CSFStatement / NCStatement / requirementStatement / statusStatement
+
+commentLine = _ "#" text:([^\n\r]*)
+{
+  return {
+    type: "comment",
+    text: text.join("")
+  };
+}
 
 CSFStatement = _ "CSF" _ ident:ident _ "is" _ str:string
   {

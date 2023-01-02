@@ -1,13 +1,22 @@
 
 start
-  = EOL? statement:statement moreStatements:(EOL @statement)* EOL? _
+  = statement:statement? moreStatements:(EOL @statement)* EOL? _
 {
+  if (!statement) return { statements: moreStatements };
   return {
     statements: [statement, ...moreStatements]
   };
 }
 
-statement = labelStatement / relationStatement / injectStatement / conflictStatement
+statement = commentLine / labelStatement / relationStatement / injectStatement / conflictStatement
+
+commentLine = _ "#" text:([^\n\r]*)
+{
+  return {
+    type: "comment",
+    text: text.join("")
+  };
+}
 
 labelStatement = _ ident:ident _ "is" _ str:string
   {
