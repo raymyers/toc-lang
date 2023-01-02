@@ -1,6 +1,5 @@
 import React from "react"
-import "./Cloud.css"
-import { computeResizeTransform, wrapLines } from "./util"
+import { computeResizeTransform, saveSvgUrl, wrapLines } from "./util"
 
 const intermediatePoint = (start, end, distance) => {
   const dx = end.x - start.x
@@ -90,6 +89,7 @@ const Injection = ({ text, edge, dx, dy }) => {
 }
 
 export default function Cloud ({ ast }) {
+  const [downloadUrl, setDownloadUrl] = React.useState<string | null>(null)
   const nodeLabels = {
     A: "A",
     B: "B",
@@ -162,9 +162,29 @@ export default function Cloud ({ ast }) {
       "transform",
       computeResizeTransform(g, svgContainer, 10, 0) + ", translate(-20, 0)"
     )
-  })
+    setDownloadUrl(saveSvgUrl(document.getElementById("cloudSvg")))
+  }, [ast])
+  const style = `
+  svg {
+    font-family: "trebuchet ms", verdana, arial, sans-serif;
+    font-size: 13px;
+  }
+  svg text {
+    fill: black;
+  }
+  svg rect {
+    fill: white;
+    stroke: black;
+    stroke-width: 2;
+  }
+  `
   return (
     <div id="cloudSvgContainer" style={{ width: "100%", height: "500" }}>
+      {downloadUrl && (
+        <a href={downloadUrl} download="evaporating-cloud.svg">
+          Download SVG
+        </a>
+      )}
       <svg
         id="cloudSvg"
         width="100%"
@@ -174,6 +194,7 @@ export default function Cloud ({ ast }) {
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <style>{style}</style>
         <g id="cloudSvgInner">
           <defs>
             <marker

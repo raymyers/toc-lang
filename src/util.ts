@@ -31,3 +31,15 @@ export function computeResizeTransform (gNode: any, container: any, padX, padY) 
   console.log("zoomScale: ", zoomScale)
   return `scale(${zoomScale},${zoomScale})`
 }
+
+export function saveSvgUrl (svgEl) {
+  // https://stackoverflow.com/questions/23218174/how-do-i-save-export-an-svg-file-after-creating-an-svg-with-d3-js-ie-safari-an
+  // Assume xmlns is set.
+  // svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+  const svgData = svgEl.outerHTML
+  const preface = '<?xml version="1.0" standalone="no"?>\r\n'
+  const svgBlob = new Blob([preface, svgData], {
+    type: "image/svg+xml;charset=utf-8"
+  })
+  return URL.createObjectURL(svgBlob)
+}
