@@ -24,7 +24,10 @@ NC morale is "Maintain employee morale"
 NC features is "Develop new features"
 
 newCust requires features
+
+# This is probably the wrong place for 'retain'
 features requires retain
+
 revUp requires newCust and keepCust
 costsDown requires reduceInfra
 retain requires marketSalary and morale
@@ -49,6 +52,9 @@ const exampleProblemTreeText = `
 UDE bad is "Bad user experience"
 C cluttered is "Cluttered interface"
 cluttered causes bad
+C ux is "Low investment in UX design"
+C features is "Many features added"
+ux and features cause cluttered
 `
 
 function App () {

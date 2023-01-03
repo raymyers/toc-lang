@@ -90,6 +90,8 @@ export interface Node {
   key: string
   label: string
   statusPercentage?: number
+  annotation?: string
+  intermediate?: boolean
 }
 
 export interface Edge {
@@ -105,7 +107,7 @@ export interface TreeSemantics {
 
 export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const nodes = new Map<string, Node>()
-  nodes.set("goal", { key: "goal", label: "" })
+  nodes.set("goal", { key: "goal", label: "", annotation: "G" })
   const edges = [] as Edge[]
   if (ast.goal) {
     nodes.get("goal")!.label = ast.goal.text
@@ -125,7 +127,8 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     .forEach((statement) => {
       nodes.set(statement.id, {
         key: statement.id,
-        label: statement.text
+        label: statement.text,
+        annotation: statement.type
       })
       edges.push({ from: "goal", to: statement.id })
     })
@@ -134,7 +137,13 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     .filter((s) => s.type === "requirement")
     .forEach((statement) => {
       const nodeKey = statement.id
+      if (!nodes.has(nodeKey)) {
+        throw new Error(`Node ${nodeKey} not found`)
+      }
       for (const reqKey of statement.requirements) {
+        if (!nodes.has(reqKey)) {
+          throw new Error(`Requirement ${reqKey} not found`)
+        }
         edges.push({ from: nodeKey, to: reqKey })
       }
     })
@@ -142,7 +151,11 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     .filter((s) => s.type === "status")
     .forEach((statement) => {
       const nodeKey = statement.id
-      const node = nodes[nodeKey]
+      const node = nodes.get(nodeKey)
+      if (!node) {
+        throw new Error(`Node ${nodeKey} not found`)
+      }
+
       node.statusPercentage = statement.percentage
     })
   return { nodes, edges, rankdir: "TB" }
@@ -153,7 +166,16 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
   const edges = [] as Edge[]
 
   ast.statements
-    .filter((s) => s.type === "C" || s.type === "UDE" || s.type === "DE")
+    .filter((s) => s.type === "UDE" || s.type === "DE" || s.type === "FOL")
+    .forEach((statement) => {
+      nodes.set(statement.id, {
+        annotation: statement.type,
+        key: statement.id,
+        label: statement.text
+      })
+    })
+  ast.statements
+    .filter((s) => s.type === "C")
     .forEach((statement) => {
       nodes.set(statement.id, {
         key: statement.id,
@@ -165,6 +187,17 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
     .filter((s) => s.type === "cause")
     .forEach((statement) => {
       const effectKey = statement.effectId
+      let keyToConnect = effectKey
+      if (statement.causes.length > 1) {
+        const combinedId = statement.causes.join("_") + "_cause_" + effectKey
+        keyToConnect = combinedId
+        nodes.set(combinedId, {
+          key: combinedId,
+          label: "AND",
+          intermediate: true
+        })
+        edges.push({ from: combinedId, to: effectKey })
+      }
       for (const causeKey of statement.causes) {
         if (!nodes.has(causeKey)) {
           throw new Error(`Cause ${causeKey} not declared`)
@@ -172,7 +205,7 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
         if (!nodes.has(effectKey)) {
           throw new Error(`Effect ${effectKey} not declared`)
         }
-        edges.push({ from: causeKey, to: effectKey })
+        edges.push({ from: causeKey, to: keyToConnect })
       }
     })
   return { nodes, edges, rankdir: "BT" }

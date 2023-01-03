@@ -11,7 +11,9 @@ const testCases = [
     expectedSemantics: {
       rankdir: 'BT',
       edges: [],
-      nodes: new Map(Object.entries({ b: { key: 'b', label: 'badness' } }))
+      nodes: new Map(
+        Object.entries({ b: { key: 'b', label: 'badness', annotation: 'UDE' } })
+      )
     }
   },
   {
@@ -38,7 +40,7 @@ const testCases = [
       ],
       nodes: new Map(
         Object.entries({
-          b: { key: 'b', label: 'badness' },
+          b: { key: 'b', label: 'badness', annotation: 'UDE' },
           c: { key: 'c', label: 'cause' }
         })
       )
@@ -64,19 +66,28 @@ const testCases = [
       rankdir: 'BT',
       edges: [
         {
-          from: 'c1',
+          from: 'c1_c2_cause_b',
           to: 'b'
         },
         {
+          from: 'c1',
+          to: 'c1_c2_cause_b'
+        },
+        {
           from: 'c2',
-          to: 'b'
+          to: 'c1_c2_cause_b'
         }
       ],
       nodes: new Map(
         Object.entries({
-          b: { key: 'b', label: 'badness' },
+          b: { key: 'b', label: 'badness', annotation: 'UDE' },
           c1: { key: 'c1', label: 'cause 1' },
-          c2: { key: 'c2', label: 'cause 2' }
+          c2: { key: 'c2', label: 'cause 2' },
+          c1_c2_cause_b: {
+            intermediate: true,
+            key: 'c1_c2_cause_b',
+            label: 'AND'
+          }
         })
       )
     }

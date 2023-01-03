@@ -4,7 +4,16 @@ import React from "react"
 import * as d3 from "d3"
 import * as dagreD3 from "dagre-d3-es"
 import { computeResizeTransform, wrapLines } from "./util"
-import { TreeSemantics } from "./interpreter"
+import { TreeSemantics, Node } from "./interpreter"
+
+interface DagreNodeProps {
+  // See docs https://github.com/dagrejs/dagre/wiki
+  width?: number
+  height?: number
+  label: string
+  style: string
+  labelStyle: string
+}
 
 // functional component Tree with prop ast
 export default function Tree ({
@@ -24,7 +33,7 @@ export default function Tree ({
   g.setGraph({})
 
   g.graph().rankdir = semantics.rankdir
-  g.graph().ranksep = 30
+  g.graph().ranksep = 15 // Effectively 30 because we double on non-intermediate edges
   g.graph().nodesep = 20
 
   // Default to assigning a new object as a label for each new edge.
@@ -34,27 +43,34 @@ export default function Tree ({
 
   // The shapes are rect, circle, ellipse, diamond.
   const createNode = ({
-    key,
-    label,
-    shape,
+    node,
     statusPercentage
   }: {
-    key: string
-    label: string
-    shape: string
+    node: Node
     statusPercentage: number | undefined
   }) => {
     // Transform gives more space for the label
-    const styleCommon = "stroke: black; stroke-width: 1px; rx: 5px; ry: 5px;"
+
     const fontFamily = '"trebuchet ms",verdana,arial,sans-serif'
-    const fontStyle = `font: 300 16px, ${fontFamily};`
+    const fontSize = node.intermediate ? 7 : 13
+    const fontStyle = node.intermediate
+      ? `font: bold ${fontSize}px ${fontFamily};`
+      : `font: 300 ${fontSize}px ${fontFamily};`
+    const shape = node.intermediate ? "ellipse" : "rect"
+    const styleCommon =
+      shape === "rect"
+        ? "stroke: black; stroke-width: 1px; rx: 5px; ry: 5px;"
+        : "stroke: black; stroke-width: 1px;"
     const config = {
-      label: wrapLines(label, 20).join("\n"),
-      // width: 70,
-      // height: 60,
+      label: wrapLines(node.label, 20).join("\n"),
       shape,
       style: `${styleCommon} fill:#dff8ff;`, // Blue
-      labelStyle: fontStyle + "fill: black; margin: 5px;"
+      labelStyle: fontStyle + "fill: black;"
+    } as DagreNodeProps
+    if (node.intermediate) {
+      config.width = 5
+      config.height = 5
+      config.style = `${styleCommon} fill:white;` // Blue
     }
     if (statusPercentage !== undefined) {
       if (statusPercentage >= 70) {
@@ -71,17 +87,21 @@ export default function Tree ({
       }
     }
 
-    console.log("creating node ", key)
-    g.setNode(key, config)
+    console.log("creating node ", node.key)
+    g.setNode(node.key, config)
   }
   const createEdge = ({ from, to }) => {
+    const connectsIntermediate =
+      semantics.nodes.get(from)?.intermediate ||
+      semantics.nodes.get(to)?.intermediate
     g.setEdge(from, to, {
       curve: d3.curveBasis,
-      style: "stroke: gray; fill:none; stroke-width: 1px;"
-      // minlen: 1,
+      style: "stroke: gray; fill:none; stroke-width: 1px;",
+      minlen: connectsIntermediate ? 1 : 2
       // arrowheadStyle: "fill: gray"
     })
   }
+  const { nodes, edges } = semantics
   React.useEffect(() => {
     // Run after React render
     const svg = d3.select("svg")
@@ -97,31 +117,100 @@ export default function Tree ({
     render(inner, g)
     inner.attr(
       "transform",
-      computeResizeTransform(inner.node(), container.node(), 10, 10) +
-        ", translate(10, 10)"
+      computeResizeTransform(inner.node(), container.node(), 13, 13) +
+        ", translate(13, 13)"
     )
-
-    inner
-      .selectAll("g.node")
-      .attr("title", (v) => {
+    const radius = 10
+    // cleanup previous annotations
+    inner.selectAll("g.node .annotation-circle").remove()
+    inner.selectAll("g.node .annotation-label").remove()
+    const nodeSelector = inner.selectAll("g.node").filter(function (v) {
+      return nodes.get(v)?.annotation
+    })
+    nodeSelector
+      .append("circle")
+      .attr("class", "annotation-circle")
+      .attr("cx", function () {
+        const elem = this.parentNode
+        console.log("elem", elem)
+        const rectElem = elem.getElementsByTagName("rect")[0]
+        if (!rectElem) {
+          return 0
+        }
+        const width = rectElem.width.baseVal.value
+        return -width / 2
+      })
+      .attr("cy", function () {
+        const elem = this.parentNode
+        console.log("elem", elem)
+        const rectElem = elem.getElementsByTagName("rect")[0]
+        if (!rectElem) {
+          return 0
+        }
+        const height = rectElem.height.baseVal.value
+        return -height / 2
+      })
+      .attr("r", radius)
+      .style("fill", "white")
+      .style("stroke", "black")
+      .style("stroke-width", "1px")
+    const labelFontSize = (text): number => {
+      return text && text.length < 2 ? 11 : 8
+    }
+    nodeSelector
+      .append("text")
+      .attr("class", "annotation-label")
+      .style("font-size", function () {
         return (
-          "<p class='name'>" +
-          v +
-          "</p><p class='description'> some random description </p>"
+          labelFontSize(nodes.get(this.parentNode.__data__)?.annotation) + "px"
         )
       })
-      .each(function (v) {
-        console.log("node details :", v)
+      .attr("x", function () {
+        const elem = this.parentNode
+        console.log("elem", elem)
+        const rectElem = elem.getElementsByTagName("rect")[0]
+        if (!rectElem) {
+          return 0
+        }
+        const width = rectElem.width.baseVal.value
+        return -width / 2
       })
+      .attr("y", function () {
+        const elem = this.parentNode
+        console.log("elem", elem)
+        const rectElem = elem.getElementsByTagName("rect")[0]
+        if (!rectElem) {
+          return 0
+        }
+        const height = rectElem.height.baseVal.value
+        return -height / 2 + 1.5
+      })
+      .attr("r", radius)
+      .text(function () {
+        return nodes.get(this.parentNode.__data__)?.annotation
+      })
+    // function (v) {
+    //   const elem = this;
+    //   const rectElem = elem.getElementsByTagName('rect')[0]
+    //   if (!rectElem) {
+    //     return
+    //   }
+    //   console.log("node details :", v)
+    //   console.log("rect", rectElem)
+    //   const width = rectElem.width.baseVal.value
+    //   console.log("width", width)
+    //   console.log("nodes.get(v)", nodes.get(v))
+    //   console.log("annotation", nodes.get(v)?.annotation)
+
+    //     svg.select(elem).append()
+
+    // })
   })
 
-  const { nodes, edges } = semantics
   console.log("{nodes, edges}", { nodes, edges })
   for (const [key, node] of nodes) {
     createNode({
-      key: node.key,
-      label: node.label,
-      shape: "rect",
+      node,
       statusPercentage: node.statusPercentage
     })
   }
@@ -171,6 +260,14 @@ export default function Tree ({
     // console.log("Edge " + e.v + " -> " + e.w + ": " + JSON.stringify(edge));
   }
   // drawRelation(inner, 'root', 'put', 'ttc');
+  const svgStyle = `
+  .annotation-label {
+    fill: black;
+    text-anchor: middle;
+    font-weight: bold;
+    alignment-baseline: middle;
+  }
+  `
   return (
     <div id="tree-svg-container" style={{ width: "100%", height: "500" }}>
       <svg
@@ -183,6 +280,7 @@ export default function Tree ({
         viewBox="0 0 100 100"
         xmlns="http://www.w3.org/2000/svg"
       >
+        <style>{svgStyle}</style>
         <g />
       </svg>
     </div>
