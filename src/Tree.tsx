@@ -4,6 +4,7 @@ import React from "react"
 import * as d3 from "d3"
 import * as dagreD3 from "dagre-d3-es"
 import { computeResizeTransform, wrapLines } from "./util"
+import { parseGoalTreeSemantics } from "./interpreter"
 
 // functional component Tree with prop ast
 export default function Tree ({ ast }) {
@@ -27,8 +28,13 @@ export default function Tree ({ ast }) {
   const createNode = ({
     key,
     label,
-    shape = "rect",
-    statusPercentage = null
+    shape,
+    statusPercentage
+  }: {
+    key: string
+    label: string
+    shape: string
+    statusPercentage: number | undefined
   }) => {
     // Transform gives more space for the label
     const styleCommon = "stroke: black; stroke-width: 1px; rx: 5px; ry: 5px;"
@@ -42,7 +48,7 @@ export default function Tree ({ ast }) {
       style: `${styleCommon} fill:#dff8ff;`, // Blue
       labelStyle: fontStyle + "fill: black; margin: 5px;"
     }
-    if (statusPercentage !== null) {
+    if (statusPercentage !== undefined) {
       if (statusPercentage >= 70) {
         // Green
         config.style = `${styleCommon} fill:#95f795;`
@@ -105,39 +111,21 @@ export default function Tree ({ ast }) {
     // Check for goal because it's possible for us to get the wrong diagram type
     return <div> No AST </div>
   }
-  const nodeStatusPercentage = {}
 
-  ast.statements
-    .filter((s) => s.type === "status")
-    .forEach((statement) => {
-      const nodeKey = statement.id
-      nodeStatusPercentage[nodeKey] = statement.percentage
+  const { nodes, edges } = parseGoalTreeSemantics(ast)
+  console.log("{nodes, edges}", { nodes, edges })
+  for (const [key, node] of nodes) {
+    createNode({
+      key: node.key,
+      label: node.label,
+      shape: "rect",
+      statusPercentage: node.statusPercentage
     })
+  }
 
-  createNode({ key: "goal", label: ast.goal.text })
-  ast.statements
-    .filter((s) => s.type === "CSF")
-    .forEach((statement) => {
-      createNode({ key: statement.id, label: statement.text })
-      createEdge({ from: "goal", to: statement.id })
-    })
-  ast.statements
-    .filter((s) => s.type === "NC")
-    .forEach((statement) => {
-      createNode({
-        key: statement.id,
-        label: statement.text,
-        statusPercentage: nodeStatusPercentage[statement.id]
-      })
-    })
-  ast.statements
-    .filter((s) => s.type === "requirement")
-    .forEach((statement) => {
-      const nodeKey = statement.id
-      for (const reqKey of statement.requirements) {
-        createEdge({ from: nodeKey, to: reqKey })
-      }
-    })
+  for (const edge of edges) {
+    createEdge({ from: edge.from, to: edge.to })
+  }
 
   // inner
   //   .selectAll("g.edge")

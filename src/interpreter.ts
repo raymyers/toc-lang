@@ -34,7 +34,7 @@ const parsersPromise = Promise.all([
   return { evaporatingCloud, goalTree }
 })
 
-const checkGoalTreeSemantics = (ast) => {
+export const checkGoalTreeSemantics = (ast) => {
   if (!ast) {
     throw new Error("ast is null")
   }
@@ -78,11 +78,65 @@ const checkGoalTreeSemantics = (ast) => {
   nodeIds.add("goal")
 }
 
-const parseTextToAst = async (parserType, code) => {
+export interface Node {
+  key: string
+  label: string
+  statusPercentage?: number
+}
+
+export interface Edge {
+  from: string
+  to: string
+}
+
+export const parseGoalTreeSemantics = (ast) => {
+  const nodes = new Map<string, Node>()
+  nodes.set("goal", { key: "goal", label: "" })
+  const edges = [] as Edge[]
+  if (ast.goal) {
+    nodes.get("goal")!.label = ast.goal.text
+  }
+
+  ast.statements
+    .filter((s) => s.type === "NC")
+    .forEach((statement) => {
+      nodes.set(statement.id, {
+        key: statement.id,
+        label: statement.text
+      })
+    })
+
+  ast.statements
+    .filter((s) => s.type === "CSF")
+    .forEach((statement) => {
+      nodes.set(statement.id, {
+        key: statement.id,
+        label: statement.text
+      })
+      edges.push({ from: "goal", to: statement.id })
+    })
+
+  ast.statements
+    .filter((s) => s.type === "requirement")
+    .forEach((statement) => {
+      const nodeKey = statement.id
+      for (const reqKey of statement.requirements) {
+        edges.push({ from: nodeKey, to: reqKey })
+      }
+    })
+  ast.statements
+    .filter((s) => s.type === "status")
+    .forEach((statement) => {
+      const nodeKey = statement.id
+      const node = nodes[nodeKey]
+      node.statusPercentage = statement.percentage
+    })
+  return { nodes, edges }
+}
+
+export const parseTextToAst = async (parserType, code) => {
   const parser = (await parsersPromise)[parserType]
   // handle null parser as unknown parser type
   const ast = parser.parse(code)
   return ast
 }
-
-export { parseTextToAst, checkGoalTreeSemantics }
