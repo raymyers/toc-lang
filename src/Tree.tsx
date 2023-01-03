@@ -4,18 +4,26 @@ import React from "react"
 import * as d3 from "d3"
 import * as dagreD3 from "dagre-d3-es"
 import { computeResizeTransform, wrapLines } from "./util"
-import { parseGoalTreeSemantics } from "./interpreter"
+import { TreeSemantics } from "./interpreter"
 
 // functional component Tree with prop ast
-export default function Tree ({ ast }) {
-  console.log("rendering tree with ast: ", ast)
+export default function Tree ({
+  semantics
+}: {
+  semantics: TreeSemantics | null
+}) {
+  console.log("rendering tree: ", semantics)
+  if (!semantics) {
+    // Check for goal because it's possible for us to get the wrong diagram type
+    return <div> No AST </div>
+  }
   // Create a new directed graph
   const g = new dagreD3.graphlib.Graph({ directed: true })
 
   // Set an object for the graph label
   g.setGraph({})
 
-  g.graph().rankdir = "TD"
+  g.graph().rankdir = semantics.rankdir
   g.graph().ranksep = 30
   g.graph().nodesep = 20
 
@@ -107,12 +115,7 @@ export default function Tree ({ ast }) {
       })
   })
 
-  if (!ast) {
-    // Check for goal because it's possible for us to get the wrong diagram type
-    return <div> No AST </div>
-  }
-
-  const { nodes, edges } = parseGoalTreeSemantics(ast)
+  const { nodes, edges } = semantics
   console.log("{nodes, edges}", { nodes, edges })
   for (const [key, node] of nodes) {
     createNode({

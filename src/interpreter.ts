@@ -1,6 +1,7 @@
 import peggy from "peggy"
 import goalTreeGrammarUrl from "./assets/grammars/goal-tree.peggy"
 import evaporatingCloudGrammarUrl from "./assets/grammars/evaporating-cloud.peggy"
+import problemTreeGrammarUrl from "./assets/grammars/problem-tree.peggy"
 
 const loadFile = async (url) => {
   if (process.env.NODE_ENV === "test") {
@@ -27,11 +28,18 @@ const goalTreeParserPromise = loadFile(goalTreeGrammarUrl).then(
   }
 )
 
+const problemTreeParserPromise = loadFile(problemTreeGrammarUrl).then(
+  (peggyGrammar) => {
+    return peggy.generate(peggyGrammar)
+  }
+)
+
 const parsersPromise = Promise.all([
   evaporatingCloudParserPromise,
-  goalTreeParserPromise
-]).then(([evaporatingCloud, goalTree]) => {
-  return { evaporatingCloud, goalTree }
+  goalTreeParserPromise,
+  problemTreeParserPromise
+]).then(([evaporatingCloud, goalTree, problemTree]) => {
+  return { evaporatingCloud, goalTree, problemTree }
 })
 
 export const checkGoalTreeSemantics = (ast) => {
@@ -89,7 +97,13 @@ export interface Edge {
   to: string
 }
 
-export const parseGoalTreeSemantics = (ast) => {
+export interface TreeSemantics {
+  rankdir: "LR" | "RL" | "TB" | "BT"
+  nodes: Map<string, Node>
+  edges: Edge[]
+}
+
+export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const nodes = new Map<string, Node>()
   nodes.set("goal", { key: "goal", label: "" })
   const edges = [] as Edge[]
@@ -131,7 +145,37 @@ export const parseGoalTreeSemantics = (ast) => {
       const node = nodes[nodeKey]
       node.statusPercentage = statement.percentage
     })
-  return { nodes, edges }
+  return { nodes, edges, rankdir: "TB" }
+}
+
+export const parseProblemTreeSemantics = (ast): TreeSemantics => {
+  const nodes = new Map<string, Node>()
+  const edges = [] as Edge[]
+
+  ast.statements
+    .filter((s) => s.type === "C" || s.type === "UDE" || s.type === "DE")
+    .forEach((statement) => {
+      nodes.set(statement.id, {
+        key: statement.id,
+        label: statement.text
+      })
+    })
+
+  ast.statements
+    .filter((s) => s.type === "cause")
+    .forEach((statement) => {
+      const effectKey = statement.effectId
+      for (const causeKey of statement.causes) {
+        if (!nodes.has(causeKey)) {
+          throw new Error(`Cause ${causeKey} not declared`)
+        }
+        if (!nodes.has(effectKey)) {
+          throw new Error(`Effect ${effectKey} not declared`)
+        }
+        edges.push({ from: causeKey, to: effectKey })
+      }
+    })
+  return { nodes, edges, rankdir: "BT" }
 }
 
 export const parseTextToAst = async (parserType, code) => {

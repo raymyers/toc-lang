@@ -3,7 +3,12 @@ import React from "react"
 import Tree from "./Tree"
 import Editor from "./Editor"
 import Cloud from "./Cloud"
-import { parseTextToAst, checkGoalTreeSemantics } from "./interpreter"
+import {
+  parseTextToAst,
+  parseGoalTreeSemantics,
+  parseProblemTreeSemantics,
+  TreeSemantics
+} from "./interpreter"
 
 const exampleGoalTreeText = `Goal is "Make money now and in the future"
 CSF revUp is "Generate more revenue"
@@ -40,8 +45,15 @@ C requires D', "Attend to people's needs (& let people work)"
 D conflicts with D'
 `
 
+const exampleProblemTreeText = `
+UDE bad is "Bad user experience"
+C cluttered is "Cluttered interface"
+cluttered causes bad
+`
+
 function App () {
   const [ast, setAst] = React.useState(null)
+  const [semantics, setSemantics] = React.useState<TreeSemantics | null>(null)
   const [error, setError] = React.useState("")
   const [text, setText] = React.useState(exampleEvaporatingCloudText)
   const [diagramType, setDiagramType] = React.useState("evaporatingCloud")
@@ -49,7 +61,10 @@ function App () {
     try {
       const parsed = await parseTextToAst(diagramType, value)
       if (diagramType === "goalTree") {
-        checkGoalTreeSemantics(parsed)
+        setSemantics(parseGoalTreeSemantics(parsed))
+      }
+      if (diagramType === "problemTree") {
+        setSemantics(parseProblemTreeSemantics(parsed))
       }
       console.log(parsed)
       setAst(parsed)
@@ -61,9 +76,11 @@ function App () {
   const changeDiagramType = (type) => {
     const examplesByType = {
       evaporatingCloud: exampleEvaporatingCloudText,
-      goalTree: exampleGoalTreeText
+      goalTree: exampleGoalTreeText,
+      problemTree: exampleProblemTreeText
     }
     setAst(null)
+    setSemantics(null)
     setText(examplesByType[type])
     setDiagramType(type)
     onEditorChange(examplesByType[type])
@@ -90,6 +107,15 @@ function App () {
             Goal Tree
           </button>
         </div>
+        <div className="nav-item">
+          <button
+            onClick={() => {
+              changeDiagramType("problemTree")
+            }}
+          >
+            Problem Tree
+          </button>
+        </div>
       </div>
       <div className="flex-row">
         <div className="flex-1">
@@ -103,7 +129,8 @@ function App () {
         </div>
         <div className="flex-1">
           {diagramType === "evaporatingCloud" && <Cloud ast={ast} />}
-          {diagramType === "goalTree" && <Tree ast={ast} />}
+          {diagramType === "goalTree" && <Tree semantics={semantics} />}
+          {diagramType === "problemTree" && <Tree semantics={semantics} />}
         </div>
       </div>
     </div>
