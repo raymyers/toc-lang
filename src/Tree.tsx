@@ -17,22 +17,21 @@ interface DagreNodeProps {
 
 // functional component Tree with prop ast
 export default function Tree ({
-  semantics
+  semantics,
+  setSvgElem
 }: {
   semantics: TreeSemantics | null
+  setSvgElem: (svgElem: SVGElement | null) => void
 }) {
   console.log("rendering tree: ", semantics)
-  if (!semantics) {
-    // Check for goal because it's possible for us to get the wrong diagram type
-    return <div> No AST </div>
-  }
+
   // Create a new directed graph
   const g = new dagreD3.graphlib.Graph({ directed: true })
 
   // Set an object for the graph label
   g.setGraph({})
 
-  g.graph().rankdir = semantics.rankdir
+  g.graph().rankdir = semantics?.rankdir || "TB"
   g.graph().ranksep = 15 // Effectively 30 because we double on non-intermediate edges
   g.graph().nodesep = 20
 
@@ -90,18 +89,7 @@ export default function Tree ({
     console.log("creating node ", node.key)
     g.setNode(node.key, config)
   }
-  const createEdge = ({ from, to }) => {
-    const connectsIntermediate =
-      semantics.nodes.get(from)?.intermediate ||
-      semantics.nodes.get(to)?.intermediate
-    g.setEdge(from, to, {
-      curve: d3.curveBasis,
-      style: "stroke: gray; fill:none; stroke-width: 1px;",
-      minlen: connectsIntermediate ? 1 : 2
-      // arrowheadStyle: "fill: gray"
-    })
-  }
-  const { nodes, edges } = semantics
+
   React.useEffect(() => {
     // Run after React render
     const svg = d3.select("svg")
@@ -125,7 +113,7 @@ export default function Tree ({
     inner.selectAll("g.node .annotation-circle").remove()
     inner.selectAll("g.node .annotation-label").remove()
     const nodeSelector = inner.selectAll("g.node").filter(function (v) {
-      return nodes.get(v)?.annotation
+      return semantics?.nodes.get(v)?.annotation
     })
     nodeSelector
       .append("circle")
@@ -162,7 +150,9 @@ export default function Tree ({
       .attr("class", "annotation-label")
       .style("font-size", function () {
         return (
-          labelFontSize(nodes.get(this.parentNode.__data__)?.annotation) + "px"
+          labelFontSize(
+            semantics?.nodes.get(this.parentNode.__data__)?.annotation
+          ) + "px"
         )
       })
       .attr("x", function () {
@@ -189,24 +179,24 @@ export default function Tree ({
       .text(function () {
         return nodes.get(this.parentNode.__data__)?.annotation
       })
-    // function (v) {
-    //   const elem = this;
-    //   const rectElem = elem.getElementsByTagName('rect')[0]
-    //   if (!rectElem) {
-    //     return
-    //   }
-    //   console.log("node details :", v)
-    //   console.log("rect", rectElem)
-    //   const width = rectElem.width.baseVal.value
-    //   console.log("width", width)
-    //   console.log("nodes.get(v)", nodes.get(v))
-    //   console.log("annotation", nodes.get(v)?.annotation)
-
-    //     svg.select(elem).append()
-
-    // })
-  })
-
+    setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
+  }, [semantics])
+  if (!semantics) {
+    // Check for goal because it's possible for us to get the wrong diagram type
+    return <div> No AST </div>
+  }
+  const createEdge = ({ from, to }) => {
+    const connectsIntermediate =
+      semantics.nodes.get(from)?.intermediate ||
+      semantics.nodes.get(to)?.intermediate
+    g.setEdge(from, to, {
+      curve: d3.curveBasis,
+      style: "stroke: gray; fill:none; stroke-width: 1px;",
+      minlen: connectsIntermediate ? 1 : 2
+      // arrowheadStyle: "fill: gray"
+    })
+  }
+  const { nodes, edges } = semantics
   console.log("{nodes, edges}", { nodes, edges })
   for (const [key, node] of nodes) {
     createNode({
@@ -219,47 +209,6 @@ export default function Tree ({
     createEdge({ from: edge.from, to: edge.to })
   }
 
-  // inner
-  //   .selectAll("g.edge")
-  //   .each((v) => {
-  //     console.log("edge details :", v);
-  //   });
-  // g.edges().forEach(function(e) {
-
-  // });
-
-  const drawRelation = (inner, parent, child1, child2) => {
-    const parentNode = g.node(parent)
-    console.log("Node " + parent + ": " + JSON.stringify(parentNode))
-    const midPoint = (p1, p2) => {
-      return {
-        x: p1.x + (p2.x - p1.x) / 2,
-        y: p1.y + (p2.y - p1.y) / 2
-      }
-    }
-    const distanceBetween = (p1, p2) => {
-      return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2))
-    }
-    const edgeMidPoint = (from, to) => {
-      const edge = g.edge(from, to, null)
-      const firstPoint = edge.points[0]
-      const lastPoint = edge.points[edge.points.length - 1]
-      return midPoint(firstPoint, lastPoint)
-    }
-    const p1 = edgeMidPoint(parent, child1)
-    const p2 = edgeMidPoint(parent, child2)
-    const center = midPoint(p1, p2)
-    inner
-      .append("ellipse")
-      .attr("cx", center.x)
-      .attr("cy", center.y)
-      .attr("rx", distanceBetween(p1, p2))
-      .attr("ry", 5)
-      .attr("stroke", "#000")
-      .attr("fill", "none")
-    // console.log("Edge " + e.v + " -> " + e.w + ": " + JSON.stringify(edge));
-  }
-  // drawRelation(inner, 'root', 'put', 'ttc');
   const svgStyle = `
   .annotation-label {
     fill: black;
@@ -271,6 +220,7 @@ export default function Tree ({
   return (
     <div id="tree-svg-container" style={{ width: "100%", height: "500" }}>
       <svg
+        id="treeSvg"
         width="100%"
         height="100%"
         // style={{ width: "inherit", height: "100%" }}

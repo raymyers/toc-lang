@@ -1,14 +1,15 @@
 import "./App.css"
 import React from "react"
-import Tree from "./Tree"
+
 import Editor from "./Editor"
-import Cloud from "./Cloud"
+
 import {
   parseTextToAst,
   parseGoalTreeSemantics,
   parseProblemTreeSemantics,
   TreeSemantics
 } from "./interpreter"
+import { Diagram } from "./Diagram"
 
 const exampleGoalTreeText = `Goal is "Make money now and in the future"
 CSF revUp is "Generate more revenue"
@@ -79,19 +80,19 @@ function App () {
       setError(e.toString())
     }
   }
-  const changeDiagramType = (type) => {
+  const changeDiagramType = async (type) => {
+    setAst(null)
+    setSemantics(null)
+
+    setDiagramType(type)
     const examplesByType = {
       evaporatingCloud: exampleEvaporatingCloudText,
       goalTree: exampleGoalTreeText,
       problemTree: exampleProblemTreeText
     }
-    setAst(null)
-    setSemantics(null)
     setText(examplesByType[type])
-    setDiagramType(type)
-    onEditorChange(examplesByType[type])
+    // onEditorChange(examplesByType[type])
   }
-
   return (
     <div className="App">
       <div className="flex-row nav">
@@ -134,9 +135,7 @@ function App () {
           />
         </div>
         <div className="flex-1">
-          {diagramType === "evaporatingCloud" && <Cloud ast={ast} />}
-          {diagramType === "goalTree" && <Tree semantics={semantics} />}
-          {diagramType === "problemTree" && <Tree semantics={semantics} />}
+          <Diagram ast={ast} semantics={semantics} diagramType={diagramType} />
         </div>
       </div>
     </div>

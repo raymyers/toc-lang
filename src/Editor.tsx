@@ -34,9 +34,8 @@ export const Editor = ({
   error
 }) => {
   React.useEffect(() => {
-    // Run once.
     onChange(text)
-  }, [])
+  }, [text])
   const handleChange = (event) => {
     setText(event.target.value)
     // Call the onChange function with the new text, debounced by 500ms
