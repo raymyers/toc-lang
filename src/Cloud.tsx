@@ -12,7 +12,7 @@ const intermediatePoint = (start, end, distance) => {
   }
 }
 
-const CloudNode = ({ text, x, y, width, height }) => {
+const CloudNode = ({ text, x, y, width, height, annotation }) => {
   const lines = wrapLines(text, 20)
   const lineHeight = 16
   const textMargin = 12
@@ -30,6 +30,15 @@ const CloudNode = ({ text, x, y, width, height }) => {
             </tspan>
           )
         })}
+      </text>
+      <circle
+        cx={x}
+        cy={y}
+        r="10"
+        style={{ fill: "white", stroke: "black", strokeWidth: "2px" }}
+      ></circle>
+      <text x={x - 4} y={y + 4}>
+        {annotation}
       </text>
     </>
   )
@@ -91,11 +100,11 @@ const Injection = ({ text, edge, dx, dy }) => {
 export default function Cloud ({ ast }) {
   const [downloadUrl, setDownloadUrl] = React.useState<string | null>(null)
   const nodeLabels = {
-    A: "A",
-    B: "B",
-    C: "C",
-    D: "D",
-    "D'": "D'"
+    A: "",
+    B: "",
+    C: "",
+    D: "",
+    "D'": ""
   }
   const injections = new Map<string, string>()
   if (ast) {
@@ -160,7 +169,7 @@ export default function Cloud ({ ast }) {
     const svgContainer = document.getElementById("cloudSvgContainer")
     g?.setAttribute(
       "transform",
-      computeResizeTransform(g, svgContainer, 10, 0) + ", translate(-20, 0)"
+      computeResizeTransform(g, svgContainer, 10, 0) + ", translate(-10, 0)"
     )
     setDownloadUrl(saveSvgUrl(document.getElementById("cloudSvg")))
   }, [ast])
@@ -171,6 +180,9 @@ export default function Cloud ({ ast }) {
   }
   svg text {
     fill: black;
+  }
+  svg text.annotation {
+    font-weight: bold;
   }
   svg rect {
     fill: white;
@@ -238,6 +250,7 @@ export default function Cloud ({ ast }) {
             </marker>
           </defs>
           <CloudNode
+            annotation={"A"}
             text={nodeLabels.A}
             x={nodeA.x}
             y={nodeA.y}
@@ -245,6 +258,7 @@ export default function Cloud ({ ast }) {
             height={nodeHeight}
           />
           <CloudNode
+            annotation={"B"}
             text={nodeLabels.B}
             x={nodeB.x}
             y={nodeB.y}
@@ -252,6 +266,7 @@ export default function Cloud ({ ast }) {
             height={nodeHeight}
           />
           <CloudNode
+            annotation={"C"}
             text={nodeLabels.C}
             x={nodeC.x}
             y={nodeC.y}
@@ -259,6 +274,7 @@ export default function Cloud ({ ast }) {
             height={nodeHeight}
           />
           <CloudNode
+            annotation={"D"}
             text={nodeLabels.D}
             x={nodeD.x}
             y={nodeD.y}
@@ -266,6 +282,7 @@ export default function Cloud ({ ast }) {
             height={nodeHeight}
           />
           <CloudNode
+            annotation={"D'"}
             text={nodeLabels["D'"]}
             x={nodeDp.x}
             y={nodeDp.y}
