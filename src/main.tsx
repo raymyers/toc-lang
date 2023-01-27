@@ -1,6 +1,5 @@
 import React from "react"
-import { BrowserRouter } from "react-router-dom"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom"
 import ReactDOM from "react-dom/client"
 import App from "./App"
 import "./index.css"
@@ -14,7 +13,12 @@ const router = createBrowserRouter(
       path: "/",
       element: <App />,
       errorElement: <ErrorPage />,
+
       children: [
+        {
+          index: true,
+          loader: async () => redirect("/draw/goal-tree")
+        },
         {
           path: "draw/:diagramType",
           element: <Draw />,

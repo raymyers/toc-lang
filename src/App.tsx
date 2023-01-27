@@ -1,6 +1,6 @@
 import "./App.css"
 import React from "react"
-import { Link, Outlet, NavLink } from "react-router-dom"
+import { Outlet, NavLink } from "react-router-dom"
 
 const navLinkClass = ({ isActive, isPending }) =>
   isActive ? "active" : isPending ? "pending" : ""
