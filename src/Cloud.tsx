@@ -97,7 +97,7 @@ const Injection = ({ text, edge, dx, dy }) => {
   )
 }
 
-export default function Cloud ({
+export default function Cloud({
   ast,
   setSvgElem
 }: {
@@ -323,9 +323,9 @@ export default function Cloud ({
     </div>
   )
 }
-function createEdge (
-  startNode: { x: number, y: number, h: number, w: number },
-  endNode: { x: number, y: number, h: number, w: number }
+function createEdge(
+  startNode: { x: number; y: number; h: number; w: number },
+  endNode: { x: number; y: number; h: number; w: number }
 ) {
   const edge = {
     start: {
@@ -342,7 +342,7 @@ function createEdge (
   return edge
 }
 
-function nodeBottomCenterPont (node: {
+function nodeBottomCenterPont(node: {
   x: number
   y: number
   w: number
@@ -354,7 +354,7 @@ function nodeBottomCenterPont (node: {
   }
 }
 
-function nodeTopCenterPont (node: {
+function nodeTopCenterPont(node: {
   x: number
   y: number
   w: number
@@ -365,9 +365,9 @@ function nodeTopCenterPont (node: {
     y: node.y
   }
 }
-function midPoint (
-  start: { x: number, y: number },
-  end: { x: number, y: number }
+function midPoint(
+  start: { x: number; y: number },
+  end: { x: number; y: number }
 ) {
   return {
     x: (start.x + end.x) / 2,
@@ -375,8 +375,8 @@ function midPoint (
   }
 }
 
-function displacePoint (
-  point: { x: number, y: number },
+function displacePoint(
+  point: { x: number; y: number },
   xDelta: number,
   yDelta: number
 ) {

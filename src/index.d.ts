@@ -1,1 +1,1 @@
-declare module "*.peggy";
+declare module "*.peggy"

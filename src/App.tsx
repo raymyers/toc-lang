@@ -58,7 +58,7 @@ C features is "Many features added"
 ux and features cause cluttered
 `
 
-function App () {
+function App() {
   const [ast, setAst] = React.useState(null)
   const [semantics, setSemantics] = React.useState<TreeSemantics | null>(null)
   const [error, setError] = React.useState("")

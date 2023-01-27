@@ -16,7 +16,7 @@ interface DagreNodeProps {
 }
 
 // functional component Tree with prop ast
-export default function Tree ({
+export default function Tree({
   semantics,
   setSvgElem
 }: {

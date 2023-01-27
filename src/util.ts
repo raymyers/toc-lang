@@ -16,7 +16,7 @@ export const wrapLines = (str, width) => {
   return lines
 }
 
-export function computeResizeTransform (gNode: any, container: any, padX, padY) {
+export function computeResizeTransform(gNode: any, container: any, padX, padY) {
   const bbox = gNode.getBBox({ stroke: true, fill: true, markers: true })
   const boundingWidth = bbox.width + padX
   const boundingHeight = bbox.height + padY
@@ -32,7 +32,7 @@ export function computeResizeTransform (gNode: any, container: any, padX, padY) 
   return `scale(${zoomScale},${zoomScale})`
 }
 
-export function saveSvgUrl (svgEl) {
+export function saveSvgUrl(svgEl) {
   // https://stackoverflow.com/questions/23218174/how-do-i-save-export-an-svg-file-after-creating-an-svg-with-d3-js-ie-safari-an
   // Assume xmlns is set.
   // svgEl.setAttribute("xmlns", "http://www.w3.org/2000/svg");

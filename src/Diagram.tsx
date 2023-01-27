@@ -3,7 +3,7 @@ import Cloud from "./Cloud"
 import Tree from "./Tree"
 import { saveSvgUrl } from "./util"
 
-export function Diagram ({ ast, semantics, diagramType }) {
+export function Diagram({ ast, semantics, diagramType }) {
   const [downloadUrl, setDownloadUrl] = React.useState<string | null>(null)
   const setSvgElem = (svgElem: SVGElement | null) => {
     if (svgElem) {
