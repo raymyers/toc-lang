@@ -40,7 +40,11 @@ const parsersPromise = Promise.all([
   goalTreeParserPromise,
   problemTreeParserPromise
 ]).then(([evaporatingCloud, goalTree, problemTree]) => {
-  return { evaporatingCloud, goalTree, problemTree }
+  return {
+    "evaporating-cloud": evaporatingCloud,
+    "goal-tree": goalTree,
+    "problem-tree": problemTree
+  }
 })
 
 export const checkGoalTreeSemantics = (ast) => {

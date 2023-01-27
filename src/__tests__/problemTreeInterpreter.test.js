@@ -117,7 +117,7 @@ describe("problem tree interpreter", () => {
   describe("parses ast for input", () => {
     testCases.forEach((testCase) => {
       it(testCase.name, async () => {
-        const ast = await parseTextToAst("problemTree", testCase.text)
+        const ast = await parseTextToAst("problem-tree", testCase.text)
         expect(ast).toStrictEqual(testCase.expectedAst)
         expect(parseProblemTreeSemantics(ast)).toStrictEqual(
           testCase.expectedSemantics
@@ -138,7 +138,7 @@ describe("problem tree interpreter", () => {
           { causes: ["c"], type: "cause", effectId: "d" }
         ]
       }
-      const ast = await parseTextToAst("problemTree", text)
+      const ast = await parseTextToAst("problem-tree", text)
       expect(ast).toStrictEqual(expected)
       expect(() => parseProblemTreeSemantics(ast)).toThrowError()
     })

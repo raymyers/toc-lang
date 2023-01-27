@@ -8,7 +8,7 @@ describe("evaporating cloud tree interpreter", () => {
       const expected = {
         statements: []
       }
-      expect(await parseTextToAst("evaporatingCloud", text)).toStrictEqual(
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
         expected
       )
     })
@@ -50,7 +50,7 @@ D' is "Attend to people's needs (& let people work)"
           }
         ]
       }
-      expect(await parseTextToAst("evaporatingCloud", text)).toStrictEqual(
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
         expected
       )
     })
@@ -75,7 +75,7 @@ A requires B, "Subordinate all decisions to the financial goal"
           }
         ]
       }
-      expect(await parseTextToAst("evaporatingCloud", text)).toStrictEqual(
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
         expected
       )
     })
@@ -104,7 +104,7 @@ inject "Psychological flow triggers"
           }
         ]
       }
-      expect(await parseTextToAst("evaporatingCloud", text)).toStrictEqual(
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
         expected
       )
     })
@@ -127,7 +127,7 @@ inject "Discover they don't conflict"
           }
         ]
       }
-      expect(await parseTextToAst("evaporatingCloud", text)).toStrictEqual(
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
         expected
       )
     })
@@ -143,7 +143,7 @@ inject "Discover they don't conflict"
           }
         ]
       }
-      expect(await parseTextToAst("evaporatingCloud", text)).toStrictEqual(
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
         expected
       )
     })

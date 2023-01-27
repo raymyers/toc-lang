@@ -1,7 +1,7 @@
 
 # TOC-Lang
 
-Generate Theory of Constraints diagrams from a text-based notation.
+Generate Theory of Constraints diagrams from text-based notation.
 
 Currently experimental, [feedback](https://github.com/raymyers/toc-lang/issues) welcome!
 ## Demo

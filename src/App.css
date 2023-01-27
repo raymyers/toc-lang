@@ -35,10 +35,22 @@
   padding-right: 5px;
   padding-bottom: 5px;
 }
+.nav-item a.active {
+  color: inherit;
+  text-decoration: inherit;
+}
 .card {
   padding: 2em;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+#about-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2em;
 }

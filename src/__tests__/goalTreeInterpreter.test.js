@@ -9,7 +9,7 @@ describe("goal tree interpreter", () => {
         goal: { text: "win", type: "goal" },
         statements: [{ text: "win", type: "goal" }]
       }
-      expect(await parseTextToAst("goalTree", text)).toStrictEqual(expected)
+      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
     })
 
     it("with CSF and NCs", async () => {
@@ -69,7 +69,7 @@ describe("goal tree interpreter", () => {
           }
         ]
       }
-      expect(await parseTextToAst("goalTree", text)).toStrictEqual(expected)
+      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
     })
     it("single-line comments", async () => {
       const text = `
@@ -84,7 +84,7 @@ describe("goal tree interpreter", () => {
           }
         ]
       }
-      expect(await parseTextToAst("goalTree", text)).toStrictEqual(expected)
+      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
     })
   })
 })

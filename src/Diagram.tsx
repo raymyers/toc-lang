@@ -19,13 +19,13 @@ export function Diagram({ ast, semantics, diagramType }) {
           Download SVG
         </a>
       )}
-      {diagramType === "evaporatingCloud" && (
+      {diagramType === "evaporating-cloud" && (
         <Cloud ast={ast} setSvgElem={setSvgElem} />
       )}
-      {diagramType === "goalTree" && (
+      {diagramType === "goal-tree" && (
         <Tree semantics={semantics} setSvgElem={setSvgElem} />
       )}
-      {diagramType === "problemTree" && (
+      {diagramType === "problem-tree" && (
         <Tree semantics={semantics} setSvgElem={setSvgElem} />
       )}
     </div>
