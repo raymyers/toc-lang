@@ -130,7 +130,7 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
         label: statement.text,
         annotation: statement.type
       })
-      edges.push({ from: "goal", to: statement.id })
+      edges.push({ from: statement.id, to: "goal" })
     })
 
   ast.statements
@@ -144,7 +144,7 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
         if (!nodes.has(reqKey)) {
           throw new Error(`Requirement ${reqKey} not found`)
         }
-        edges.push({ from: nodeKey, to: reqKey })
+        edges.push({ from: reqKey, to: nodeKey })
       }
     })
   ast.statements
@@ -158,7 +158,7 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
 
       node.statusPercentage = statement.percentage
     })
-  return { nodes, edges, rankdir: "TB" }
+  return { nodes, edges, rankdir: "BT" }
 }
 
 export const parseProblemTreeSemantics = (ast): TreeSemantics => {
