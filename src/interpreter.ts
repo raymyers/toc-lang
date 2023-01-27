@@ -9,7 +9,8 @@ const loadFile = async (url) => {
     const fs = require("fs")
     // project root
     const root = process.cwd()
-    return fs.readFileSync(root + url, "utf8")
+    const urlSubPath = url.replace(/^\/toc-lang/, "")
+    return fs.readFileSync(root + urlSubPath, "utf8")
   } else {
     const response = await fetch(url)
     return await response.text()
