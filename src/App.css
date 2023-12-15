@@ -4,6 +4,15 @@
   padding: 2rem;
   text-align: center;
 }
+:root {
+  --color-text: black;
+  --color-background: white;
+}
+
+body, textarea {
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
 
 .logo {
   height: 6em;
