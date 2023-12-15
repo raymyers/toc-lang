@@ -22,7 +22,7 @@ const router = createBrowserRouter(
         {
           path: "draw/:diagramType",
           element: <Draw />,
-          loader: loader
+          loader
         },
         {
           path: "about",

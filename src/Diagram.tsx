@@ -3,6 +3,8 @@ import Cloud from "./Cloud"
 import Tree from "./Tree"
 import { saveSvgUrl } from "./util"
 
+/* eslint react/prop-types: 0 */
+
 export function Diagram({ ast, semantics, diagramType }) {
   const [downloadUrl, setDownloadUrl] = React.useState<string | null>(null)
   const setSvgElem = (svgElem: SVGElement | null) => {

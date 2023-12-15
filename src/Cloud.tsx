@@ -1,6 +1,8 @@
 import React from "react"
 import { computeResizeTransform, wrapLines } from "./util"
 
+/* eslint react/prop-types: 0 */
+
 const intermediatePoint = (start, end, distance) => {
   const dx = end.x - start.x
   const dy = end.y - start.y
@@ -57,8 +59,11 @@ const CloudEdge = ({ edge }) => {
     />
   )
 }
-
-const Injection = ({ text, edge, dx, dy }) => {
+interface Edge {
+  start: xy
+  end: xy
+}
+const Injection = ({ text, edge, dx, dy }: { text: string, edge: Edge, dx: number, dy: number }) => {
   if (!text) {
     return <></>
   }
@@ -365,10 +370,13 @@ function nodeTopCenterPont(node: {
     y: node.y
   }
 }
+
+interface xy { x: number; y: number; }
+
 function midPoint(
   start: { x: number; y: number },
   end: { x: number; y: number }
-) {
+): xy {
   return {
     x: (start.x + end.x) / 2,
     y: (start.y + end.y) / 2

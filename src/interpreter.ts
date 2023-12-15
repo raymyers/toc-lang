@@ -3,9 +3,12 @@ import goalTreeGrammarUrl from "./assets/grammars/goal-tree.peggy"
 import evaporatingCloudGrammarUrl from "./assets/grammars/evaporating-cloud.peggy"
 import problemTreeGrammarUrl from "./assets/grammars/problem-tree.peggy"
 
+/* eslint @typescript-eslint/no-unsafe-argument: 0 */
+
 const loadFile = async (url) => {
   if (process.env.NODE_ENV === "test") {
     // Load the file from the filesystem
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const fs = require("fs")
     // project root
     const root = process.cwd()
@@ -57,18 +60,18 @@ export const checkGoalTreeSemantics = (ast) => {
   const nodeIds = new Set()
   const csfNodeIds = new Set()
   ast.statements
-    .filter((statement) => statement.type == "NC" || statement.type == "CSF")
+    .filter((statement) => statement.type === "NC" || statement.type === "CSF")
     .forEach((statement) => {
       if (nodeIds.has(statement.id)) {
         throw new Error(`Duplicate node id: ${statement.id}`)
       }
       nodeIds.add(statement.id)
-      if (statement.type == "CSF") {
+      if (statement.type === "CSF") {
         csfNodeIds.add(statement.id)
       }
     })
   ast.statements
-    .filter((statement) => statement.type == "requirement")
+    .filter((statement) => statement.type === "requirement")
     .forEach((statement) => {
       const nodeId = statement.id
       if (!nodeIds.has(nodeId)) {
@@ -115,6 +118,7 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   nodes.set("goal", { key: "goal", label: "", annotation: "G" })
   const edges = [] as Edge[]
   if (ast.goal) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     nodes.get("goal")!.label = ast.goal.text
   }
 

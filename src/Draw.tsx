@@ -7,7 +7,7 @@ import {
   parseTextToAst,
   parseGoalTreeSemantics,
   parseProblemTreeSemantics,
-  TreeSemantics
+  type TreeSemantics
 } from "./interpreter"
 const exampleGoalTreeText = `Goal is "Make money now and in the future"
 CSF revUp is "Generate more revenue"
@@ -69,13 +69,18 @@ export async function loader({ params }) {
   }
 }
 
+interface loadedExample {
+  diagramType: string
+  example: string
+}
+
 function Draw() {
-  const { diagramType, example } = useLoaderData() as any
+  const { diagramType, example } = useLoaderData() as loadedExample
   console.log("diagramType", diagramType)
-  const [ast, setAst] = React.useState(null)
+  const [ast, setAst] = React.useState<any>(null)
   const [semantics, setSemantics] = React.useState<TreeSemantics | null>(null)
   const [error, setError] = React.useState("")
-  const [text, setText] = React.useState()
+  const [text, setText] = React.useState<string>()
   React.useEffect(() => {
     setText(example)
   }, [diagramType])
@@ -95,7 +100,7 @@ function Draw() {
       setError("")
     } catch (e) {
       console.error(e)
-      setError(e.toString())
+      setError(e.toString() as string)
     }
   }
   //   const changeDiagramType = async (type) => {

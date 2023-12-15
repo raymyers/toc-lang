@@ -4,7 +4,7 @@ import React from "react"
 import * as d3 from "d3"
 import * as dagreD3 from "dagre-d3-es"
 import { computeResizeTransform, wrapLines } from "./util"
-import { TreeSemantics, Node } from "./interpreter"
+import { type TreeSemantics, type Node } from "./interpreter"
 
 interface DagreNodeProps {
   // See docs https://github.com/dagrejs/dagre/wiki
@@ -13,6 +13,7 @@ interface DagreNodeProps {
   label: string
   style: string
   labelStyle: string
+  shape: string
 }
 
 // functional component Tree with prop ast
@@ -31,7 +32,7 @@ export default function Tree({
   // Set an object for the graph label
   g.setGraph({})
 
-  g.graph().rankdir = semantics?.rankdir || "TB"
+  g.graph().rankdir = semantics?.rankdir ?? "TB"
   g.graph().ranksep = 15 // Effectively 30 because we double on non-intermediate edges
   g.graph().nodesep = 20
 
@@ -60,12 +61,12 @@ export default function Tree({
       shape === "rect"
         ? "stroke: black; stroke-width: 1px; rx: 5px; ry: 5px;"
         : "stroke: black; stroke-width: 1px;"
-    const config = {
+    const config: DagreNodeProps = {
       label: wrapLines(node.label, 20).join("\n"),
       shape,
       style: `${styleCommon} fill:#dff8ff;`, // Blue
       labelStyle: fontStyle + "fill: black;"
-    } as DagreNodeProps
+    }
     if (node.intermediate) {
       config.width = 5
       config.height = 5
@@ -98,7 +99,7 @@ export default function Tree({
     // Create the renderer
     const render = dagreD3.render()
     const container = d3.select("#tree-svg-container")
-    if (!container || !container.node()) {
+    if (!container?.node()) {
       return
     }
     // Run the renderer. This is what draws the final graph.

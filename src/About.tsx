@@ -1,7 +1,7 @@
 import "./App.css"
 import React from "react"
 
-export function About({}) {
+export function About(params) {
   return (
     <div id="about-page">
       <h1>TOC-Lang</h1>

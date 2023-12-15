@@ -1,15 +1,17 @@
 import React from "react"
 
-const debounce = (func, wait) => {
-  let timeout
-  return (...args) => {
-    const later = () => {
-      func(...args)
-    }
-    clearTimeout(timeout)
-    timeout = setTimeout(later, wait)
-  }
-}
+/* eslint react/prop-types: 0 */
+
+// const debounce = (func, wait) => {
+//   let timeout
+//   return (...args) => {
+//     const later = () => {
+//       func(...args)
+//     }
+//     clearTimeout(timeout)
+//     timeout = setTimeout(later, wait)
+//   }
+// }
 
 // React functional component to edit text and make the result available to the parent
 
@@ -39,6 +41,7 @@ export const Editor = ({
   const handleChange = (event) => {
     setText(event.target.value)
     // Call the onChange function with the new text, debounced by 500ms
+    // At some point we disabled debounce... why?
     // debounce(onChange, 500)(event.target.value);
     onChange(event.target.value)
   }
