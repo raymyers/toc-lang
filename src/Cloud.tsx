@@ -63,7 +63,17 @@ interface Edge {
   start: xy
   end: xy
 }
-const Injection = ({ text, edge, dx, dy }: { text: string, edge: Edge, dx: number, dy: number }) => {
+const Injection = ({
+  text,
+  edge,
+  dx,
+  dy
+}: {
+  text: string
+  edge: Edge
+  dx: number
+  dy: number
+}) => {
   if (!text) {
     return <></>
   }
@@ -371,7 +381,10 @@ function nodeTopCenterPont(node: {
   }
 }
 
-interface xy { x: number; y: number; }
+interface xy {
+  x: number
+  y: number
+}
 
 function midPoint(
   start: { x: number; y: number },
