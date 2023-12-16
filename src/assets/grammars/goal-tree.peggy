@@ -25,7 +25,7 @@ commentLine = _ "#" text:([^\n\r]*)
   };
 }
 
-nodeStatement = _ ident:ident _ ':' _ text:label
+nodeStatement = _ ident:ident _ ':' _ text:label _ params:nodeParams?
   {
     const lowerId = ident.toLowerCase();
     const nodeType = 'goal' === lowerId ? 'goal' : lowerId.startsWith('csf_') ? 'csf' : 'nc';
@@ -33,9 +33,20 @@ nodeStatement = _ ident:ident _ ':' _ text:label
       type: "node",
       nodeType: nodeType,
       id: ident,
-      text: text
+      text: text,
+      params: params || {}
     };
   }
+  
+nodeParams = "{" nodeParam:nodeParam moreNodeParams:(EOL @nodeParam)* ','? "}" 
+{
+	return Object.fromEntries([nodeParam, ...moreNodeParams]);
+}
+
+nodeParam = _ EOL? _ ident:ident _ ':' _ expression:expression _ EOL? _
+{
+	return [ident, expression];
+}
 edgeStatement = _ toId:ident _ '<-' _ fromId:ident
   {
     return {
@@ -59,6 +70,9 @@ requirements
   {
     return [ident, ...tail];
   }
+
+expression = text:string / num:([0-9]+)
+{ return num !== undefined ? parseInt(num.join("")) : text.join(""); }
 
 ident = id:([a-zA-Z0-9_]+)
 { return id.join(""); }

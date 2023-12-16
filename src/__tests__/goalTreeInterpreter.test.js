@@ -12,9 +12,21 @@ describe("goal tree interpreter", () => {
     it("with only goal", async () => {
       const text = 'goal: "win"'
       const expected = {
-        goal: { text: "win", type: "node", nodeType: "goal", id: "goal" },
+        goal: {
+          text: "win",
+          type: "node",
+          nodeType: "goal",
+          id: "goal",
+          params: {}
+        },
         statements: [
-          { text: "win", type: "node", nodeType: "goal", id: "goal" }
+          {
+            text: "win",
+            type: "node",
+            nodeType: "goal",
+            id: "goal",
+            params: {}
+          }
         ]
       }
       expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
@@ -40,44 +52,51 @@ describe("goal tree interpreter", () => {
           id: "Goal",
           text: "win",
           type: "node",
-          nodeType: "goal"
+          nodeType: "goal",
+          params: {}
         },
         statements: [
           {
             id: "Goal",
             text: "win",
             type: "node",
-            nodeType: "goal"
+            nodeType: "goal",
+            params: {}
           },
           {
             id: "CSF_weScore",
             text: "We score points",
             type: "node",
-            nodeType: "csf"
+            nodeType: "csf",
+            params: {}
           },
           {
             id: "CSF_theyDont",
             text: "Other team doesn't score",
             type: "node",
-            nodeType: "csf"
+            nodeType: "csf",
+            params: {}
           },
           {
             id: "possession",
             text: "We get the ball",
             type: "node",
-            nodeType: "nc"
+            nodeType: "nc",
+            params: {}
           },
           {
             id: "shooting",
             text: "We shoot the ball accurately",
             type: "node",
-            nodeType: "nc"
+            nodeType: "nc",
+            params: {}
           },
           {
             id: "defense",
             text: "We have good defense",
             type: "node",
-            nodeType: "nc"
+            nodeType: "nc",
+            params: {}
           },
           {
             toId: "CSF_theyDont",
@@ -93,6 +112,26 @@ describe("goal tree interpreter", () => {
             toId: "CSF_weScore",
             fromId: "shooting",
             type: "edge"
+          }
+        ]
+      }
+      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
+    })
+    it("node status", async () => {
+      const text = `
+        mynode: "win" {
+          status: 50
+        }
+      `
+      const expected = {
+        goal: null,
+        statements: [
+          {
+            text: "win",
+            type: "node",
+            nodeType: "nc",
+            id: "mynode",
+            params: { status: 50 }
           }
         ]
       }

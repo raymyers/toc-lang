@@ -4,8 +4,12 @@ CSF_devFriendly: "Thinking Processes are Dev Friendly"
 openTool: "Open source tooling"
 wellFormed: "It is easy to create well-formed diagrams"
 
-versioning: "Diagrams can be version controlled with source code"
-textRep: "Diagrams have a textual representation"
+versioning: "Diagrams can be version controlled with source code" {
+   status: 50
+}
+textRep: "Diagrams have a textual representation" {
+   status: 50
+}
 
 CSF_devFriendly <- openTool
 CSF_devFriendly <- wellFormed
@@ -18,17 +22,18 @@ textRep <- ecGrammar
 textRep <- prqGrammar
 textRep <- frtGrammar
 
-gtGrammar: "Goal Tree grammar"
-ecGrammar: "Evaporating Cloud grammar"
-crtGrammar: "Current Reality Tree grammar"
-prqGrammar: "Prerequisite Tree grammar"
-frtGrammar: "Future Reality Tree grammar"
-
-gtGrammar has status 100%
-ecGrammar has status 100%
-crtGrammar has status 1%
-prqGrammar has status 1%
-frtGrammar has status 1%
-
-textRep has status 50%
-versioning has status 50%
+gtGrammar: "Goal Tree grammar" {
+    status: 100
+}
+ecGrammar: "Evaporating Cloud grammar" {
+    status: 100
+}
+crtGrammar: "Current Reality Tree grammar" {
+    status: 1
+}
+prqGrammar: "Prerequisite Tree grammar" {
+    status: 1
+}
+frtGrammar: "Future Reality Tree grammar" {
+    status: 1
+}
