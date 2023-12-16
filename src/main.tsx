@@ -39,5 +39,5 @@ if (rootResetElt) {
     <React.StrictMode>
       <RouterProvider router={router} />
     </React.StrictMode>
-  )  
+  )
 }

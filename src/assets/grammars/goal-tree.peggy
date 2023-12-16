@@ -15,7 +15,7 @@ start
   };
 }
 
-statement = commentLine / nodeStatement / edgeStatement / statusStatement
+statement = commentLine / nodeStatement / edgeStatement
 
 commentLine = _ "#" text:([^\n\r]*)
 {
@@ -56,15 +56,6 @@ edgeStatement = _ toId:ident _ '<-' _ fromId:ident
     };
   }
 
-statusStatement = _ ident:ident _ "has" _ "status" _ percentage:percentage
-  {
-    return {
-      type: "status",
-      id: ident,
-      percentage: percentage
-    };
-}
-
 requirements
   = _ ident:ident tail:(_ "and" _ @ident)*
   {
@@ -72,7 +63,7 @@ requirements
   }
 
 expression = text:string / num:([0-9]+)
-{ return num !== undefined ? parseInt(num.join("")) : text.join(""); }
+{ return num !== undefined ? makeInteger(num) : text.join(""); }
 
 ident = id:([a-zA-Z0-9_]+)
 { return id.join(""); }
@@ -82,10 +73,6 @@ label = string / text:([^{\n]*)
 
 string = "\"" text:([^"]*) "\""
 { return text.join(""); }
-
-percentage 
-    = _ digits:([0-9]+)"%" _ { return makeInteger(digits); }
-  
 
 EOL
   = [ \t]* [\n\r]+

@@ -138,6 +138,7 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   if (ast.goal) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     nodes.get("goal")!.label = ast.goal.text
+    nodes.get("goal")!.statusPercentage = ast.goal.params.status
   }
 
   ast.statements
@@ -145,7 +146,8 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     .forEach((statement) => {
       nodes.set(statement.id, {
         key: statement.id,
-        label: statement.text
+        label: statement.text,
+        statusPercentage: statement.params.status
       })
     })
 
@@ -155,7 +157,8 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
       nodes.set(statement.id, {
         key: statement.id,
         label: statement.text,
-        annotation: "CSF"
+        annotation: "CSF",
+        statusPercentage: statement.params.status
       })
       edges.push({ from: statement.id, to: "goal" })
     })
@@ -172,17 +175,6 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
         throw new Error(`Requirement ${reqKey} not found`)
       }
       edges.push({ from: reqKey, to: nodeKey })
-    })
-  ast.statements
-    .filter((s) => s.type === "status")
-    .forEach((statement) => {
-      const nodeKey = statement.id
-      const node = nodes.get(nodeKey)
-      if (!node) {
-        throw new Error(`Node ${nodeKey} not found`)
-      }
-
-      node.statusPercentage = statement.percentage
     })
   return { nodes, edges, rankdir: "BT" }
 }
