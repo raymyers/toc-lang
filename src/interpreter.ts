@@ -59,37 +59,55 @@ export const checkGoalTreeSemantics = (ast) => {
   }
   const nodeIds = new Set()
   const csfNodeIds = new Set()
+  const validTypes = ["node", "edge", "comment"]
+  const validNodeTypes = ["nc", "goal", "csf"]
+  ast.statements.forEach((statement) => {
+    if (!validTypes.includes(statement.type)) {
+      throw new Error(
+        `Invalid statement type: ${statement.type}, must be in ${validTypes}`
+      )
+    }
+    if (
+      statement.type === "node" &&
+      !validNodeTypes.includes(statement.nodeType)
+    ) {
+      throw new Error(
+        `Invalid node type: ${statement.nodeType}, must be in ${validNodeTypes}`
+      )
+    }
+  })
   ast.statements
-    .filter((statement) => statement.type === "NC" || statement.type === "CSF")
+    .filter(
+      (statement) => statement.type === "node" && statement.nodeType != "goal"
+    )
     .forEach((statement) => {
       if (nodeIds.has(statement.id)) {
         throw new Error(`Duplicate node id: ${statement.id}`)
       }
       nodeIds.add(statement.id)
-      if (statement.type === "CSF") {
+      if (statement.nodeType === "csf") {
         csfNodeIds.add(statement.id)
       }
     })
   ast.statements
-    .filter((statement) => statement.type === "requirement")
+    .filter((statement) => statement.type === "edge")
     .forEach((statement) => {
-      const nodeId = statement.id
+      const nodeId = statement.toId
       if (!nodeIds.has(nodeId)) {
         throw new Error(`Requirement ${nodeId} not found`)
       }
-      statement.requirements.forEach((reqId) => {
-        if (nodeId === reqId) {
-          throw new Error(`${nodeId} cannot require itself`)
-        }
-        if (!nodeIds.has(reqId)) {
-          throw new Error(`Requirement ${reqId} not found for node ${nodeId}`)
-        }
-        if (csfNodeIds.has(reqId)) {
-          throw new Error(
-            `${nodeId} cannot require ${reqId}, because CSFs are only required by the Goal`
-          )
-        }
-      })
+      const reqId = statement.fromId
+      if (nodeId === reqId) {
+        throw new Error(`${nodeId} cannot require itself`)
+      }
+      if (!nodeIds.has(reqId)) {
+        throw new Error(`Requirement ${reqId} not found for node ${nodeId}`)
+      }
+      if (csfNodeIds.has(reqId)) {
+        throw new Error(
+          `${nodeId} cannot require ${reqId}, because CSFs are only required by the Goal`
+        )
+      }
     })
   nodeIds.add("goal")
 }
@@ -123,7 +141,7 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   }
 
   ast.statements
-    .filter((s) => s.type === "NC")
+    .filter((s) => s.type === "node" && s.nodeType === "nc")
     .forEach((statement) => {
       nodes.set(statement.id, {
         key: statement.id,
@@ -132,29 +150,28 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     })
 
   ast.statements
-    .filter((s) => s.type === "CSF")
+    .filter((s) => s.type === "node" && s.nodeType === "csf")
     .forEach((statement) => {
       nodes.set(statement.id, {
         key: statement.id,
         label: statement.text,
-        annotation: statement.type
+        annotation: "CSF"
       })
       edges.push({ from: statement.id, to: "goal" })
     })
 
   ast.statements
-    .filter((s) => s.type === "requirement")
+    .filter((s) => s.type === "edge")
     .forEach((statement) => {
-      const nodeKey = statement.id
+      const nodeKey = statement.toId
       if (!nodes.has(nodeKey)) {
         throw new Error(`Node ${nodeKey} not found`)
       }
-      for (const reqKey of statement.requirements) {
-        if (!nodes.has(reqKey)) {
-          throw new Error(`Requirement ${reqKey} not found`)
-        }
-        edges.push({ from: reqKey, to: nodeKey })
+      const reqKey = statement.fromId
+      if (!nodes.has(reqKey)) {
+        throw new Error(`Requirement ${reqKey} not found`)
       }
+      edges.push({ from: reqKey, to: nodeKey })
     })
   ast.statements
     .filter((s) => s.type === "status")

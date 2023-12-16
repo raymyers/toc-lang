@@ -10,17 +10,12 @@ start
 {
   const statements = statement ? [statement, ...moreStatements] : moreStatements;
   return {
-    goal: statements.find(s => s.type === "goal") || null,
+    goal: statements.find(s => s.type === "node" && s.nodeType === "goal") || null,
     statements: statements
   };
 }
 
-goalStatement = "The"? _ "Goal" _ "is" _ str:string
-{
-  return {type: "goal", text: str};
-}
-
-statement = commentLine / goalStatement / CSFStatement / NCStatement / requirementStatement / statusStatement
+statement = commentLine / nodeStatement / edgeStatement / statusStatement
 
 commentLine = _ "#" text:([^\n\r]*)
 {
@@ -30,28 +25,23 @@ commentLine = _ "#" text:([^\n\r]*)
   };
 }
 
-CSFStatement = _ "CSF" _ ident:ident _ "is" _ str:string
+nodeStatement = _ ident:ident _ ':' _ text:label
   {
+    const lowerId = ident.toLowerCase();
+    const nodeType = 'goal' === lowerId ? 'goal' : lowerId.startsWith('csf_') ? 'csf' : 'nc';
     return {
-      type: "CSF",
+      type: "node",
+      nodeType: nodeType,
       id: ident,
-      text: str
+      text: text
     };
   }
-NCStatement = _ "NC" _ ident:ident _ "is" _ str:string
+edgeStatement = _ toId:ident _ '<-' _ fromId:ident
   {
     return {
-      type: "NC",
-      id: ident,
-      text: str
-    };
-  }
-requirementStatement = _ ident:ident _ "requires" _ requirements:requirements
-  {
-    return {
-      type: "requirement",
-      id: ident,
-      requirements: requirements
+      type: "edge",
+      toId: toId,
+      fromId: fromId
     };
   }
 
@@ -70,8 +60,11 @@ requirements
     return [ident, ...tail];
   }
 
-ident = id:([a-zA-Z0-9]+)
+ident = id:([a-zA-Z0-9_]+)
 { return id.join(""); }
+
+label = string / text:([^{\n]*)
+{ return text.join(""); }
 
 string = "\"" text:([^"]*) "\""
 { return text.join(""); }

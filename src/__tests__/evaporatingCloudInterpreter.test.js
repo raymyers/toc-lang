@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { parseTextToAst } from "../interpreter"
-import { exampleEvaporatingCloudText } from '../examples'
+import { exampleEvaporatingCloudText } from "../examples"
 
 describe("evaporating cloud tree interpreter", () => {
   describe("parses ast for input", () => {
@@ -98,7 +98,6 @@ D': "Attend to people's needs (& let people work)"
       )
     })
 
-
     it("with injection on requirement", async () => {
       const text = `
 A: Maximize business performance
@@ -130,28 +129,28 @@ A <- D: inject Psychological flow triggers
       )
     })
 
-//     it("with injection on conflict", async () => {
-//       const text = `
-// D conflicts with D'
-// inject "Discover they don't conflict"
-//       `
-//       const expected = {
-//         statements: [
-//           {
-//             id1: "D",
-//             id2: "D'",
-//             type: "conflict"
-//           },
-//           {
-//             text: "Discover they don't conflict",
-//             type: "inject"
-//           }
-//         ]
-//       }
-//       expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
-//         expected
-//       )
-//     })
+    //     it("with injection on conflict", async () => {
+    //       const text = `
+    // D conflicts with D'
+    // inject "Discover they don't conflict"
+    //       `
+    //       const expected = {
+    //         statements: [
+    //           {
+    //             id1: "D",
+    //             id2: "D'",
+    //             type: "conflict"
+    //           },
+    //           {
+    //             text: "Discover they don't conflict",
+    //             type: "inject"
+    //           }
+    //         ]
+    //       }
+    //       expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
+    //         expected
+    //       )
+    //     })
     it("single-line comments", async () => {
       const text = `
       # This is a comment
@@ -171,7 +170,7 @@ A <- D: inject Psychological flow triggers
   })
 
   it("parses example", async () => {
-    const text = exampleEvaporatingCloudText;
+    const text = exampleEvaporatingCloudText
     expect(await parseTextToAst("evaporating-cloud", text)).not.toBeNull()
   })
 })

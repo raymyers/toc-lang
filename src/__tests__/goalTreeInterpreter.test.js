@@ -1,71 +1,98 @@
 import { describe, expect, it } from "vitest"
-import { parseTextToAst, checkGoalTreeSemantics } from "../interpreter"
+import {
+  parseTextToAst,
+  checkGoalTreeSemantics,
+  parseGoalTreeSemantics,
+  Node
+} from "../interpreter"
+import { exampleGoalTreeText } from "../examples"
 
 describe("goal tree interpreter", () => {
   describe("parses ast for input", () => {
     it("with only goal", async () => {
-      const text = 'Goal is "win"'
+      const text = 'goal: "win"'
       const expected = {
-        goal: { text: "win", type: "goal" },
-        statements: [{ text: "win", type: "goal" }]
+        goal: { text: "win", type: "node", nodeType: "goal", id: "goal" },
+        statements: [
+          { text: "win", type: "node", nodeType: "goal", id: "goal" }
+        ]
       }
       expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
     })
 
     it("with CSF and NCs", async () => {
       const text = `
-      Goal is "win"
-      CSF weScore is "We score points"
-      CSF theyDont is "Other team doesn't score"
+      Goal: win
 
-      NC possession is "We get the ball"
-      NC shooting is "We shoot the ball accurately"
-      NC defense is "We have good defense"
+      CSF_weScore: We score points
+      CSF_theyDont: Other team doesn't score
 
-      theyDont requires defense
-      weScore requires possession and shooting
+      possession: We get the ball
+      shooting: We shoot the ball accurately
+      defense: We have good defense
+
+      CSF_theyDont <- defense
+      CSF_weScore <- possession 
+      CSF_weScore <- shooting
       `
       const expected = {
-        goal: { text: "win", type: "goal" },
+        goal: {
+          id: "Goal",
+          text: "win",
+          type: "node",
+          nodeType: "goal"
+        },
         statements: [
           {
+            id: "Goal",
             text: "win",
-            type: "goal"
+            type: "node",
+            nodeType: "goal"
           },
           {
-            id: "weScore",
+            id: "CSF_weScore",
             text: "We score points",
-            type: "CSF"
+            type: "node",
+            nodeType: "csf"
           },
           {
-            id: "theyDont",
+            id: "CSF_theyDont",
             text: "Other team doesn't score",
-            type: "CSF"
+            type: "node",
+            nodeType: "csf"
           },
           {
             id: "possession",
             text: "We get the ball",
-            type: "NC"
+            type: "node",
+            nodeType: "nc"
           },
           {
             id: "shooting",
             text: "We shoot the ball accurately",
-            type: "NC"
+            type: "node",
+            nodeType: "nc"
           },
           {
             id: "defense",
             text: "We have good defense",
-            type: "NC"
+            type: "node",
+            nodeType: "nc"
           },
           {
-            id: "theyDont",
-            requirements: ["defense"],
-            type: "requirement"
+            toId: "CSF_theyDont",
+            fromId: "defense",
+            type: "edge"
           },
           {
-            id: "weScore",
-            requirements: ["possession", "shooting"],
-            type: "requirement"
+            toId: "CSF_weScore",
+            fromId: "possession",
+            type: "edge"
+          },
+          {
+            toId: "CSF_weScore",
+            fromId: "shooting",
+            type: "edge"
           }
         ]
       }
@@ -86,5 +113,101 @@ describe("goal tree interpreter", () => {
       }
       expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
     })
+  })
+  it("parses example", async () => {
+    const text = exampleGoalTreeText
+    const ast = await parseTextToAst("goal-tree", text)
+    expect(ast).not.toBeNull()
+    checkGoalTreeSemantics(ast)
+    const semTree = parseGoalTreeSemantics(ast)
+    const expectedSemTree = {
+      edges: [
+        {
+          from: "CSF_revUp",
+          to: "goal"
+        },
+        {
+          from: "CSF_costsDown",
+          to: "goal"
+        },
+        {
+          from: "features",
+          to: "newCust"
+        },
+        {
+          from: "retain",
+          to: "features"
+        },
+        {
+          from: "newCust",
+          to: "CSF_revUp"
+        },
+        {
+          from: "keepCust",
+          to: "CSF_revUp"
+        },
+        {
+          from: "reduceInfra",
+          to: "CSF_costsDown"
+        },
+        {
+          from: "marketSalary",
+          to: "retain"
+        },
+        {
+          from: "morale",
+          to: "retain"
+        }
+      ],
+      nodes: new Map(
+        Object.entries({
+          goal: {
+            annotation: "G",
+            key: "goal",
+            label: "Make money now and in the future"
+          },
+          keepCust: {
+            key: "keepCust",
+            label: "Protect relationship with existing customers"
+          },
+          newCust: {
+            key: "newCust",
+            label: "Acquire new customers"
+          },
+          reduceInfra: {
+            key: "reduceInfra",
+            label: "Reduce infrastructure spending"
+          },
+          retain: {
+            key: "retain",
+            label: "Retain employees"
+          },
+          marketSalary: {
+            key: "marketSalary",
+            label: "Keep up with market salaries"
+          },
+          morale: {
+            key: "morale",
+            label: "Maintain employee morale"
+          },
+          features: {
+            key: "features",
+            label: "Develop new features"
+          },
+          CSF_revUp: {
+            annotation: "CSF",
+            key: "CSF_revUp",
+            label: "Generate more revenue"
+          },
+          CSF_costsDown: {
+            annotation: "CSF",
+            key: "CSF_costsDown",
+            label: "Control costs"
+          }
+        })
+      ),
+      rankdir: "BT"
+    }
+    expect(semTree).toStrictEqual(expectedSemTree)
   })
 })

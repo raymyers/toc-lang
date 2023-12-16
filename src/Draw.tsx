@@ -3,7 +3,11 @@ import React from "react"
 import { useLoaderData } from "react-router-dom"
 import Editor from "./Editor"
 import { Diagram } from "./Diagram"
-import {exampleEvaporatingCloudText, exampleGoalTreeText, exampleProblemTreeText} from './examples';
+import {
+  exampleEvaporatingCloudText,
+  exampleGoalTreeText,
+  exampleProblemTreeText
+} from "./examples"
 import {
   parseTextToAst,
   parseGoalTreeSemantics,

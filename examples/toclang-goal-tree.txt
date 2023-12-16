@@ -1,20 +1,28 @@
-Goal is "Drive adoption of TOC in software"
-CSF devFriendly is "Thinking Processes are Dev Friendly"
+Goal: "Drive adoption of TOC in software"
+CSF_devFriendly: "Thinking Processes are Dev Friendly"
 
-NC openTool is "Open source tooling"
-NC wellFormed is "It is easy to create well-formed diagrams"
+openTool: "Open source tooling"
+wellFormed: "It is easy to create well-formed diagrams"
 
-NC versioning is "Diagrams can be version controlled with source code"
-NC textRep is "Diagrams have a textual representation"
+versioning: "Diagrams can be version controlled with source code"
+textRep: "Diagrams have a textual representation"
 
-devFriendly requires openTool and wellFormed and versioning
-versioning requires textRep
-textRep requires gtGrammar and crtGrammar and ecGrammar and prqGrammar and frtGrammar
-NC gtGrammar is "Goal Tree grammar"
-NC ecGrammar is "Evaporating Cloud grammar"
-NC crtGrammar is "Current Reality Tree grammar"
-NC prqGrammar is "Prerequisite Tree grammar"
-NC frtGrammar is "Future Reality Tree grammar"
+CSF_devFriendly <- openTool
+CSF_devFriendly <- wellFormed
+CSF_devFriendly <- versioning
+versioning <- textRep
+
+textRep <- gtGrammar
+textRep <- crtGrammar
+textRep <- ecGrammar
+textRep <- prqGrammar
+textRep <- frtGrammar
+
+gtGrammar: "Goal Tree grammar"
+ecGrammar: "Evaporating Cloud grammar"
+crtGrammar: "Current Reality Tree grammar"
+prqGrammar: "Prerequisite Tree grammar"
+frtGrammar: "Future Reality Tree grammar"
 
 gtGrammar has status 100%
 ecGrammar has status 100%

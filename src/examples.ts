@@ -1,27 +1,29 @@
-export const exampleGoalTreeText = `Goal is "Make money now and in the future"
-CSF revUp is "Generate more revenue"
-CSF costsDown is "Control costs"
-NC keepCust is "Protect relationship with existing customers"
-NC newCust is "Acquire new customers"
+export const exampleGoalTreeText = `Goal: "Make money now and in the future"
+CSF_revUp: "Generate more revenue"
+CSF_costsDown: "Control costs"
+keepCust: "Protect relationship with existing customers"
+newCust: "Acquire new customers"
 
-NC reduceInfra is "Reduce infrastructure spending"
-NC retain is "Retain employees"
-NC marketSalary is "Keep up with market salaries"
+reduceInfra: "Reduce infrastructure spending"
+retain: "Retain employees"
+marketSalary: "Keep up with market salaries"
 
-NC morale is "Maintain employee morale"
-NC features is "Develop new features"
+morale: "Maintain employee morale"
+features: "Develop new features"
 
-newCust requires features
+newCust <- features
 
 # This is probably the wrong place for 'retain'
-features requires retain
+features <- retain
 
-revUp requires newCust and keepCust
-costsDown requires reduceInfra
-retain requires marketSalary and morale
+CSF_revUp <- newCust
+CSF_revUp <- keepCust
+CSF_costsDown <- reduceInfra
+retain <- marketSalary
+retain <- morale
 `
 
-export const  exampleEvaporatingCloudText = `
+export const exampleEvaporatingCloudText = `
 A: Maximize business performance
 
 B: Subordinate all decisions to the financial goal

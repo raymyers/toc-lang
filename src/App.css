@@ -9,7 +9,8 @@
   --color-background: white;
 }
 
-body, textarea {
+body,
+textarea {
   color: var(--color-text);
   background-color: var(--color-background);
 }

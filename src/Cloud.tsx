@@ -135,9 +135,10 @@ export default function Cloud({
       })
     ast.statements.forEach((statement) => {
       if (statement.type === "edgeLabel") {
-        const edgeName = statement.id1 < statement.id2 ?
-         `${statement.id1}-${statement.id2}` :
-         `${statement.id2}-${statement.id1}`; 
+        const edgeName =
+          statement.id1 < statement.id2
+            ? `${statement.id1}-${statement.id2}`
+            : `${statement.id2}-${statement.id1}`
         injections[edgeName] = statement.text
       }
     })
