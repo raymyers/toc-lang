@@ -1,10 +1,11 @@
-UDE lowAdoption is "There is low adoption of TOC methods in the software industry"
-C friction is "Existing tools introduce friction for developers"
-C closedSource is "TOC-specific tools are closed source"
-C noVersionControl is "Tools cannot be version controlled"
-FOL versionControlPreference is "Devs expect the ability to maintain docs along-side source code"
-FOL openSourcePreference is "Devs are unlikely to buy propietary diagrammers"
+UDE_lowAdoption: "There is low adoption of TOC methods in the software industry"
+friction: "Existing tools introduce friction for developers"
+closedSource: "TOC-specific tools are closed source"
+noVersionControl: "Tools cannot be version controlled"
+FOL_versionControlPreference: "Devs expect the ability to maintain docs along-side source code"
+FOL_openSourcePreference: "Devs are unlikely to buy propietary diagrammers"
 
-friction causes lowAdoption
-closedSource and openSourcePreference cause friction
-noVersionControl and versionControlPreference cause friction
+lowAdoption <- friction
+
+friction <- closedSource && openSourcePreference
+friction <- noVersionControl && versionControlPreference 
