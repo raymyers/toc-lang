@@ -1,0 +1,8 @@
+{
+  "statements": [
+    {
+      "text": " This is a comment",
+      "type": "comment"
+    }
+  ]
+}

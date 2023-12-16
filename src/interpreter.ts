@@ -182,32 +182,30 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
 export const parseProblemTreeSemantics = (ast): TreeSemantics => {
   const nodes = new Map<string, Node>()
   const edges = [] as Edge[]
-
+  const findNodeAnnotation = (id) => {
+    const pattern = /^(UDE|FOL|DE)/i
+    if (id.match(pattern)) {
+      return id.match(pattern)[0].toUpperCase();
+    }
+    return undefined;
+  }
   ast.statements
-    .filter((s) => s.type === "UDE" || s.type === "DE" || s.type === "FOL")
+    .filter((s) => s.type === "node")
     .forEach((statement) => {
       nodes.set(statement.id, {
-        annotation: statement.type,
+        annotation: findNodeAnnotation(statement.id),
         key: statement.id,
         label: statement.text
       })
-    })
-  ast.statements
-    .filter((s) => s.type === "C")
-    .forEach((statement) => {
-      nodes.set(statement.id, {
-        key: statement.id,
-        label: statement.text
-      })
-    })
+    }) 
 
   ast.statements
-    .filter((s) => s.type === "cause")
+    .filter((s) => s.type === "edge")
     .forEach((statement) => {
-      const effectKey = statement.effectId
+      const effectKey = statement.toId
       let keyToConnect = effectKey
-      if (statement.causes.length > 1) {
-        const combinedId = statement.causes.join("_") + "_cause_" + effectKey
+      if (statement.fromIds.length > 1) {
+        const combinedId = statement.fromIds.join("_") + "_cause_" + effectKey
         keyToConnect = combinedId
         nodes.set(combinedId, {
           key: combinedId,
@@ -216,7 +214,7 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
         })
         edges.push({ from: combinedId, to: effectKey })
       }
-      for (const causeKey of statement.causes) {
+      for (const causeKey of statement.fromIds) {
         if (!nodes.has(causeKey)) {
           throw new Error(`Cause ${causeKey} not declared`)
         }

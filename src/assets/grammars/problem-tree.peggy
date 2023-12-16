@@ -7,7 +7,7 @@ start
   };
 }
 
-statement = commentLine / labelStatement / causeStatement
+statement = commentLine / nodeStatement / edgeStatement
 
 commentLine = _ "#" text:([^\n\r]*)
 {
@@ -17,38 +17,31 @@ commentLine = _ "#" text:([^\n\r]*)
   };
 }
 
-labelStatement = _ type:("C" / "UDE" / "DE" / "FOL") __ ident:ident __ "is" __ str:string
+nodeStatement = _ ident:ident _ ":" __ label:label
   {
     return {
-      type,
+      type: "node",
       id: ident,
-      text: str
+      text: label
     };
   }
-causeStatement = _  idents:identList __ "cause" "s"? __ effectId:ident
+edgeStatement = _  toId:ident _ "<-" _ fromIds:ident|.., _ "&&" _|
   {
     return {
-      type: "cause",
-      causes: idents,
-      effectId: effectId
+      type: "edge",
+      toId: toId,
+      fromIds: fromIds
     };
   }
 
-identList
-  = ident:ident tail:(__ "and" __ @ident)*
-  {
-    return [ident, ...tail];
-  }
-
-ident = id:([a-zA-Z0-9]+)
+ident = id:([a-zA-Z0-9_]+)
 { return id.join(""); }
+
+label = str:string / text:([^{\n]*)
+{ return text.join(""); }
 
 string = "\"" text:([^"]*) "\""
 { return text.join(""); }
-
-percentage 
-    = _ digits:([0-9]+)"%" _ { return makeInteger(digits); }
-  
 
 EOL
   = [ \t]* [\n\r]+

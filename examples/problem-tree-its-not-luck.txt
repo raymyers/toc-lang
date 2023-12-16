@@ -108,4 +108,9 @@ managerMeasure and localOptima cause measureLocal
 FOL improvementIncreasesCost is "Many actions that are needed for improving lead-time, reliability, quality, response time and service do not save cost and/or increase cost in the short run"
 improvementIncreasesCost and measureLocal cause prodDistNotImproving
 improvementIncreasesCost and measureLocal cause engTooSlow
+UDE managersPerceiveEffortAsValue is "Most managers' perception of value of a product is heavily influenced by the local efforts required to design, produce, sell and deliver the product"
+localOptima causes managersPerceiveEffortAsValue
+FOL costAccountingProductCost is "The essence of cost accounting is to calculate the product cost"
+
+costAccountingProductCost and managersPerceiveEffortAsValue and measureLocal cause believeProductCostReal
 UDE lackSalesSkills is "A large percentage of the existing sales force lacks sufficient sales skills"

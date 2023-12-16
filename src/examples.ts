@@ -32,16 +32,16 @@ C: Ensure people are in a state of optimal performance
 
 D: Subordinate people's needs to the financial goal
 
-D -> B: *inject* Psychological flow triggers
+B <- D: *inject* Psychological flow triggers
 
 D': Attend to people's needs (& let people work)
 `
 
 export const exampleProblemTreeText = `
-UDE bad is "Bad user experience"
-C cluttered is "Cluttered interface"
-cluttered causes bad
-C ux is "Low investment in UX design"
-C features is "Many features added"
-ux and features cause cluttered
+UDE_bad: "Bad user experience"
+cluttered: "Cluttered interface"
+UDE_bad <- cluttered
+ux: "Low investment in UX design"
+features: "Many features added"
+cluttered <- ux && features
 `

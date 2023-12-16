@@ -1,0 +1,85 @@
+{
+  "ast": {
+    "statements": [
+      {
+        "id": "UDE_bad",
+        "text": "Bad user experience",
+        "type": "node"
+      },
+      {
+        "id": "cluttered",
+        "text": "Cluttered interface",
+        "type": "node"
+      },
+      {
+        "fromIds": [
+          "cluttered"
+        ],
+        "toId": "UDE_bad",
+        "type": "edge"
+      },
+      {
+        "id": "ux",
+        "text": "Low investment in UX design",
+        "type": "node"
+      },
+      {
+        "id": "features",
+        "text": "Many features added",
+        "type": "node"
+      },
+      {
+        "fromIds": [
+          "ux",
+          "features"
+        ],
+        "toId": "cluttered",
+        "type": "edge"
+      }
+    ]
+  },
+  "semantics": {
+    "edges": [
+      {
+        "from": "cluttered",
+        "to": "UDE_bad"
+      },
+      {
+        "from": "ux_features_cause_cluttered",
+        "to": "cluttered"
+      },
+      {
+        "from": "ux",
+        "to": "ux_features_cause_cluttered"
+      },
+      {
+        "from": "features",
+        "to": "ux_features_cause_cluttered"
+      }
+    ],
+    "nodes": {
+      "UDE_bad": {
+        "annotation": "UDE",
+        "key": "UDE_bad",
+        "label": "Bad user experience"
+      },
+      "cluttered": {
+        "key": "cluttered",
+        "label": "Cluttered interface"
+      },
+      "features": {
+        "key": "features",
+        "label": "Many features added"
+      },
+      "ux": {
+        "key": "ux",
+        "label": "Low investment in UX design"
+      },
+      "ux_features_cause_cluttered": {
+        "intermediate": true,
+        "key": "ux_features_cause_cluttered",
+        "label": "AND"
+      }
+    }
+  }
+}

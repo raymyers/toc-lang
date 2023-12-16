@@ -1,115 +1,38 @@
 import { describe, expect, it } from "vitest"
 import { parseTextToAst, parseProblemTreeSemantics } from "../interpreter"
-
+import approvals from 'approvals';
+import { exampleProblemTreeText } from '../examples'
 const testCases = [
   {
     name: "with only UDE",
-    text: 'UDE b is "badness"',
-    expectedAst: {
-      statements: [{ text: "badness", type: "UDE", id: "b" }]
-    },
-    expectedSemantics: {
-      rankdir: "BT",
-      edges: [],
-      nodes: new Map(
-        Object.entries({ b: { key: "b", label: "badness", annotation: "UDE" } })
-      )
-    }
+    text: 'UDE_b: badness'
+  },
+  {
+    name: "with only UDE quoted label",
+    text: 'UDE_b: "badness"'
   },
   {
     name: "with UDE and single cause",
     text: `
-    UDE b is "badness"
-    C c is "cause"
-    c causes b
-    `,
-    expectedAst: {
-      statements: [
-        { text: "badness", type: "UDE", id: "b" },
-        { text: "cause", type: "C", id: "c" },
-        { causes: ["c"], type: "cause", effectId: "b" }
-      ]
-    },
-    expectedSemantics: {
-      rankdir: "BT",
-      edges: [
-        {
-          from: "c",
-          to: "b"
-        }
-      ],
-      nodes: new Map(
-        Object.entries({
-          b: { key: "b", label: "badness", annotation: "UDE" },
-          c: { key: "c", label: "cause" }
-        })
-      )
-    }
+    UDE_b: "badness"
+    c: "cause"
+    b <- c
+    `
   },
   {
     name: "with UDE and multi-cause",
     text: `
-    UDE b is "badness"
-    C c1 is "cause 1"
-    C c2 is "cause 2"
-    c1 and c2 cause b
-    `,
-    expectedAst: {
-      statements: [
-        { text: "badness", type: "UDE", id: "b" },
-        { text: "cause 1", type: "C", id: "c1" },
-        { text: "cause 2", type: "C", id: "c2" },
-        { causes: ["c1", "c2"], type: "cause", effectId: "b" }
-      ]
-    },
-    expectedSemantics: {
-      rankdir: "BT",
-      edges: [
-        {
-          from: "c1_c2_cause_b",
-          to: "b"
-        },
-        {
-          from: "c1",
-          to: "c1_c2_cause_b"
-        },
-        {
-          from: "c2",
-          to: "c1_c2_cause_b"
-        }
-      ],
-      nodes: new Map(
-        Object.entries({
-          b: { key: "b", label: "badness", annotation: "UDE" },
-          c1: { key: "c1", label: "cause 1" },
-          c2: { key: "c2", label: "cause 2" },
-          c1_c2_cause_b: {
-            intermediate: true,
-            key: "c1_c2_cause_b",
-            label: "AND"
-          }
-        })
-      )
-    }
+    UDE_b: "badness"
+    c1: "cause 1"
+    c2: "cause 2"
+    b <- c1 && c2
+    `
   },
   {
     name: "single-line comments",
     text: `
     # This is a comment
-    `,
-    expectedAst: {
-      statements: [
-        {
-          text: " This is a comment",
-          type: "comment"
-        }
-      ]
-    },
-    expectedSemantics: {
-      rankdir: "BT",
-      edges: [],
-      nodes: new Map(Object.entries({}))
-    }
+    `
   }
 ]
 
@@ -118,29 +41,37 @@ describe("problem tree interpreter", () => {
     testCases.forEach((testCase) => {
       it(testCase.name, async () => {
         const ast = await parseTextToAst("problem-tree", testCase.text)
-        expect(ast).toStrictEqual(testCase.expectedAst)
-        expect(parseProblemTreeSemantics(ast)).toStrictEqual(
-          testCase.expectedSemantics
-        )
+        approvals.verifyAsJSON(__dirname, "parses ast for input " + testCase.name, ast);
       })
     })
 
     it("fails for cause referencing unknown node", async () => {
       const text = `
-      UDE b is "badness"
-      C c is "cause"
-      c causes d
+      UDE_b: "badness"
+      c: "cause"
+      d <- c
       `
       const expected = {
         statements: [
-          { text: "badness", type: "UDE", id: "b" },
-          { text: "cause", type: "C", id: "c" },
-          { causes: ["c"], type: "cause", effectId: "d" }
+          { text: "badness", type: "node", id: "UDE_b" },
+          { text: "cause", type: "node", id: "c" },
+          { fromIds: ["c"], type: "edge", toId: "d" }
         ]
       }
       const ast = await parseTextToAst("problem-tree", text)
       expect(ast).toStrictEqual(expected)
       expect(() => parseProblemTreeSemantics(ast)).toThrowError()
+    })
+
+    it("example parses", async () => {
+      const text = exampleProblemTreeText
+      const ast = await parseTextToAst("problem-tree", text)
+      const semantics = parseProblemTreeSemantics(ast)
+      const nodes = Object.fromEntries(semantics.nodes)
+      approvals.verifyAsJSON(__dirname, "example problem tree",  {
+        ast,
+        semantics: {edges: semantics.edges, nodes}
+      });
     })
   })
 })

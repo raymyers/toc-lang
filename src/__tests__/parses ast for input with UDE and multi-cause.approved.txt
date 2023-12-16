@@ -1,0 +1,27 @@
+{
+  "statements": [
+    {
+      "id": "UDE_b",
+      "text": "badness",
+      "type": "node"
+    },
+    {
+      "id": "c1",
+      "text": "cause 1",
+      "type": "node"
+    },
+    {
+      "id": "c2",
+      "text": "cause 2",
+      "type": "node"
+    },
+    {
+      "fromIds": [
+        "c1",
+        "c2"
+      ],
+      "toId": "b",
+      "type": "edge"
+    }
+  ]
+}

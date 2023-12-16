@@ -27,6 +27,7 @@
     "@types/react-dom": "^18.0.9",
     "@typescript-eslint/eslint-plugin": "^6.14.0",
     "@vitejs/plugin-react-swc": "^3.0.0",
+    "approvals": "^6.2.4",
     "eslint": "^8.55.0",
     "eslint-config-standard-with-typescript": "^42.0.0",
     "eslint-plugin-import": "^2.29.1",
