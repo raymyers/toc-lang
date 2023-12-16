@@ -133,20 +133,12 @@ export default function Cloud({
       .forEach((statement) => {
         nodeLabels[statement.id] = statement.text
       })
-    ast.statements
-      .filter((statement) => statement.type === "requirement")
-      .forEach((statement) => {
-        nodeLabels[statement.id2] = statement.id2Text
-      })
-    let prevEdgeName = null as string | null
     ast.statements.forEach((statement) => {
-      if (statement.type === "inject" && prevEdgeName) {
-        injections[prevEdgeName] = statement.text
-      }
-      if (statement.type === "requirement" || statement.type === "conflict") {
-        prevEdgeName = `${statement.id1}-${statement.id2}`
-      } else {
-        prevEdgeName = null
+      if (statement.type === "edgeLabel") {
+        const edgeName = statement.id1 < statement.id2 ?
+         `${statement.id1}-${statement.id2}` :
+         `${statement.id2}-${statement.id1}`; 
+        injections[edgeName] = statement.text
       }
     })
   }

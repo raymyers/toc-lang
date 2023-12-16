@@ -8,7 +8,7 @@ start
   };
 }
 
-statement = commentLine / labelStatement / relationStatement / injectStatement / conflictStatement
+statement = commentLine / labelStatement / relationStatement
 
 commentLine = _ "#" text:([^\n\r]*)
 {
@@ -18,42 +18,29 @@ commentLine = _ "#" text:([^\n\r]*)
   };
 }
 
-labelStatement = _ ident:ident _ "is" _ str:string
+labelStatement = _ ident:ident _ ":" _ label:label
   {
     return {
       type: "label",
       id: ident,
-      text: str
+      text: label
     };
   }
 
 relationStatement = 
-  _ ident1:ident _ "requires" _ ident2:ident _ "," _ str:string
+  _ ident1:ident _ direction:direction _ ident2:ident _ ':' _ label:label
   {
     return {
-      type: "requirement",
+      type: "edgeLabel",
       id1: ident1,
       id2: ident2,
-      id2Text: str
+      text: label
     };
   }
 
-injectStatement = _ "inject" _ str:string
-{
-	return {
-    	type: "inject",
-      text: str
-    };
-}
+label = string / text:([^{\n]*)
+{ return text.join(""); }
 
-conflictStatement = _ ident1:ident _ "conflicts" _ "with" _ ident2:ident
-{
-  return {
-    	type: "conflict",
-      id1: ident1,
-      id2: ident2,
-  };
-}
 
 ident = id:([a-zA-Z0-9']+)
 { return id.join(""); }
@@ -61,8 +48,12 @@ ident = id:([a-zA-Z0-9']+)
 string = "\"" text:([^"]*) "\""
 { return text.join(""); }
 
+direction = "<-" ">"? / "->"
+
 EOL
   = [ \t]* [\n\r]+
 
 _ "whitespace"
   = [ \t]*
+  
+ 

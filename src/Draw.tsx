@@ -3,58 +3,13 @@ import React from "react"
 import { useLoaderData } from "react-router-dom"
 import Editor from "./Editor"
 import { Diagram } from "./Diagram"
+import {exampleEvaporatingCloudText, exampleGoalTreeText, exampleProblemTreeText} from './examples';
 import {
   parseTextToAst,
   parseGoalTreeSemantics,
   parseProblemTreeSemantics,
   type TreeSemantics
 } from "./interpreter"
-const exampleGoalTreeText = `Goal is "Make money now and in the future"
-CSF revUp is "Generate more revenue"
-CSF costsDown is "Control costs"
-NC keepCust is "Protect relationship with existing customers"
-NC newCust is "Acquire new customers"
-
-NC reduceInfra is "Reduce infrastructure spending"
-NC retain is "Retain employees"
-NC marketSalary is "Keep up with market salaries"
-
-NC morale is "Maintain employee morale"
-NC features is "Develop new features"
-
-newCust requires features
-
-# This is probably the wrong place for 'retain'
-features requires retain
-
-revUp requires newCust and keepCust
-costsDown requires reduceInfra
-retain requires marketSalary and morale
-`
-
-const exampleEvaporatingCloudText = `
-A is "Maximize business performance"
-
-A requires B, "Subordinate all decisions to the financial goal"
-
-A requires C, "Ensure people are in a state of optimal performance"
-
-B requires D, "Subordinate people's needs to the financial goal"
-inject "Psychological flow triggers"
-
-C requires D', "Attend to people's needs (& let people work)"
-
-D conflicts with D'
-`
-
-const exampleProblemTreeText = `
-UDE bad is "Bad user experience"
-C cluttered is "Cluttered interface"
-cluttered causes bad
-C ux is "Low investment in UX design"
-C features is "Many features added"
-ux and features cause cluttered
-`
 
 export async function loader({ params }) {
   const examplesByType = {
