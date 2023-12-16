@@ -33,9 +33,11 @@ const router = createBrowserRouter(
   ],
   { basename: "/toc-lang" }
 )
-
-ReactDOM.createRoot(document.getElementById("root-reset")).render(
-  <React.StrictMode>
-    <RouterProvider router={router} />
-  </React.StrictMode>
-)
+const rootResetElt = document.getElementById("root-reset")
+if (rootResetElt) {
+  ReactDOM.createRoot(rootResetElt).render(
+    <React.StrictMode>
+      <RouterProvider router={router} />
+    </React.StrictMode>
+  )  
+}
