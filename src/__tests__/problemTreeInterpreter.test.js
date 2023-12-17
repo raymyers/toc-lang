@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { parseTextToAst, parseProblemTreeSemantics } from "../interpreter"
-import approvals from 'approvals';
-import { exampleProblemTreeText } from '../examples'
+import approvals from "approvals"
+import { exampleProblemTreeText } from "../examples"
 const testCases = [
   {
     name: "with only UDE",
-    text: 'UDE_b: badness'
+    text: "UDE_b: badness"
   },
   {
     name: "with only UDE quoted label",
@@ -41,7 +41,11 @@ describe("problem tree interpreter", () => {
     testCases.forEach((testCase) => {
       it(testCase.name, async () => {
         const ast = await parseTextToAst("problem-tree", testCase.text)
-        approvals.verifyAsJSON(__dirname, "parses ast for input " + testCase.name, ast);
+        approvals.verifyAsJSON(
+          __dirname,
+          "parses ast for input " + testCase.name,
+          ast
+        )
       })
     })
 
@@ -68,10 +72,10 @@ describe("problem tree interpreter", () => {
       const ast = await parseTextToAst("problem-tree", text)
       const semantics = parseProblemTreeSemantics(ast)
       const nodes = Object.fromEntries(semantics.nodes)
-      approvals.verifyAsJSON(__dirname, "example problem tree",  {
+      approvals.verifyAsJSON(__dirname, "example problem tree", {
         ast,
-        semantics: {edges: semantics.edges, nodes}
-      });
+        semantics: { edges: semantics.edges, nodes }
+      })
     })
   })
 })

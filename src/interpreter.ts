@@ -185,9 +185,9 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
   const findNodeAnnotation = (id) => {
     const pattern = /^(UDE|FOL|DE)/i
     if (id.match(pattern)) {
-      return id.match(pattern)[0].toUpperCase();
+      return id.match(pattern)[0].toUpperCase()
     }
-    return undefined;
+    return undefined
   }
   ast.statements
     .filter((s) => s.type === "node")
@@ -197,7 +197,7 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
         key: statement.id,
         label: statement.text
       })
-    }) 
+    })
 
   ast.statements
     .filter((s) => s.type === "edge")
