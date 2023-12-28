@@ -33,7 +33,15 @@ const testCases = [
     text: `
     # This is a comment
     `
-  }
+  },
+  {
+    name: "single cause right arrow",
+    text: `
+    b: "badness"
+    c: "cause"
+    c -> b
+    `
+  },
 ]
 
 describe("problem tree interpreter", () => {

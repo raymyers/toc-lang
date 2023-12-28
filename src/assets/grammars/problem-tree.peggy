@@ -25,12 +25,24 @@ nodeStatement = _ ident:ident _ ":" __ label:label
       text: label
     };
   }
-edgeStatement = _  toId:ident _ "<-" _ fromIds:ident|.., _ "&&" _|
+
+edgeStatement = leftEdgeStatement / rightEdgeStatement
+
+leftEdgeStatement = _  toId:ident _ "<-" _ fromIds:ident|.., _ "&&" _|
   {
     return {
       type: "edge",
       toId: toId,
       fromIds: fromIds
+    };
+  }
+
+rightEdgeStatement = _  fromId:ident _ "->" _ toId:ident
+  {
+    return {
+      type: "edge",
+      toId: toId,
+      fromIds: [fromId]
     };
   }
 
