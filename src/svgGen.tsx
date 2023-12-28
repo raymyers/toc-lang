@@ -144,16 +144,18 @@ export const drawCloud = (ast) => {
   }
   const injections = new Map<string, string>()
   ast.statements
-    .filter((statement) => statement.type === "label")
+    .filter((statement) => statement.type === "node")
     .forEach((statement) => {
       nodeLabels[statement.id] = statement.text
     })
   ast.statements.forEach((statement) => {
-    if (statement.type === "edgeLabel") {
+    if (statement.type === "edge") {
+      const id1 = statement.fromIds[0]
+      const id2 = statement.toId
       const edgeName =
-        statement.id1 < statement.id2
-          ? `${statement.id1}-${statement.id2}`
-          : `${statement.id2}-${statement.id1}`
+        id1 < id2
+          ? `${id1}-${id2}`
+          : `${id2}-${id1}`
       injections[edgeName] = statement.text
     }
   })

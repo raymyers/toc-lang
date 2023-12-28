@@ -23,7 +23,7 @@ commentLine = _ "#" text:([^\n\r]*)
   };
 }
 
-nodeStatement = _ ident:ident _ ":" __ label:label _ params:paramBlock? _
+nodeStatement = _ ident:ident _ label:colonLabel _ params:paramBlock? _
   {
     return {
       type: "node",
@@ -33,22 +33,29 @@ nodeStatement = _ ident:ident _ ":" __ label:label _ params:paramBlock? _
     };
   }
 
+colonLabel = ":" __ label:label
+  {
+    return label
+  }
+
 edgeStatement = leftEdgeStatement / rightEdgeStatement
 
-leftEdgeStatement = _  toId:ident _ "<-" _ fromIds:ident|.., _ "&&" _|
+leftEdgeStatement = _  toId:ident _ "<-" _ fromIds:ident|.., _ "&&" _| _ label:colonLabel?
   {
     return {
       type: "edge",
       toId: toId,
+      text: label || undefined,
       fromIds: fromIds
     };
   }
 
-rightEdgeStatement = _  fromId:ident _ "->" _ toId:ident
+rightEdgeStatement = _  fromId:ident _ "->" _ toId:ident _ label:colonLabel?
   {
     return {
       type: "edge",
       toId: toId,
+      text: label || undefined,
       fromIds: [fromId]
     };
   }
@@ -66,7 +73,7 @@ param = ident:ident _ ':' _ expression:expression _ EOL? _
 expression = text:string / num:([0-9]+)
 { return num !== undefined ? makeInteger(num) : text.join(""); }
 
-ident = id:([a-zA-Z0-9_]+)
+ident = id:([a-zA-Z0-9_']+)
 { return id.join(""); }
 
 label = str:string / text:([^{\n]*)

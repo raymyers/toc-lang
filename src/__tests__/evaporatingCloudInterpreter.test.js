@@ -27,27 +27,32 @@ D': Attend to people's needs (& let people work)
           {
             id: "A",
             text: "Maximize business performance",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "B",
             text: "Subordinate all decisions to the financial goal",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "C",
             text: "Ensure people are in a state of optimal performance",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "D",
             text: "Subordinate people's needs to the financial goal",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "D'",
             text: "Attend to people's needs (& let people work)",
-            type: "label"
+            type: "node",
+            params: {}
           }
         ]
       }
@@ -69,27 +74,32 @@ D': "Attend to people's needs (& let people work)"
           {
             id: "A",
             text: "Maximize business performance {",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "B",
             text: "Subordinate all decisions to the financial goal",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "C",
             text: "Ensure people are in a state of optimal performance",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "D",
             text: "Subordinate people's needs to the financial goal",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "D'",
             text: "Attend to people's needs (& let people work)",
-            type: "label"
+            type: "node",
+            params: {}
           }
         ]
       }
@@ -109,18 +119,20 @@ A <- D: inject Psychological flow triggers
           {
             id: "A",
             text: "Maximize business performance",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
             id: "D",
             text: "Subordinate people's needs to the financial goal",
-            type: "label"
+            type: "node",
+            params: {}
           },
           {
-            id1: "A",
-            id2: "D",
+            fromIds: ["D"],
+            toId: "A",
             text: "inject Psychological flow triggers",
-            type: "edgeLabel"
+            type: "edge"
           }
         ]
       }

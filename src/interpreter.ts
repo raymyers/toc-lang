@@ -1,6 +1,4 @@
 import peggy from "peggy"
-import goalTreeGrammarUrl from "./assets/grammars/goal-tree.peggy"
-import evaporatingCloudGrammarUrl from "./assets/grammars/evaporating-cloud.peggy"
 import tocLangGrammarUrl from "./assets/grammars/toc-lang.peggy"
 /* eslint @typescript-eslint/no-unsafe-argument: 0 */
 
@@ -19,12 +17,6 @@ const loadFile = async (url) => {
   }
 }
 
-const evaporatingCloudParserPromise = loadFile(evaporatingCloudGrammarUrl).then(
-  (peggyGrammar) => {
-    return peggy.generate(peggyGrammar)
-  }
-)
-
 const tocLangParserPromise = loadFile(tocLangGrammarUrl).then(
   (peggyGrammar) => {
     return peggy.generate(peggyGrammar)
@@ -32,14 +24,12 @@ const tocLangParserPromise = loadFile(tocLangGrammarUrl).then(
 )
 
 const parsersPromise = Promise.all([
-  evaporatingCloudParserPromise,
-  tocLangParserPromise,
   tocLangParserPromise
-]).then(([evaporatingCloud, goalTree, problemTree]) => {
+]).then(([tocLang]) => {
   return {
-    "evaporating-cloud": evaporatingCloud,
-    "goal-tree": goalTree,
-    "problem-tree": problemTree
+    "evaporating-cloud": tocLang,
+    "goal-tree": tocLang,
+    "problem-tree": tocLang
   }
 })
 

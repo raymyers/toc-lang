@@ -80,17 +80,20 @@ describe("goal tree interpreter", () => {
           {
             toId: "CSF_theyDont",
             fromIds: ["defense"],
-            type: "edge"
+            type: "edge",
+            text: undefined
           },
           {
             toId: "CSF_weScore",
             fromIds: ["possession"],
-            type: "edge"
+            type: "edge",
+            text: undefined
           },
           {
             toId: "CSF_weScore",
             fromIds: ["shooting"],
-            type: "edge"
+            type: "edge",
+            text: undefined
           }
         ]
       }

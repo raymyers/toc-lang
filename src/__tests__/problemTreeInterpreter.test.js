@@ -67,7 +67,7 @@ describe("problem tree interpreter", () => {
         statements: [
           { text: "badness", type: "node", id: "UDE_b", "params": {} },
           { text: "cause", type: "node", id: "c", "params": {} },
-          { fromIds: ["c"], type: "edge", toId: "d" }
+          { fromIds: ["c"], type: "edge", toId: "d", text: undefined }
         ]
       }
       const ast = await parseTextToAst("problem-tree", text)
