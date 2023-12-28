@@ -23,9 +23,7 @@ const tocLangParserPromise = loadFile(tocLangGrammarUrl).then(
   }
 )
 
-const parsersPromise = Promise.all([
-  tocLangParserPromise
-]).then(([tocLang]) => {
+const parsersPromise = Promise.all([tocLangParserPromise]).then(([tocLang]) => {
   return {
     "evaporating-cloud": tocLang,
     "goal-tree": tocLang,
@@ -37,9 +35,9 @@ export const checkGoalTreeSemantics = (ast) => {
   if (!ast) {
     throw new Error("ast is null")
   }
-  
-  const nodeType = goalTreeNodeType;
-  const goalStatement = ast.statements.find((s) => nodeType(s) == 'goal')
+
+  const nodeType = goalTreeNodeType
+  const goalStatement = ast.statements.find((s) => nodeType(s) == "goal")
   if (!goalStatement) {
     throw new Error("Goal must be specified")
   }
@@ -53,9 +51,10 @@ export const checkGoalTreeSemantics = (ast) => {
         `Invalid statement type: ${statement.type}, must be in ${validTypes}`
       )
     }
-    const curNodeType = nodeType(statement);
+    const curNodeType = nodeType(statement)
     if (
-      statement.type === "node" && !validNodeTypes.includes(curNodeType || '')
+      statement.type === "node" &&
+      !validNodeTypes.includes(curNodeType || "")
     ) {
       throw new Error(
         `Invalid node type: ${curNodeType} for label ${statement.text} must be in ${validNodeTypes}`
@@ -119,18 +118,18 @@ export interface TreeSemantics {
 
 const goalTreeNodeType = (statement) => {
   if (statement.type != "node") {
-    return null;
+    return null
   }
-  const lowerId = statement.id.toLowerCase();
-  return  'goal' === lowerId ? 'goal' : lowerId.startsWith('csf_') ? 'csf' : 'nc';
-} 
+  const lowerId = statement.id.toLowerCase()
+  return "goal" === lowerId ? "goal" : lowerId.startsWith("csf_") ? "csf" : "nc"
+}
 
 export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const nodes = new Map<string, Node>()
   nodes.set("goal", { key: "goal", label: "", annotation: "G" })
   const edges = [] as Edge[]
-  const nodeType = goalTreeNodeType;
-  const goalStatement = ast.statements.find((s) => nodeType(s) == 'goal')
+  const nodeType = goalTreeNodeType
+  const goalStatement = ast.statements.find((s) => nodeType(s) == "goal")
   if (goalStatement) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     nodes.get("goal")!.label = goalStatement.text
@@ -167,7 +166,9 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
         throw new Error(`Node ${nodeKey} not found`)
       }
       if (statement.fromIds.length !== 1) {
-        throw new Error(`Edges must have exactly one 'from' node in a Goal Tree`)
+        throw new Error(
+          `Edges must have exactly one 'from' node in a Goal Tree`
+        )
       }
       const reqKey = statement.fromIds[0]
       if (!nodes.has(reqKey)) {

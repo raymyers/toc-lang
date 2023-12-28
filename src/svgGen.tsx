@@ -152,10 +152,7 @@ export const drawCloud = (ast) => {
     if (statement.type === "edge") {
       const id1 = statement.fromIds[0]
       const id2 = statement.toId
-      const edgeName =
-        id1 < id2
-          ? `${id1}-${id2}`
-          : `${id2}-${id1}`
+      const edgeName = id1 < id2 ? `${id1}-${id2}` : `${id2}-${id1}`
       injections[edgeName] = statement.text
     }
   })
