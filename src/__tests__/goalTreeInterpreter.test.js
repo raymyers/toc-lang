@@ -12,18 +12,10 @@ describe("goal tree interpreter", () => {
     it("with only goal", async () => {
       const text = 'goal: "win"'
       const expected = {
-        goal: {
-          text: "win",
-          type: "node",
-          nodeType: "goal",
-          id: "goal",
-          params: {}
-        },
         statements: [
           {
             text: "win",
             type: "node",
-            nodeType: "goal",
             id: "goal",
             params: {}
           }
@@ -48,69 +40,56 @@ describe("goal tree interpreter", () => {
       CSF_weScore <- shooting
       `
       const expected = {
-        goal: {
-          id: "Goal",
-          text: "win",
-          type: "node",
-          nodeType: "goal",
-          params: {}
-        },
         statements: [
           {
             id: "Goal",
             text: "win",
             type: "node",
-            nodeType: "goal",
             params: {}
           },
           {
             id: "CSF_weScore",
             text: "We score points",
             type: "node",
-            nodeType: "csf",
             params: {}
           },
           {
             id: "CSF_theyDont",
             text: "Other team doesn't score",
             type: "node",
-            nodeType: "csf",
             params: {}
           },
           {
             id: "possession",
             text: "We get the ball",
             type: "node",
-            nodeType: "nc",
             params: {}
           },
           {
             id: "shooting",
             text: "We shoot the ball accurately",
             type: "node",
-            nodeType: "nc",
             params: {}
           },
           {
             id: "defense",
             text: "We have good defense",
             type: "node",
-            nodeType: "nc",
             params: {}
           },
           {
             toId: "CSF_theyDont",
-            fromId: "defense",
+            fromIds: ["defense"],
             type: "edge"
           },
           {
             toId: "CSF_weScore",
-            fromId: "possession",
+            fromIds: ["possession"],
             type: "edge"
           },
           {
             toId: "CSF_weScore",
-            fromId: "shooting",
+            fromIds: ["shooting"],
             type: "edge"
           }
         ]
@@ -124,12 +103,10 @@ describe("goal tree interpreter", () => {
         }
       `
       const expected = {
-        goal: null,
         statements: [
           {
             text: "win",
             type: "node",
-            nodeType: "nc",
             id: "mynode",
             params: { status: 50 }
           }
@@ -142,7 +119,6 @@ describe("goal tree interpreter", () => {
       # This is a comment
       `
       const expected = {
-        goal: null,
         statements: [
           {
             text: " This is a comment",

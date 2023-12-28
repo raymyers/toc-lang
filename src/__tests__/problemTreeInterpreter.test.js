@@ -65,8 +65,8 @@ describe("problem tree interpreter", () => {
       `
       const expected = {
         statements: [
-          { text: "badness", type: "node", id: "UDE_b" },
-          { text: "cause", type: "node", id: "c" },
+          { text: "badness", type: "node", id: "UDE_b", "params": {} },
+          { text: "cause", type: "node", id: "c", "params": {} },
           { fromIds: ["c"], type: "edge", toId: "d" }
         ]
       }

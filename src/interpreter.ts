@@ -1,8 +1,7 @@
 import peggy from "peggy"
 import goalTreeGrammarUrl from "./assets/grammars/goal-tree.peggy"
 import evaporatingCloudGrammarUrl from "./assets/grammars/evaporating-cloud.peggy"
-import problemTreeGrammarUrl from "./assets/grammars/problem-tree.peggy"
-
+import tocLangGrammarUrl from "./assets/grammars/toc-lang.peggy"
 /* eslint @typescript-eslint/no-unsafe-argument: 0 */
 
 const loadFile = async (url) => {
@@ -26,13 +25,7 @@ const evaporatingCloudParserPromise = loadFile(evaporatingCloudGrammarUrl).then(
   }
 )
 
-const goalTreeParserPromise = loadFile(goalTreeGrammarUrl).then(
-  (peggyGrammar) => {
-    return peggy.generate(peggyGrammar)
-  }
-)
-
-const problemTreeParserPromise = loadFile(problemTreeGrammarUrl).then(
+const tocLangParserPromise = loadFile(tocLangGrammarUrl).then(
   (peggyGrammar) => {
     return peggy.generate(peggyGrammar)
   }
@@ -40,8 +33,8 @@ const problemTreeParserPromise = loadFile(problemTreeGrammarUrl).then(
 
 const parsersPromise = Promise.all([
   evaporatingCloudParserPromise,
-  goalTreeParserPromise,
-  problemTreeParserPromise
+  tocLangParserPromise,
+  tocLangParserPromise
 ]).then(([evaporatingCloud, goalTree, problemTree]) => {
   return {
     "evaporating-cloud": evaporatingCloud,
@@ -54,7 +47,10 @@ export const checkGoalTreeSemantics = (ast) => {
   if (!ast) {
     throw new Error("ast is null")
   }
-  if (!ast.goal) {
+  
+  const nodeType = goalTreeNodeType;
+  const goalStatement = ast.statements.find((s) => nodeType(s) == 'goal')
+  if (!goalStatement) {
     throw new Error("Goal must be specified")
   }
   const nodeIds = new Set()
@@ -67,25 +63,25 @@ export const checkGoalTreeSemantics = (ast) => {
         `Invalid statement type: ${statement.type}, must be in ${validTypes}`
       )
     }
+    const curNodeType = nodeType(statement);
     if (
-      statement.type === "node" &&
-      !validNodeTypes.includes(statement.nodeType)
+      statement.type === "node" && !validNodeTypes.includes(curNodeType || '')
     ) {
       throw new Error(
-        `Invalid node type: ${statement.nodeType}, must be in ${validNodeTypes}`
+        `Invalid node type: ${curNodeType} for label ${statement.text} must be in ${validNodeTypes}`
       )
     }
   })
   ast.statements
     .filter(
-      (statement) => statement.type === "node" && statement.nodeType != "goal"
+      (statement) => statement.type === "node" && nodeType(statement) != "goal"
     )
     .forEach((statement) => {
       if (nodeIds.has(statement.id)) {
         throw new Error(`Duplicate node id: ${statement.id}`)
       }
       nodeIds.add(statement.id)
-      if (statement.nodeType === "csf") {
+      if (nodeType(statement) === "csf") {
         csfNodeIds.add(statement.id)
       }
     })
@@ -96,7 +92,7 @@ export const checkGoalTreeSemantics = (ast) => {
       if (!nodeIds.has(nodeId)) {
         throw new Error(`Requirement ${nodeId} not found`)
       }
-      const reqId = statement.fromId
+      const reqId = statement.fromIds[0]
       if (nodeId === reqId) {
         throw new Error(`${nodeId} cannot require itself`)
       }
@@ -131,18 +127,28 @@ export interface TreeSemantics {
   edges: Edge[]
 }
 
+const goalTreeNodeType = (statement) => {
+  if (statement.type != "node") {
+    return null;
+  }
+  const lowerId = statement.id.toLowerCase();
+  return  'goal' === lowerId ? 'goal' : lowerId.startsWith('csf_') ? 'csf' : 'nc';
+} 
+
 export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const nodes = new Map<string, Node>()
   nodes.set("goal", { key: "goal", label: "", annotation: "G" })
   const edges = [] as Edge[]
-  if (ast.goal) {
+  const nodeType = goalTreeNodeType;
+  const goalStatement = ast.statements.find((s) => nodeType(s) == 'goal')
+  if (goalStatement) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    nodes.get("goal")!.label = ast.goal.text
-    nodes.get("goal")!.statusPercentage = ast.goal.params.status
+    nodes.get("goal")!.label = goalStatement.text
+    // nodes.get("goal")!.statusPercentage = ast.goal.params.status
   }
 
   ast.statements
-    .filter((s) => s.type === "node" && s.nodeType === "nc")
+    .filter((s) => s.type === "node" && nodeType(s) === "nc")
     .forEach((statement) => {
       nodes.set(statement.id, {
         key: statement.id,
@@ -152,7 +158,7 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     })
 
   ast.statements
-    .filter((s) => s.type === "node" && s.nodeType === "csf")
+    .filter((s) => s.type === "node" && nodeType(s) === "csf")
     .forEach((statement) => {
       nodes.set(statement.id, {
         key: statement.id,
@@ -170,7 +176,10 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
       if (!nodes.has(nodeKey)) {
         throw new Error(`Node ${nodeKey} not found`)
       }
-      const reqKey = statement.fromId
+      if (statement.fromIds.length !== 1) {
+        throw new Error(`Edges must have exactly one 'from' node in a Goal Tree`)
+      }
+      const reqKey = statement.fromIds[0]
       if (!nodes.has(reqKey)) {
         throw new Error(`Requirement ${reqKey} not found`)
       }

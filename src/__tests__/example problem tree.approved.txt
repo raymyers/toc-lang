@@ -3,11 +3,13 @@
     "statements": [
       {
         "id": "UDE_bad",
+        "params": {},
         "text": "Bad user experience",
         "type": "node"
       },
       {
         "id": "cluttered",
+        "params": {},
         "text": "Cluttered interface",
         "type": "node"
       },
@@ -20,11 +22,13 @@
       },
       {
         "id": "ux",
+        "params": {},
         "text": "Low investment in UX design",
         "type": "node"
       },
       {
         "id": "features",
+        "params": {},
         "text": "Many features added",
         "type": "node"
       },
