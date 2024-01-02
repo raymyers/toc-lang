@@ -141,28 +141,43 @@ A <- D: inject Psychological flow triggers
       )
     })
 
-    //     it("with injection on conflict", async () => {
-    //       const text = `
-    // D conflicts with D'
-    // inject "Discover they don't conflict"
-    //       `
-    //       const expected = {
-    //         statements: [
-    //           {
-    //             id1: "D",
-    //             id2: "D'",
-    //             type: "conflict"
-    //           },
-    //           {
-    //             text: "Discover they don't conflict",
-    //             type: "inject"
-    //           }
-    //         ]
-    //       }
-    //       expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
-    //         expected
-    //       )
-    //     })
+    it("with injection on conflict", async () => {
+      const text = `
+D -> D': "Discover they don't conflict"
+      `
+      const expected = {
+        statements: [
+          {
+            type: "edge",
+            text: "Discover they don't conflict",
+            fromIds: ["D"],
+            toId: "D'"
+          }
+        ]
+      }
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
+        expected
+      )
+    })
+    it("can inject with bidirectional edge", async () => {
+      const text = `
+D -- D': "Discover they don't conflict"
+      `
+      const expected = {
+        statements: [
+          {
+            type: "edge",
+            text: "Discover they don't conflict",
+            fromIds: ["D"],
+            toId: "D'",
+            biDirectional: true
+          }
+        ]
+      }
+      expect(await parseTextToAst("evaporating-cloud", text)).toStrictEqual(
+        expected
+      )
+    })
     it("single-line comments", async () => {
       const text = `
       # This is a comment

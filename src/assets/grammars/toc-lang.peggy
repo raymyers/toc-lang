@@ -38,7 +38,7 @@ colonLabel = ":" __ label:label
     return label
   }
 
-edgeStatement = leftEdgeStatement / rightEdgeStatement
+edgeStatement = leftEdgeStatement / rightEdgeStatement / biDirEdgeStatement
 
 leftEdgeStatement = _  toId:ident _ "<-" _ fromIds:ident|.., _ "&&" _| _ label:colonLabel?
   {
@@ -59,6 +59,18 @@ rightEdgeStatement = _  fromId:ident _ "->" _ toId:ident _ label:colonLabel?
       fromIds: [fromId]
     };
   }
+
+biDirEdgeStatement = _  fromId:ident _ "--" _ toId:ident _ label:colonLabel?
+  {
+    return {
+      type: "edge",
+      toId: toId,
+      text: label || undefined,
+      fromIds: [fromId],
+      biDirectional: true
+    };
+  }
+
 
 paramBlock = "{"  _ EOL? _ params:param|.., _ "EOL" _| "}" 
 {
