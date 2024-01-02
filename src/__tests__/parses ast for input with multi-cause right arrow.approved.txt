@@ -1,0 +1,30 @@
+{
+  "statements": [
+    {
+      "id": "b",
+      "params": {},
+      "text": "badness",
+      "type": "node"
+    },
+    {
+      "id": "c1",
+      "params": {},
+      "text": "cause 1",
+      "type": "node"
+    },
+    {
+      "id": "c2",
+      "params": {},
+      "text": "cause 2",
+      "type": "node"
+    },
+    {
+      "fromIds": [
+        "c1",
+        "c2"
+      ],
+      "toId": "b",
+      "type": "edge"
+    }
+  ]
+}

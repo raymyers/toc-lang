@@ -1,5 +1,7 @@
 Goal: "Drive adoption of TOC in software"
-CSF_devFriendly: "Thinking Processes are Dev Friendly"
+devFriendly: "Thinking Processes are Dev Friendly"
+
+Goal <- devFriendly
 
 openTool: "Open source tooling"
 wellFormed: "It is easy to create well-formed diagrams"
@@ -11,9 +13,9 @@ textRep: "Diagrams have a textual representation" {
    status: 50
 }
 
-CSF_devFriendly <- openTool
-CSF_devFriendly <- wellFormed
-CSF_devFriendly <- versioning
+devFriendly <- openTool
+devFriendly <- wellFormed
+devFriendly <- versioning
 versioning <- textRep
 
 textRep <- gtGrammar

@@ -53,13 +53,13 @@ leftEdgeStatement = _  toId:ident _ "<-" _ fromIds:ident|.., _ "&&" _| _ label:c
     };
   }
 
-rightEdgeStatement = _  fromId:ident _ "->" _ toId:ident _ label:colonLabel?
+rightEdgeStatement = _  fromIds:ident|.., _ "&&" _| _ "->" _ toId:ident _ label:colonLabel?
   {
     return {
       type: "edge",
       toId: toId,
       text: label || undefined,
-      fromIds: [fromId]
+      fromIds: fromIds
     };
   }
 

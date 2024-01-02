@@ -29,6 +29,15 @@ const testCases = [
     `
   },
   {
+    name: "with multi-cause right arrow",
+    text: `
+    b: "badness"
+    c1: "cause 1"
+    c2: "cause 2"
+    c1 && c2 -> b
+    `
+  },
+  {
     name: "single-line comments",
     text: `
     # This is a comment
