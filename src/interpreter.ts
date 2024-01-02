@@ -31,72 +31,6 @@ const parsersPromise = Promise.all([tocLangParserPromise]).then(([tocLang]) => {
   }
 })
 
-export const checkGoalTreeSemantics = (ast) => {
-  if (!ast) {
-    throw new Error("ast is null")
-  }
-
-  const nodeType = goalTreeNodeType
-  const goalStatement = ast.statements.find((s) => nodeType(s) == "goal")
-  if (!goalStatement) {
-    throw new Error("Goal must be specified")
-  }
-  const nodeIds = new Set()
-  const csfNodeIds = new Set()
-  const validTypes = ["node", "edge", "comment"]
-  const validNodeTypes = ["nc", "goal", "csf"]
-  ast.statements.forEach((statement) => {
-    if (!validTypes.includes(statement.type)) {
-      throw new Error(
-        `Invalid statement type: ${statement.type}, must be in ${validTypes}`
-      )
-    }
-    const curNodeType = nodeType(statement)
-    if (
-      statement.type === "node" &&
-      !validNodeTypes.includes(curNodeType || "")
-    ) {
-      throw new Error(
-        `Invalid node type: ${curNodeType} for label ${statement.text} must be in ${validNodeTypes}`
-      )
-    }
-  })
-  ast.statements
-    .filter(
-      (statement) => statement.type === "node" && nodeType(statement) != "goal"
-    )
-    .forEach((statement) => {
-      if (nodeIds.has(statement.id)) {
-        throw new Error(`Duplicate node id: ${statement.id}`)
-      }
-      nodeIds.add(statement.id)
-      if (nodeType(statement) === "csf") {
-        csfNodeIds.add(statement.id)
-      }
-    })
-  ast.statements
-    .filter((statement) => statement.type === "edge")
-    .forEach((statement) => {
-      const nodeId = statement.toId
-      if (!nodeIds.has(nodeId)) {
-        throw new Error(`Requirement ${nodeId} not found`)
-      }
-      const reqId = statement.fromIds[0]
-      if (nodeId === reqId) {
-        throw new Error(`${nodeId} cannot require itself`)
-      }
-      if (!nodeIds.has(reqId)) {
-        throw new Error(`Requirement ${reqId} not found for node ${nodeId}`)
-      }
-      if (csfNodeIds.has(reqId)) {
-        throw new Error(
-          `${nodeId} cannot require ${reqId}, because CSFs are only required by the Goal`
-        )
-      }
-    })
-  nodeIds.add("goal")
-}
-
 export interface Node {
   key: string
   label: string
@@ -116,46 +50,38 @@ export interface TreeSemantics {
   edges: Edge[]
 }
 
-const goalTreeNodeType = (statement) => {
-  if (statement.type != "node") {
-    return null
-  }
-  const lowerId = statement.id.toLowerCase()
-  return "goal" === lowerId ? "goal" : lowerId.startsWith("csf_") ? "csf" : "nc"
-}
+const isGoalNodeStatement = (s) =>
+  s.type === "node" && normalizeId(s.id) === "goal"
+const normalizeId = (id) => (id && id.toLowerCase() === "goal" ? "Goal" : id)
 
 export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const nodes = new Map<string, Node>()
-  nodes.set("goal", { key: "goal", label: "", annotation: "G" })
+  nodes.set("Goal", { key: "Goal", label: "", annotation: "G" })
   const edges = [] as Edge[]
-  const nodeType = goalTreeNodeType
-  const goalStatement = ast.statements.find((s) => nodeType(s) == "goal")
+  const goalStatement = ast.statements.find(isGoalNodeStatement)
   if (goalStatement) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    nodes.get("goal")!.label = goalStatement.text
+    nodes.get("Goal")!.label = goalStatement.text
     // nodes.get("goal")!.statusPercentage = ast.goal.params.status
   }
 
   ast.statements
-    .filter((s) => s.type === "node" && nodeType(s) === "nc")
+    .filter((s) => s.type === "node")
     .forEach((statement) => {
-      nodes.set(statement.id, {
+      const node: Node = {
         key: statement.id,
-        label: statement.text,
-        statusPercentage: statement.params.status
-      })
-    })
-
-  ast.statements
-    .filter((s) => s.type === "node" && nodeType(s) === "csf")
-    .forEach((statement) => {
-      nodes.set(statement.id, {
-        key: statement.id,
-        label: statement.text,
-        annotation: "CSF",
-        statusPercentage: statement.params.status
-      })
-      edges.push({ from: statement.id, to: "goal" })
+        label: statement.text
+      }
+      if (statement.params.class) {
+        node.annotation = statement.params.class
+      }
+      if (statement.id === "Goal") {
+        node.annotation = "G"
+      }
+      if (statement.params.status || statement.params.status === 0) {
+        node.statusPercentage = statement.params.status
+      }
+      nodes.set(statement.id, node)
     })
 
   ast.statements
@@ -174,6 +100,9 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
       if (!nodes.has(reqKey)) {
         throw new Error(`Requirement ${reqKey} not found`)
       }
+      if (nodeKey === "Goal") {
+        nodes.get(reqKey)!.annotation = "CSF"
+      }
       edges.push({ from: reqKey, to: nodeKey })
     })
   return { nodes, edges, rankdir: "BT" }
@@ -182,10 +111,13 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
 export const parseProblemTreeSemantics = (ast): TreeSemantics => {
   const nodes = new Map<string, Node>()
   const edges = [] as Edge[]
-  const findNodeAnnotation = (id) => {
+  const findNodeAnnotation = (statement: StatementAst) => {
     const pattern = /^(UDE|FOL|DE)/i
-    if (id.match(pattern)) {
-      return id.match(pattern)[0].toUpperCase()
+    if (
+      typeof statement.params?.class === "string" &&
+      statement.params?.class?.match(pattern)
+    ) {
+      return statement.params.class.match(pattern)![0].toUpperCase()
     }
     return undefined
   }
@@ -193,7 +125,7 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
     .filter((s) => s.type === "node")
     .forEach((statement) => {
       nodes.set(statement.id, {
-        annotation: findNodeAnnotation(statement.id),
+        annotation: findNodeAnnotation(statement),
         key: statement.id,
         label: statement.text
       })
@@ -227,9 +159,51 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
   return { nodes, edges, rankdir: "BT" }
 }
 
+interface Ast {
+  statements: StatementAst[]
+}
+
+interface StatementAst {
+  type: "node" | "edge" | "comment"
+  id?: string
+  text: string
+  fromIds?: string[]
+  toId?: string
+  biDir?: boolean
+  params?: ParamsAst
+}
+
+interface ParamsAst {
+  [key: string]: number | string
+}
+
+const normalizeAstIds = (ast: Ast): Ast => {
+  const { statements: oldStatments, ...etc } = ast
+  const statements = oldStatments.map((s: StatementAst) => {
+    const { id, fromIds, toId, ...etc } = s
+    const result: StatementAst = {
+      ...etc
+    }
+    if (id) {
+      result.id = normalizeId(id)
+    }
+    if (toId) {
+      result.toId = normalizeId(toId)
+    }
+    if (fromIds) {
+      result.fromIds = fromIds.map(normalizeId)
+    }
+    return result
+  })
+  return {
+    statements,
+    ...etc
+  }
+}
+
 export const parseTextToAst = async (parserType, code) => {
   const parser = (await parsersPromise)[parserType]
   // handle null parser as unknown parser type
   const ast = parser.parse(code)
-  return ast
+  return normalizeAstIds(ast)
 }

@@ -2,14 +2,18 @@
   "ast": {
     "statements": [
       {
-        "id": "UDE_bad",
-        "params": {},
+        "id": "bad",
+        "params": {
+          "class": "UDE"
+        },
         "text": "Bad user experience",
         "type": "node"
       },
       {
         "id": "cluttered",
-        "params": {},
+        "params": {
+          "class": "UDE"
+        },
         "text": "Cluttered interface",
         "type": "node"
       },
@@ -17,7 +21,7 @@
         "fromIds": [
           "cluttered"
         ],
-        "toId": "UDE_bad",
+        "toId": "bad",
         "type": "edge"
       },
       {
@@ -46,7 +50,7 @@
     "edges": [
       {
         "from": "cluttered",
-        "to": "UDE_bad"
+        "to": "bad"
       },
       {
         "from": "ux_features_cause_cluttered",
@@ -62,12 +66,13 @@
       }
     ],
     "nodes": {
-      "UDE_bad": {
+      "bad": {
         "annotation": "UDE",
-        "key": "UDE_bad",
+        "key": "bad",
         "label": "Bad user experience"
       },
       "cluttered": {
+        "annotation": "UDE",
         "key": "cluttered",
         "label": "Cluttered interface"
       },

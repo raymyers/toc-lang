@@ -1,8 +1,10 @@
 {
   "statements": [
     {
-      "id": "UDE_b",
-      "params": {},
+      "id": "b",
+      "params": {
+        "class": "UDE"
+      },
       "text": "badness",
       "type": "node"
     }

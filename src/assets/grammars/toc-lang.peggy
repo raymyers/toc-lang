@@ -1,3 +1,6 @@
+// Debug with PeggyJs sandbox
+// https://peggyjs.org/online.html
+
 {
   function makeInteger(o) {
     return parseInt(o.join(""), 10);
@@ -77,19 +80,19 @@ paramBlock = "{"  _ EOL? _ params:param|.., _ "EOL" _| "}"
 	return Object.fromEntries(params);
 }
 
-param = ident:ident _ ':' _ expression:expression _ EOL? _
+param = ident:ident _ ':' _ expression:(num/label) _ EOL? _
 {
 	return [ident, expression];
 }
 
-expression = text:string / num:([0-9]+)
-{ return num !== undefined ? makeInteger(num) : text.join(""); }
+num =  num:([0-9]+)
+{ return makeInteger(num); }
 
 ident = id:([a-zA-Z0-9_']+)
 { return id.join(""); }
 
-label = str:string / text:([^{\n]*)
-{ return text.join(""); }
+label = str:string / text:([^{}\n]*)
+{ return text.join("").trim(); }
 
 string = "\"" text:([^"]*) "\""
 { return text.join(""); }

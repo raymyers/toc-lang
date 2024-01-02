@@ -5,16 +5,16 @@ import { exampleProblemTreeText } from "../examples"
 const testCases = [
   {
     name: "with only UDE",
-    text: "UDE_b: badness"
+    text: "b: badness {class: UDE}"
   },
   {
     name: "with only UDE quoted label",
-    text: 'UDE_b: "badness"'
+    text: 'b: "badness" {class: UDE}'
   },
   {
     name: "with UDE and single cause",
     text: `
-    UDE_b: "badness"
+    b: "badness" {class: UDE}
     c: "cause"
     b <- c
     `
@@ -22,7 +22,7 @@ const testCases = [
   {
     name: "with UDE and multi-cause",
     text: `
-    UDE_b: "badness"
+    b: "badness" {class: UDE}
     c1: "cause 1"
     c2: "cause 2"
     b <- c1 && c2
@@ -59,13 +59,13 @@ describe("problem tree interpreter", () => {
 
     it("fails for cause referencing unknown node", async () => {
       const text = `
-      UDE_b: "badness"
+      b: "badness" {class: UDE}
       c: "cause"
       d <- c
       `
       const expected = {
         statements: [
-          { text: "badness", type: "node", id: "UDE_b", params: {} },
+          { text: "badness", type: "node", id: "b", params: { class: "UDE" } },
           { text: "cause", type: "node", id: "c", params: {} },
           { fromIds: ["c"], type: "edge", toId: "d", text: undefined }
         ]

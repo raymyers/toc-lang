@@ -1,6 +1,15 @@
 export const exampleGoalTreeText = `Goal: "Make money now and in the future"
-CSF_revUp: "Generate more revenue"
-CSF_costsDown: "Control costs"
+
+revUp: "Generate more revenue" {
+    class: CSF
+}
+costsDown: "Control costs" {
+    class: CSF
+}
+
+Goal <- revUp
+Goal <- costsDown
+
 keepCust: "Protect relationship with existing customers"
 newCust: "Acquire new customers"
 
@@ -16,9 +25,9 @@ newCust <- features
 # This is probably the wrong place for 'retain'
 features <- retain
 
-CSF_revUp <- newCust
-CSF_revUp <- keepCust
-CSF_costsDown <- reduceInfra
+revUp <- newCust
+revUp <- keepCust
+costsDown <- reduceInfra
 retain <- marketSalary
 retain <- morale
 `
@@ -38,9 +47,13 @@ D': Attend to people's needs (& let people work)
 `
 
 export const exampleProblemTreeText = `
-UDE_bad: "Bad user experience"
-cluttered: "Cluttered interface"
-UDE_bad <- cluttered
+bad: "Bad user experience" {
+    class: UDE
+}
+cluttered: "Cluttered interface" {
+    class: UDE
+}
+bad <- cluttered
 ux: "Low investment in UX design"
 features: "Many features added"
 cluttered <- ux && features

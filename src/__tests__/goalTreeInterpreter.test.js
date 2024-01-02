@@ -1,10 +1,5 @@
 import { describe, expect, it } from "vitest"
-import {
-  parseTextToAst,
-  checkGoalTreeSemantics,
-  parseGoalTreeSemantics,
-  Node
-} from "../interpreter"
+import { parseTextToAst, parseGoalTreeSemantics, Node } from "../interpreter"
 import { exampleGoalTreeText } from "../examples"
 
 describe("goal tree interpreter", () => {
@@ -16,7 +11,7 @@ describe("goal tree interpreter", () => {
           {
             text: "win",
             type: "node",
-            id: "goal",
+            id: "Goal",
             params: {}
           }
         ]
@@ -28,16 +23,16 @@ describe("goal tree interpreter", () => {
       const text = `
       Goal: win
 
-      CSF_weScore: We score points
-      CSF_theyDont: Other team doesn't score
+      weScore: We score points { class: CSF }
+      theyDont: Other team doesn't score { class: CSF }
 
       possession: We get the ball
       shooting: We shoot the ball accurately
       defense: We have good defense
 
-      CSF_theyDont <- defense
-      CSF_weScore <- possession 
-      CSF_weScore <- shooting
+      theyDont <- defense
+      weScore <- possession 
+      weScore <- shooting
       `
       const expected = {
         statements: [
@@ -48,16 +43,16 @@ describe("goal tree interpreter", () => {
             params: {}
           },
           {
-            id: "CSF_weScore",
+            id: "weScore",
             text: "We score points",
             type: "node",
-            params: {}
+            params: { class: "CSF" }
           },
           {
-            id: "CSF_theyDont",
+            id: "theyDont",
             text: "Other team doesn't score",
             type: "node",
-            params: {}
+            params: { class: "CSF" }
           },
           {
             id: "possession",
@@ -78,19 +73,19 @@ describe("goal tree interpreter", () => {
             params: {}
           },
           {
-            toId: "CSF_theyDont",
+            toId: "theyDont",
             fromIds: ["defense"],
             type: "edge",
             text: undefined
           },
           {
-            toId: "CSF_weScore",
+            toId: "weScore",
             fromIds: ["possession"],
             type: "edge",
             text: undefined
           },
           {
-            toId: "CSF_weScore",
+            toId: "weScore",
             fromIds: ["shooting"],
             type: "edge",
             text: undefined
@@ -136,17 +131,16 @@ describe("goal tree interpreter", () => {
     const text = exampleGoalTreeText
     const ast = await parseTextToAst("goal-tree", text)
     expect(ast).not.toBeNull()
-    checkGoalTreeSemantics(ast)
     const semTree = parseGoalTreeSemantics(ast)
     const expectedSemTree = {
       edges: [
         {
-          from: "CSF_revUp",
-          to: "goal"
+          from: "revUp",
+          to: "Goal"
         },
         {
-          from: "CSF_costsDown",
-          to: "goal"
+          from: "costsDown",
+          to: "Goal"
         },
         {
           from: "features",
@@ -158,15 +152,15 @@ describe("goal tree interpreter", () => {
         },
         {
           from: "newCust",
-          to: "CSF_revUp"
+          to: "revUp"
         },
         {
           from: "keepCust",
-          to: "CSF_revUp"
+          to: "revUp"
         },
         {
           from: "reduceInfra",
-          to: "CSF_costsDown"
+          to: "costsDown"
         },
         {
           from: "marketSalary",
@@ -179,10 +173,20 @@ describe("goal tree interpreter", () => {
       ],
       nodes: new Map(
         Object.entries({
-          goal: {
+          Goal: {
             annotation: "G",
-            key: "goal",
+            key: "Goal",
             label: "Make money now and in the future"
+          },
+          revUp: {
+            annotation: "CSF",
+            key: "revUp",
+            label: "Generate more revenue"
+          },
+          costsDown: {
+            annotation: "CSF",
+            key: "costsDown",
+            label: "Control costs"
           },
           keepCust: {
             key: "keepCust",
@@ -211,16 +215,6 @@ describe("goal tree interpreter", () => {
           features: {
             key: "features",
             label: "Develop new features"
-          },
-          CSF_revUp: {
-            annotation: "CSF",
-            key: "CSF_revUp",
-            label: "Generate more revenue"
-          },
-          CSF_costsDown: {
-            annotation: "CSF",
-            key: "CSF_costsDown",
-            label: "Control costs"
           }
         })
       ),
