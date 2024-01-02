@@ -1,9 +1,15 @@
-UDE_lowAdoption: "There is low adoption of TOC methods in the software industry"
+lowAdoption: "There is low adoption of TOC methods in the software industry" {
+    class: UDE
+}
 friction: "Existing tools introduce friction for developers"
 closedSource: "TOC-specific tools are closed source"
-noVersionControl: "Tools cannot be version controlled"
-FOL_versionControlPreference: "Devs expect the ability to maintain docs along-side source code"
-FOL_openSourcePreference: "Devs are unlikely to buy propietary diagrammers"
+noVersionControl: "Existing tools cannot be version controlled"
+versionControlPreference: "Devs expect the ability to maintain docs along-side source code" {
+    class: FOL
+}
+openSourcePreference: "Devs are unlikely to buy proprietary diagraming tools as their first intro to TOC" {
+    class: FOL
+}
 
 lowAdoption <- friction
 

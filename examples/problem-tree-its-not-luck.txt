@@ -1,116 +1,192 @@
 # Current Reality Tree from "It’s not Luck" by Eli Goldratt 
 # https://vithanco.com/current-reality-tree-crt-example-from-its-not-luck
 
-UDE lessUnified is "Sellers display a less and less unified front"
-UDE fierceComp is "Competition is fiercer than ever"
-UDE pricePressure is "There is an increasing pressure to reduce prices"
+lessUnified: "Sellers display a less and less unified front" {
+    class: UDE
+}
+fierceComp: "Competition is fiercer than ever" {
+    class: UDE
+}
+pricePressure: "There is an increasing pressure to reduce prices" {
+    class: UDE
+}
 
-pricePressure causes fierceComp
-fierceComp causes lessUnified
-FOL tradMethod is "A desperate traditional to get sales is to reduce prices"
-UDE salesPressure is "There is an increasing pressure to take actions that will increase sales"
-UDE salesPeoplePressure is "There is pressure on salespeople to bring in more sales"
-salesPressure cause salesPeoplePressure
-tradMethod and salesPressure cause pricePressure
-UDE companiesFallingShort is "Companies are falling short of their stated financial targets"
+pricePressure -> fierceComp
+fierceComp -> lessUnified
+tradMethod: "A desperate traditional to get sales is to reduce prices" {
+    class: FOL
+}
+salesPressure: "There is an increasing pressure to take actions that will increase sales" {
+    class: UDE
+}
+salesPeoplePressure: "There is pressure on salespeople to bring in more sales" {
+    class: UDE
+}
+salesPressure -> salesPeoplePressure
+pricePressure <- tradMethod && salesPressure 
+companiesFallingShort: "Companies are falling short of their stated financial targets" {
+    class: UDE
+}
 
-FOL alreadyCut is "Companies have already cut the costs they know how to cut"
-companiesFallingShort and alreadyCut causes salesPressure
+alreadyCut: "Companies have already cut the costs they know how to cut" {
+    class: FOL
+}
+salesPressure <- companiesFallingShort && alreadyCut  
 
-UDE notImproving is "Companies are not improving fast enough"
-notImproving and fierceComp causes companiesFallingShort
+notImproving: "Companies are not improving fast enough" {
+    class: UDE
+}
+companiesFallingShort <- notImproving && fierceComp
 
-UDE salesOverloaded is "Salespeople are overloaded"
+salesOverloaded: "Salespeople are overloaded" {
+    class: UDE
+}
 
-UDE newProductsConfuse is "In advanced material industries the constant introduction of new products confuses and spoils the market"
+newProductsConfuse: "In advanced material industries the constant introduction of new products confuses and spoils the market" {
+    class: UDE
+}
 
-UDE needLaunchProducts is "In advanced material industries there is need to launch new products at an unprecedented rate"
+needLaunchProducts: "In advanced material industries there is need to launch new products at an unprecedented rate" {
+    class: UDE
+}
 
-UDE pressureDevelopProducts is "In advanced material industries there is unprecedented pressure to promptly develop new products"
+pressureDevelopProducts: "In advanced material industries there is unprecedented pressure to promptly develop new products" {
+    class: UDE
+}
 
-salesPeoplePressure and needLaunchProducts causes salesOverloaded
-needLaunchProducts causes newProductsConfuse
-needLaunchProducts causes fierceComp
-
-
-FOL sellNewProducts is "One of the most effective ways to increase sales is to develop new, improved products"
-
-FOL newMaterialsEnables is "There are industries where fast development of new material enables the development of new products - advanced material industries" 
-
-salesPressure and sellNewProducts and newMaterialsEnables cause pressureDevelopProducts
-
-pressureDevelopProducts causes needLaunchProducts
-
-UDE engTooSlow is "Engineering is unable to deliver new products fast and reliably enough"
-UDE prodDistNotImproving is "Production and distribution do not improve fast/significantly enough"
-UDE insuffientMarketingIdeas is "Companies do not come up with sufficient innovative ideas in marketing"
-engTooSlow and prodDistNotImproving and insuffientMarketingIdeas causes notImproving
-
-UDE marketingNotOriented is "Marketing is not oriented to take advantage of the most promising and almost virgin direction - that of market segmentation"
-
-marketingNotOriented causes insuffientMarketingIdeas
-UDE eatIntoSales is "Most new outlets and most new/improved products eat into the sales of existing outlets/products"
-marketingNotOriented causes eatIntoSales
-
-C differentPerceptions is "Different market sections might have different perceptions of value even for the same product"
-UDE singlePriceTrimsCust is "Imposing a single price trims away customers for whom the price is too steep relative to their perception of value"
-UDE singlePriceLowers is "Imposing a single price enables customer who have a high perception of value to pay a lower price"
-
-differentPerceptions and singlePriceTrimsCust and singlePriceLowers causes marketingNotOriented
-
-UDE marketPunish is "More than ever the market punishes suppliers who don't perform according to expectation"
-
-singlePriceTrimsCust and singlePriceLowers and marketPerceptionIsKey causes marketPunish
-
-C marketPerceptionIsKey is "More than ever satisfying the market perception of value is key to success"
-
-UDE lowMargin is "In more and more cases the price the market is willing to pay doesn't leave behind enough margin"
-
-FOL perceptionMatchesBenefits is "Market perception of value is in accordance with with the benefits of having the product"
-
-C marketDeterminesPrice is "Prices and quantities sold are determined more and more by the markets' perception of value and less and less by the suppliers perception of value"
-
-perceptionMatchesBenefits causes marketDeterminesPrice
-marketDeterminesPrice causes marketPerceptionIsKey
-
-UDE managersBelieveGoodPrice is "Most managers believe that the product price should be equal to product cost plus reasonable margin"
-
-marketDeterminesPrice and managersBelieveGoodPrice causes lowMargin
-
-UDE managersBelieveSinglePrice is "Most managers believe that there is a single, fair price for a product"
-managersBelieveGoodPrice causes managersBelieveSinglePrice
-
-managersBelieveSinglePrice causes singlePriceTrimsCust
-managersBelieveSinglePrice causes singlePriceLowers
-
-UDE managersBelieveBelowCostLosses is "Most managers believe that selling below product cost leads (at least in the long run) to losses"
-managersBelieveGoodPrice causes managersBelieveBelowCostLosses
-
-managersBelieveBelowCostLosses causes refuseLowMargins
-UDE refuseLowMargins is "Most companies are reluctant to accept orders with low margins and even go so far as dropping low-margin products"
-
-FOL differentSectionsNeeds is "Different market sections might have different needs?"
-
-differentSectionsNeeds and canSegment causes differentPerceptions
-
-C canSegment is "Actions to guarantee effective segmentation can be taken"
-
-UDE believeProductCostReal is "Most managers believe that product cost is something real that that quantifies the efforts absorbed by the product"
-believeProductCostReal causes managersBelieveGoodPrice
+salesOverloaded <- salesPeoplePressure && needLaunchProducts 
+needLaunchProducts -> newProductsConfuse
+needLaunchProducts -> fierceComp
 
 
+sellNewProducts: "One of the most effective ways to increase sales is to develop new, improved products" {
+    class: FOL
+}
 
-FOL managerMeasure is "For every mode of operation, managers develop suitable measurements"
-UDE localOptima is "Managers are trying to run their companies by striving to achieve local optima"
-UDE measureLocal is "There are important measurements that focus on local optima, e.g. cost accounting based measurements"
-managerMeasure and localOptima cause measureLocal
+newMaterialsEnables: "There are industries where fast development of new material enables the development of new products - advanced material industries" {
+    class: FOL
+}
 
-FOL improvementIncreasesCost is "Many actions that are needed for improving lead-time, reliability, quality, response time and service do not save cost and/or increase cost in the short run"
-improvementIncreasesCost and measureLocal cause prodDistNotImproving
-improvementIncreasesCost and measureLocal cause engTooSlow
-UDE managersPerceiveEffortAsValue is "Most managers' perception of value of a product is heavily influenced by the local efforts required to design, produce, sell and deliver the product"
-localOptima causes managersPerceiveEffortAsValue
-FOL costAccountingProductCost is "The essence of cost accounting is to calculate the product cost"
+pressureDevelopProducts <- salesPressure && sellNewProducts && newMaterialsEnables
 
-costAccountingProductCost and managersPerceiveEffortAsValue and measureLocal cause believeProductCostReal
-UDE lackSalesSkills is "A large percentage of the existing sales force lacks sufficient sales skills"
+pressureDevelopProducts -> needLaunchProducts
+
+engTooSlow: "Engineering is unable to deliver new products fast and reliably enough" {
+    class: UDE
+}
+prodDistNotImproving: "Production and distribution do not improve fast/significantly enough" {
+    class: UDE
+}
+insuffientMarketingIdeas: "Companies do not come up with sufficient innovative ideas in marketing" {
+    class: UDE
+}
+notImproving <- engTooSlow && prodDistNotImproving && insuffientMarketingIdeas 
+
+marketingNotOriented: "Marketing is not oriented to take advantage of the most promising and almost virgin direction - that of market segmentation" {
+    class: UDE
+}
+
+marketingNotOriented -> insuffientMarketingIdeas
+eatIntoSales: "Most new outlets and most new/improved products eat into the sales of existing outlets/products" {
+    class: UDE
+}
+marketingNotOriented -> eatIntoSales
+
+differentPerceptions: "Different market sections might have different perceptions of value even for the same product"
+singlePriceTrimsCust: "Imposing a single price trims away customers for whom the price is too steep relative to their perception of value" {
+    class: UDE
+}
+singlePriceLowers: "Imposing a single price enables customer who have a high perception of value to pay a lower price" {
+    class: UDE
+}
+
+marketingNotOriented <- differentPerceptions && singlePriceTrimsCust && singlePriceLowers
+
+marketPunish: "More than ever the market punishes suppliers who don't perform according to expectation" {
+    class: UDE
+}
+
+marketPunish <- singlePriceTrimsCust && singlePriceLowers && marketPerceptionIsKey
+
+marketPerceptionIsKey: "More than ever satisfying the market perception of value is key to success"
+
+lowMargin: "In more and more cases the price the market is willing to pay doesn't leave behind enough margin" {
+    class: UDE
+}
+
+perceptionMatchesBenefits: "Market perception of value is in accordance with with the benefits of having the product" {
+    class: FOL
+}
+
+marketDeterminesPrice: "Prices and quantities sold are determined more and more by the markets' perception of value and less and less by the suppliers perception of value"
+
+perceptionMatchesBenefits -> marketDeterminesPrice
+marketDeterminesPrice -> marketPerceptionIsKey
+
+managersBelieveGoodPrice: "Most managers believe that the product price should be equal to product cost plus reasonable margin" {
+    class: UDE
+}
+
+lowMargin <- marketDeterminesPrice && managersBelieveGoodPrice
+
+managersBelieveSinglePrice: "Most managers believe that there is a single, fair price for a product" {
+    class: UDE
+}
+managersBelieveGoodPrice -> managersBelieveSinglePrice
+
+managersBelieveSinglePrice -> singlePriceTrimsCust
+managersBelieveSinglePrice -> singlePriceLowers
+
+managersBelieveBelowCostLosses: "Most managers believe that selling below product cost leads (at least in the long run) to losses" {
+    class: UDE
+}
+managersBelieveGoodPrice -> managersBelieveBelowCostLosses
+
+managersBelieveBelowCostLosses -> refuseLowMargins
+refuseLowMargins: "Most companies are reluctant to accept orders with low margins and even go so far as dropping low-margin products" {
+    class: UDE
+}
+
+differentSectionsNeeds: "Different market sections might have different needs?" {
+    class: FOL
+}
+
+differentPerceptions <- differentSectionsNeeds && canSegment
+
+canSegment: "Actions to guarantee effective segmentation can be taken"
+
+believeProductCostReal: "Most managers believe that product cost is something real that that quantifies the efforts absorbed by the product" {
+    class: UDE
+}
+believeProductCostReal -> managersBelieveGoodPrice
+
+
+
+managerMeasure: "For every mode of operation, managers develop suitable measurements" {
+    class: FOL
+}
+localOptima: "Managers are trying to run their companies by striving to achieve local optima" {
+    class: UDE
+}
+measureLocal: "There are important measurements that focus on local optima, e.g. cost accounting based measurements" {
+    class: UDE
+}
+measureLocal <- managerMeasure && localOptima
+
+improvementIncreasesCost: "Many actions that are needed for improving lead-time, reliability, quality, response time and service do not save cost and/or increase cost in the short run" {
+    class: FOL
+}
+prodDistNotImproving <- improvementIncreasesCost && measureLocal
+engTooSlow <- improvementIncreasesCost && measureLocal
+managersPerceiveEffortAsValue: "Most managers' perception of value of a product is heavily influenced by the local efforts required to design, produce, sell and deliver the product" {
+    class: UDE
+}
+localOptima -> managersPerceiveEffortAsValue
+costAccountingProductCost: "The essence of cost accounting is to calculate the product cost" {
+    class: FOL
+}
+
+believeProductCostReal <- costAccountingProductCost && managersPerceiveEffortAsValue && measureLocal
+lackSalesSkills: "A large percentage of the existing sales force lacks sufficient sales skills" {
+    class: UDE
+}

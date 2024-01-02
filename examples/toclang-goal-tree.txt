@@ -29,7 +29,7 @@ ecGrammar: "Evaporating Cloud grammar" {
     status: 100
 }
 crtGrammar: "Current Reality Tree grammar" {
-    status: 1
+    status: 100
 }
 prqGrammar: "Prerequisite Tree grammar" {
     status: 1
