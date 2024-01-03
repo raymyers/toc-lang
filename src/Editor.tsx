@@ -1,4 +1,5 @@
 import React from "react"
+import Editor from '@monaco-editor/react';
 
 /* eslint react/prop-types: 0 */
 
@@ -25,7 +26,7 @@ import React from "react"
 // - disabled: whether the text area is disabled
 // - autoFocus: whether the text area should be focused when the component is mounted
 
-export const Editor = ({
+export const EditorContainer = ({
   onChange,
   placeholder = "",
   rows = 20,
@@ -38,28 +39,24 @@ export const Editor = ({
   React.useEffect(() => {
     onChange(text)
   }, [text])
-  const handleChange = (event) => {
-    setText(event.target.value)
-    // Call the onChange function with the new text, debounced by 500ms
+  function handleEditorChange(value, event) {
     // At some point we disabled debounce... why?
-    // debounce(onChange, 500)(event.target.value);
-    onChange(event.target.value)
+    // debounce(onChange, 500)(evnt.target.value);
+    console.log('here is the current model value:', value);
+    setText(value)
+    onChange(value)
   }
-
   return (
     <div className="editor">
-      <textarea
-        style={{ width: "100%", height: "100%", resize: "none" }}
-        rows={rows}
-        value={text}
-        onChange={handleChange}
-        placeholder={placeholder}
-        disabled={disabled}
-        autoFocus={autoFocus}
+      <Editor
+        theme="vs-light"
+        height="60vh"
+        defaultValue={text}
+        onChange={handleEditorChange}
       />
       <p className={`edit-result ${error ? "error" : ""}`}>{error}</p>
     </div>
   )
 }
 
-export default Editor
+export default EditorContainer
