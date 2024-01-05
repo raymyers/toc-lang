@@ -1,5 +1,5 @@
 import React from "react"
-import Editor from '@monaco-editor/react';
+import CodeMirror from "@uiw/react-codemirror"
 
 /* eslint react/prop-types: 0 */
 
@@ -42,16 +42,16 @@ export const EditorContainer = ({
   function handleEditorChange(value, event) {
     // At some point we disabled debounce... why?
     // debounce(onChange, 500)(evnt.target.value);
-    console.log('here is the current model value:', value);
+    console.log("here is the current model value:", value)
     setText(value)
     onChange(value)
   }
   return (
     <div className="editor">
-      <Editor
-        theme="vs-light"
-        height="60vh"
-        defaultValue={text}
+      <CodeMirror
+        value={text}
+        height="80vh"
+        extensions={[]}
         onChange={handleEditorChange}
       />
       <p className={`edit-result ${error ? "error" : ""}`}>{error}</p>

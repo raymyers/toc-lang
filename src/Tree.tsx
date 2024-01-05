@@ -102,6 +102,9 @@ export default function Tree({
     if (!container?.node()) {
       return
     }
+    if (!inner?.node()) {
+      return
+    }
     // Run the renderer. This is what draws the final graph.
     render(inner, g)
     inner.attr(

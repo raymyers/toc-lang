@@ -201,9 +201,12 @@ const normalizeAstIds = (ast: Ast): Ast => {
   }
 }
 
-export const parseTextToAst = async (parserType, code) => {
-  const parser = (await parsersPromise)[parserType]
+export const parseTextToAst = async (parserType, code): Promise<Ast> => {
+  const parser: peggy.Parser = (await parsersPromise)[parserType]
   // handle null parser as unknown parser type
+  if (!code) {
+    return { statements: [] }
+  }
   const ast = parser.parse(code)
   return normalizeAstIds(ast)
 }
