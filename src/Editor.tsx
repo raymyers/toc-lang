@@ -1,5 +1,12 @@
 import React from "react"
 import CodeMirror from "@uiw/react-codemirror"
+import {
+  fileOpen,
+  directoryOpen,
+  fileSave,
+  supported,
+} from 'browser-fs-access';
+import FileControls from './FileControls'
 
 /* eslint react/prop-types: 0 */
 
@@ -25,7 +32,6 @@ import CodeMirror from "@uiw/react-codemirror"
 // - cols: the number of columns to display
 // - disabled: whether the text area is disabled
 // - autoFocus: whether the text area should be focused when the component is mounted
-
 export const EditorContainer = ({
   onChange,
   placeholder = "",
@@ -39,15 +45,30 @@ export const EditorContainer = ({
   React.useEffect(() => {
     onChange(text)
   }, [text])
+
   function handleEditorChange(value, event) {
-    // At some point we disabled debounce... why?
-    // debounce(onChange, 500)(evnt.target.value);
     console.log("here is the current model value:", value)
     setText(value)
     onChange(value)
   }
+
+  async function handleLoad() {
+    const file = await fileOpen();
+    const text = await file.text();
+    setText(text);
+    onChange(text);
+  }
+
+  async function handleSave() {
+    await fileSave(new Blob([text], { type: 'text/plain' }), {
+      fileName: 'document.txt',
+      extensions: ['.txt'],
+    });
+  }
+
   return (
     <div className="editor">
+      <FileControls onLoad={handleLoad} onSave={handleSave} />
       <CodeMirror
         value={text}
         height="80vh"
