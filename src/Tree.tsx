@@ -220,6 +220,12 @@ export default function Tree({
     font-weight: bold;
     alignment-baseline: middle;
   }
+  g.node {
+  }
+  g.node:hover {
+    fill: lightyellow;
+    fill-opacity: 0.6;
+  }
   `
   return (
     <div id="tree-svg-container" style={{ width: "100%", height: "500" }}>

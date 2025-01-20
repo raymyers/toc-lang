@@ -1,0 +1,55 @@
+@top start { statement* }
+
+@skip { space | LineComment }
+
+statement {
+  nodeStatement |
+  edgeStatement
+}
+
+nodeStatement {
+  Ident colonLabel? paramsBlock 
+}
+
+edgeStatement {
+  andSep<Ident> edgeDir andSep<Ident> colonLabel?
+}
+edgeDir {
+  "->" | "<-" | "--"
+}
+
+colonLabel {
+    ":" (String | Label)
+}
+
+andSep<content> {
+  content ("&&" content)*
+}
+
+
+paramsBlock {
+  "{" param* "}"
+}
+
+param {
+  Ident ":" expression
+}
+
+expression {
+    String | Label
+}
+
+@tokens {
+  String { '"' (!["\\] | "\\" _)* '"' }
+
+  Ident { $[a-zA-Z_\-0-9]+ }
+
+  LineComment { "#" ![\n]* }
+
+  space { $[ \t\n\r]+ }
+
+  "(" ")" "<-" "->" "--" "&&" ":"
+  Label { ![ \t#\n\r{}":] ![\n#\r{}":]* }
+}
+
+@detectDelim

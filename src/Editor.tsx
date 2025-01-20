@@ -7,6 +7,7 @@ import {
   exampleGoalTreeText,
   exampleProblemTreeText
 } from "./examples"
+import { TOC_LANG } from "./highlight"
 /* eslint react/prop-types: 0 */
 
 // const debounce = (func, wait) => {
@@ -77,7 +78,7 @@ export const EditorContainer = ({
   }
 
   React.useEffect(() => {
-    handleSelectExample('goal')
+    handleSelectExample("goal")
   }, [])
 
   return (
@@ -90,7 +91,7 @@ export const EditorContainer = ({
       <CodeMirror
         value={text}
         height="80vh"
-        extensions={[]}
+        extensions={[TOC_LANG()]}
         onChange={handleEditorChange}
       />
       <p className={`edit-result ${error ? "error" : ""}`}>{error}</p>
