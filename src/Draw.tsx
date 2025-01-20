@@ -20,7 +20,7 @@ function Draw() {
 
   const onEditorChange = async (value) => {
     try {
-      const {ast, type} = await parseTextToAst(value)
+      const { ast, type } = await parseTextToAst(value)
       console.log("diagramType", type)
       if (type === "goal") {
         setSemantics(parseGoalTreeSemantics(ast))

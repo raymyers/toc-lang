@@ -58,7 +58,7 @@ describe("problem tree interpreter", () => {
     testCases.forEach((testCase) => {
       it(testCase.name, async () => {
         const typeLine = `type: problem\n`
-        const {ast} = await parseTextToAst(typeLine + testCase.text)
+        const { ast } = await parseTextToAst(typeLine + testCase.text)
         approvals.verifyAsJSON(
           __dirname,
           "parses ast for input " + testCase.name,
@@ -81,14 +81,14 @@ describe("problem tree interpreter", () => {
           { fromIds: ["c"], type: "edge", toId: "d", text: undefined }
         ]
       }
-      const {ast} = await parseTextToAst(text)
+      const { ast } = await parseTextToAst(text)
       expect(ast).toStrictEqual(expected)
       expect(() => parseProblemTreeSemantics(ast)).toThrowError()
     })
 
     it("example parses", async () => {
       const text = exampleProblemTreeText
-      const {ast, type} = await parseTextToAst(text)
+      const { ast, type } = await parseTextToAst(text)
       expect(type).toEqual('problem')
       const semantics = parseProblemTreeSemantics(ast)
       const nodes = Object.fromEntries(semantics.nodes)

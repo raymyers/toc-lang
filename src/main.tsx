@@ -21,11 +21,11 @@ const router = createBrowserRouter(
         },
         {
           path: "draw",
-          element: <Draw />,
+          element: <Draw />
         },
         {
           path: "draw/:diagramType", // param not used anymore, redirecting
-          loader:  async () => redirect("/draw")
+          loader: async () => redirect("/draw")
         },
         {
           path: "about",

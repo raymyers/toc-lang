@@ -4,8 +4,8 @@ import {
   fileOpen,
   directoryOpen,
   fileSave,
-  supported,
-} from 'browser-fs-access';
+  supported
+} from 'browser-fs-access'
 import FileControls from './FileControls'
 import {
   exampleEvaporatingCloudText,
@@ -57,24 +57,23 @@ export const EditorContainer = ({
   }
 
   async function handleLoad() {
-    const file = await fileOpen();
-    const text = await file.text();
-    setText(text);
-    onChange(text);
+    const file = await fileOpen()
+    const text = await file.text()
+    setText(text)
+    onChange(text)
   }
 
   async function handleSave() {
     await fileSave(new Blob([text], { type: 'text/plain' }), {
       fileName: 'document.txt',
-      extensions: ['.txt'],
-    });
+      extensions: ['.txt']
+    })
   }
 
-
   const examplesByType = {
-    "conflict": exampleEvaporatingCloudText,
-    "goal": exampleGoalTreeText,
-    "problem": exampleProblemTreeText
+    conflict: exampleEvaporatingCloudText,
+    goal: exampleGoalTreeText,
+    problem: exampleProblemTreeText
   }
   async function handleSelectExample(example) {
     if (example in examplesByType) {

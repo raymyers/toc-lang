@@ -136,7 +136,7 @@ describe("goal tree interpreter", () => {
   })
   it("parses example", async () => {
     const text = exampleGoalTreeText
-    const {ast} = await parseTextToAst(text)
+    const { ast } = await parseTextToAst(text)
     expect(ast).not.toBeNull()
     const semTree = parseGoalTreeSemantics(ast)
     const expectedSemTree = {
