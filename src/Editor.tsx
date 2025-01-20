@@ -76,6 +76,10 @@ export const EditorContainer = ({
     }
   }
 
+  React.useEffect(() => {
+    handleSelectExample('goal')
+  }, [])
+
   return (
     <div className="editor">
       <FileControls

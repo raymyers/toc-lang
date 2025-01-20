@@ -1,6 +1,5 @@
 import "./App.css"
 import React from "react"
-import { useLoaderData } from "react-router-dom"
 import Editor from "./Editor"
 import { Diagram } from "./Diagram"
 

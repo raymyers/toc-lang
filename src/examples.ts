@@ -1,5 +1,5 @@
-export const exampleGoalTreeText = `
-type: goal
+export const exampleGoalTreeText = `type: goal
+
 Goal: "Make money now and in the future"
 
 revUp: "Generate more revenue" {
@@ -34,8 +34,8 @@ retain <- marketSalary
 retain <- morale
 `
 
-export const exampleEvaporatingCloudText = `
-type: conflict
+export const exampleEvaporatingCloudText = `type: conflict
+
 A: Maximize business performance
 
 B: Subordinate all decisions to the financial goal
@@ -49,8 +49,8 @@ B <- D: *inject* Psychological flow triggers
 D': Attend to people's needs (& let people work)
 `
 
-export const exampleProblemTreeText = `
-type: problem
+export const exampleProblemTreeText = `type: problem
+
 bad: "Bad user experience" {
     class: UDE
 }
