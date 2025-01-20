@@ -25,9 +25,9 @@ const tocLangParserPromise = loadFile(tocLangGrammarUrl).then(
 
 const parsersPromise = Promise.all([tocLangParserPromise]).then(([tocLang]) => {
   return {
-    "evaporating-cloud": tocLang,
-    "goal-tree": tocLang,
-    "problem-tree": tocLang
+    "conflict": tocLang,
+    "goal": tocLang,
+    "problem": tocLang
   }
 })
 
@@ -49,6 +49,14 @@ export interface TreeSemantics {
   nodes: Map<string, Node>
   edges: Edge[]
 }
+
+export type EDiagramType = 'problem' | 'conflict' | 'goal';
+
+export interface ParseResult {
+  ast: Ast
+  type: EDiagramType
+}
+
 
 const isGoalNodeStatement = (s) =>
   s.type === "node" && normalizeId(s.id) === "goal"
@@ -201,12 +209,26 @@ const normalizeAstIds = (ast: Ast): Ast => {
   }
 }
 
-export const parseTextToAst = async (parserType, code): Promise<Ast> => {
-  const parser: peggy.Parser = (await parsersPromise)[parserType]
-  // handle null parser as unknown parser type
-  if (!code) {
-    return { statements: [] }
+export const parseTextToAst = async (code : string | unknown): Promise<ParseResult> => {
+  if (typeof code !== 'string') {
+    throw Error("Code missing")
   }
-  const ast = parser.parse(code)
-  return normalizeAstIds(ast)
+  // Since we don't have the full parsers yet, using a RegEx.
+  // This could false match on a comment or something but fine for now.
+  const typeMatch = code.match(/\btype:\s*(\w+)\b/)
+  if (!typeMatch) {
+    throw Error("Type declaration missing") 
+  }
+  const parserType : string = typeMatch[1]
+  if (['problem', 'conflict', 'goal'].includes(parserType)) {
+    const parserEType = parserType as EDiagramType
+    
+    const parser: peggy.Parser = (await parsersPromise)[parserType]
+    const ast = parser.parse(code)
+    const normalizeAst = normalizeAstIds(ast)
+    const statements = normalizeAst.statements.filter(s => s.id !== 'type')
+    return {ast: {statements}, type: parserEType} 
+  } else {
+    throw Error(`Invalid type '${parserType}'. Must be one of: problem, conflict, goal`)
+  }
 }

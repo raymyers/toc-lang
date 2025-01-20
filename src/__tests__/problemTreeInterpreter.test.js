@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { assert, describe, expect, it } from "vitest"
 import { parseTextToAst, parseProblemTreeSemantics } from "../interpreter"
 import approvals from "approvals"
 import { exampleProblemTreeText } from "../examples"
@@ -57,7 +57,8 @@ describe("problem tree interpreter", () => {
   describe("parses ast for input", () => {
     testCases.forEach((testCase) => {
       it(testCase.name, async () => {
-        const ast = await parseTextToAst("problem-tree", testCase.text)
+        const typeLine = `type: problem\n`
+        const {ast} = await parseTextToAst(typeLine + testCase.text)
         approvals.verifyAsJSON(
           __dirname,
           "parses ast for input " + testCase.name,
@@ -68,6 +69,7 @@ describe("problem tree interpreter", () => {
 
     it("fails for cause referencing unknown node", async () => {
       const text = `
+      type: problem
       b: "badness" {class: UDE}
       c: "cause"
       d <- c
@@ -79,14 +81,15 @@ describe("problem tree interpreter", () => {
           { fromIds: ["c"], type: "edge", toId: "d", text: undefined }
         ]
       }
-      const ast = await parseTextToAst("problem-tree", text)
+      const {ast} = await parseTextToAst(text)
       expect(ast).toStrictEqual(expected)
       expect(() => parseProblemTreeSemantics(ast)).toThrowError()
     })
 
     it("example parses", async () => {
       const text = exampleProblemTreeText
-      const ast = await parseTextToAst("problem-tree", text)
+      const {ast, type} = await parseTextToAst(text)
+      expect(type).toEqual('problem')
       const semantics = parseProblemTreeSemantics(ast)
       const nodes = Object.fromEntries(semantics.nodes)
       approvals.verifyAsJSON(__dirname, "example problem tree", {

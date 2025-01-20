@@ -3,11 +3,7 @@ import React from "react"
 import { useLoaderData } from "react-router-dom"
 import Editor from "./Editor"
 import { Diagram } from "./Diagram"
-import {
-  exampleEvaporatingCloudText,
-  exampleGoalTreeText,
-  exampleProblemTreeText
-} from "./examples"
+
 import {
   parseTextToAst,
   parseGoalTreeSemantics,
@@ -15,47 +11,28 @@ import {
   type TreeSemantics
 } from "./interpreter"
 
-export async function loader({ params }) {
-  const examplesByType = {
-    "evaporating-cloud": exampleEvaporatingCloudText,
-    "goal-tree": exampleGoalTreeText,
-    "problem-tree": exampleProblemTreeText
-  }
-
-  return {
-    diagramType: params.diagramType,
-    example: examplesByType[params.diagramType]
-  }
-}
-
-interface loadedExample {
-  diagramType: string
-  example: string
-}
-
 function Draw() {
-  const { diagramType, example } = useLoaderData() as loadedExample
-  console.log("diagramType", diagramType)
   const [ast, setAst] = React.useState<any>(null)
   const [semantics, setSemantics] = React.useState<TreeSemantics | null>(null)
   const [error, setError] = React.useState("")
   const [text, setText] = React.useState<string>()
-  React.useEffect(() => {
-    setText(example)
-  }, [diagramType])
+  const [diagramType, setDiagramType] = React.useState<string | null>()
 
   const onEditorChange = async (value) => {
     try {
-      const parsed = await parseTextToAst(diagramType, value)
-      if (diagramType === "goal-tree") {
-        setSemantics(parseGoalTreeSemantics(parsed))
-      } else if (diagramType === "problem-tree") {
-        setSemantics(parseProblemTreeSemantics(parsed))
+      const {ast, type} = await parseTextToAst(value)
+      console.log("diagramType", type)
+      if (type === "goal") {
+        setSemantics(parseGoalTreeSemantics(ast))
+      } else if (type === "problem") {
+        setSemantics(parseProblemTreeSemantics(ast))
       } else {
         setSemantics(null)
+        setDiagramType(null)
       }
-      console.log(parsed)
-      setAst(parsed)
+      console.log(ast)
+      setAst(ast)
+      setDiagramType(type)
       setError("")
     } catch (e) {
       console.error(e)

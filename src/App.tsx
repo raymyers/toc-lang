@@ -9,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <div className="flex-row nav">
-        <div className="nav-item">
+        {/* <div className="nav-item">
           <NavLink className={navLinkClass} to={`draw/evaporating-cloud`}>
             Evaporating Cloud
           </NavLink>
@@ -26,8 +26,11 @@ function App() {
             Problem Tree
           </NavLink>
         </div>
-        |&nbsp;
-        <div className="nav-item">
+        |&nbsp; */}
+        <div className="nav-item title">
+          <span>TOC-lang</span>
+        </div>
+        <div className="nav-item right">
           <NavLink className={navLinkClass} to={`about`}>
             About
           </NavLink>

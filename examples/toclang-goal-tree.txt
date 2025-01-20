@@ -1,3 +1,5 @@
+type: goal
+
 Goal: "Drive adoption of TOC in software"
 devFriendly: "Thinking Processes are Dev Friendly"
 

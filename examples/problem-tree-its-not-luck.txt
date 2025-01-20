@@ -1,6 +1,8 @@
 # Current Reality Tree from "It’s not Luck" by Eli Goldratt 
 # https://vithanco.com/current-reality-tree-crt-example-from-its-not-luck
 
+type: problem
+
 lessUnified: "Sellers display a less and less unified front" {
     class: UDE
 }

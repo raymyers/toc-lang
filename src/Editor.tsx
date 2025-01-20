@@ -7,7 +7,11 @@ import {
   supported,
 } from 'browser-fs-access';
 import FileControls from './FileControls'
-
+import {
+  exampleEvaporatingCloudText,
+  exampleGoalTreeText,
+  exampleProblemTreeText
+} from "./examples"
 /* eslint react/prop-types: 0 */
 
 // const debounce = (func, wait) => {
@@ -66,9 +70,21 @@ export const EditorContainer = ({
     });
   }
 
+
+  const examplesByType = {
+    "conflict": exampleEvaporatingCloudText,
+    "goal": exampleGoalTreeText,
+    "problem": exampleProblemTreeText
+  }
+  async function handleSelectExample(example) {
+    if (example in examplesByType) {
+      handleEditorChange(examplesByType[example], undefined)
+    }
+  }
+
   return (
     <div className="editor">
-      <FileControls onLoad={handleLoad} onSave={handleSave} />
+      <FileControls onLoad={handleLoad} onSave={handleSave} onSelectExample={handleSelectExample}/>
       <CodeMirror
         value={text}
         height="80vh"

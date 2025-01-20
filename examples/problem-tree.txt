@@ -1,3 +1,5 @@
+type: problem
+
 lowAdoption: "There is low adoption of TOC methods in the software industry" {
     class: UDE
 }

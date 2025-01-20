@@ -5,7 +5,10 @@ import { exampleGoalTreeText } from "../examples"
 describe("goal tree interpreter", () => {
   describe("parses ast for input", () => {
     it("with only goal", async () => {
-      const text = 'goal: "win"'
+      const text = `
+      type: goal
+      goal: "win"
+      `
       const expected = {
         statements: [
           {
@@ -16,11 +19,13 @@ describe("goal tree interpreter", () => {
           }
         ]
       }
-      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
 
     it("with CSF and NCs", async () => {
       const text = `
+      type: goal
+
       Goal: win
 
       weScore: We score points { class: CSF }
@@ -92,10 +97,11 @@ describe("goal tree interpreter", () => {
           }
         ]
       }
-      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
     it("node status", async () => {
       const text = `
+        type: goal
         mynode: "win" {
           status: 50
         }
@@ -110,11 +116,12 @@ describe("goal tree interpreter", () => {
           }
         ]
       }
-      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
     it("single-line comments", async () => {
       const text = `
       # This is a comment
+      type: goal
       `
       const expected = {
         statements: [
@@ -124,12 +131,12 @@ describe("goal tree interpreter", () => {
           }
         ]
       }
-      expect(await parseTextToAst("goal-tree", text)).toStrictEqual(expected)
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
   })
   it("parses example", async () => {
     const text = exampleGoalTreeText
-    const ast = await parseTextToAst("goal-tree", text)
+    const {ast} = await parseTextToAst(text)
     expect(ast).not.toBeNull()
     const semTree = parseGoalTreeSemantics(ast)
     const expectedSemTree = {

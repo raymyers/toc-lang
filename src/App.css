@@ -43,7 +43,17 @@ textarea {
 }
 .nav-item {
   padding-right: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
+}
+.nav-item.title {
+  font-size: 1.8em;
+  font-weight: bold;
+  font-family: 'OCR A Std', monospace; 
+  color: var(--color-text);
+}
+
+.nav-item.right {
+  margin-left: auto;
 }
 .nav-item a.active {
   color: inherit;

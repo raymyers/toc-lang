@@ -4,7 +4,7 @@ import ReactDOM from "react-dom/client"
 import App from "./App"
 import "./index.css"
 import ErrorPage from "./ErrorPage"
-import Draw, { loader } from "./Draw"
+import Draw from "./Draw"
 import { About } from "./About"
 
 const router = createBrowserRouter(
@@ -20,9 +20,12 @@ const router = createBrowserRouter(
           loader: async () => redirect("/draw/goal-tree")
         },
         {
-          path: "draw/:diagramType",
+          path: "draw",
           element: <Draw />,
-          loader
+        },
+        {
+          path: "draw/:diagramType", // param not used anymore, redirecting
+          loader:  async () => redirect("/draw")
         },
         {
           path: "about",

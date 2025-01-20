@@ -50,13 +50,13 @@ export function Diagram({ ast, semantics, diagramType }) {
           </a>
         </div>
       )}
-      {diagramType === "evaporating-cloud" && (
+      {diagramType === "conflict" && (
         <Cloud ast={ast} setSvgElem={updateSvgElem} />
       )}
-      {diagramType === "goal-tree" && (
+      {diagramType === "goal" && (
         <Tree semantics={semantics} setSvgElem={updateSvgElem} />
       )}
-      {diagramType === "problem-tree" && (
+      {diagramType === "problem" && (
         <Tree semantics={semantics} setSvgElem={updateSvgElem} />
       )}
     </div>
