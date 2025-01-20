@@ -9,14 +9,14 @@ describe("evaporating cloud tree interpreter", () => {
       const expected = {
         statements: []
       }
-      expect((await parseTextToAst(text)).ast).toStrictEqual(
-        expected
-      )
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
 
     it("empty text throws type missing", async () => {
       const text = ""
-      await expect(parseTextToAst(text)).rejects.toThrow("Type declaration missing")
+      await expect(parseTextToAst(text)).rejects.toThrow(
+        "Type declaration missing"
+      )
     })
 
     it("with only labels", async () => {
@@ -62,9 +62,7 @@ D': Attend to people's needs (& let people work)
           }
         ]
       }
-      expect((await parseTextToAst(text)).ast).toStrictEqual(
-        expected
-      )
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
 
     it("with only labels, quoted", async () => {
@@ -110,9 +108,7 @@ D': "Attend to people's needs (& let people work)"
           }
         ]
       }
-      expect((await parseTextToAst(text)).ast).toStrictEqual(
-        expected
-      )
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
 
     it("with injection on requirement", async () => {
@@ -144,9 +140,7 @@ A <- D: inject Psychological flow triggers
           }
         ]
       }
-      expect((await parseTextToAst(text)).ast).toStrictEqual(
-        expected
-      )
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
 
     it("with injection on conflict", async () => {
@@ -164,9 +158,7 @@ D -> D': "Discover they don't conflict"
           }
         ]
       }
-      expect((await parseTextToAst(text)).ast).toStrictEqual(
-        expected
-      )
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
     it("can inject with bidirectional edge", async () => {
       const text = `
@@ -184,9 +176,7 @@ D -- D': "Discover they don't conflict"
           }
         ]
       }
-      expect((await parseTextToAst(text)).ast).toStrictEqual(
-        expected
-      )
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
     it("single-line comments", async () => {
       const text = `
@@ -201,9 +191,7 @@ D -- D': "Discover they don't conflict"
           }
         ]
       }
-      expect((await parseTextToAst(text)).ast).toStrictEqual(
-        expected
-      )
+      expect((await parseTextToAst(text)).ast).toStrictEqual(expected)
     })
   })
 

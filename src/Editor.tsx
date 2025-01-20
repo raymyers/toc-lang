@@ -1,12 +1,7 @@
 import React from "react"
 import CodeMirror from "@uiw/react-codemirror"
-import {
-  fileOpen,
-  directoryOpen,
-  fileSave,
-  supported
-} from 'browser-fs-access'
-import FileControls from './FileControls'
+import { fileOpen, directoryOpen, fileSave, supported } from "browser-fs-access"
+import FileControls from "./FileControls"
 import {
   exampleEvaporatingCloudText,
   exampleGoalTreeText,
@@ -64,9 +59,9 @@ export const EditorContainer = ({
   }
 
   async function handleSave() {
-    await fileSave(new Blob([text], { type: 'text/plain' }), {
-      fileName: 'document.txt',
-      extensions: ['.txt']
+    await fileSave(new Blob([text], { type: "text/plain" }), {
+      fileName: "document.txt",
+      extensions: [".txt"]
     })
   }
 
@@ -83,7 +78,11 @@ export const EditorContainer = ({
 
   return (
     <div className="editor">
-      <FileControls onLoad={handleLoad} onSave={handleSave} onSelectExample={handleSelectExample}/>
+      <FileControls
+        onLoad={handleLoad}
+        onSave={handleSave}
+        onSelectExample={handleSelectExample}
+      />
       <CodeMirror
         value={text}
         height="80vh"

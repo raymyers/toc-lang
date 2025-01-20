@@ -1,17 +1,29 @@
-import React from 'react'
+import React from "react"
 
 interface FileControlsProps {
-  onLoad: () => void;
-  onSave: () => void;
-  onSelectExample: (vale: string) => void;
+  onLoad: () => void
+  onSave: () => void
+  onSelectExample: (vale: string) => void
 }
 
-export const FileControls: React.FC<FileControlsProps> = ({ onLoad, onSave, onSelectExample }) => {
+export const FileControls: React.FC<FileControlsProps> = ({
+  onLoad,
+  onSave,
+  onSelectExample
+}) => {
   return (
     <div className="file-controls">
-      <button className='load' onClick={onLoad}>Load</button>
-      <button className='save' onClick={onSave}>Save</button>
-      <select onChange={(e) => { onSelectExample(e.target.value) }}>
+      <button className="load" onClick={onLoad}>
+        Load
+      </button>
+      <button className="save" onClick={onSave}>
+        Save
+      </button>
+      <select
+        onChange={(e) => {
+          onSelectExample(e.target.value)
+        }}
+      >
         <option value="">Examples</option>
         <option value="goal">Goal Tree</option>
         <option value="problem">Problem Tree</option>

@@ -89,7 +89,7 @@ describe("problem tree interpreter", () => {
     it("example parses", async () => {
       const text = exampleProblemTreeText
       const { ast, type } = await parseTextToAst(text)
-      expect(type).toEqual('problem')
+      expect(type).toEqual("problem")
       const semantics = parseProblemTreeSemantics(ast)
       const nodes = Object.fromEntries(semantics.nodes)
       approvals.verifyAsJSON(__dirname, "example problem tree", {

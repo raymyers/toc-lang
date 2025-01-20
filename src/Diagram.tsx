@@ -34,13 +34,11 @@ export function Diagram({ ast, semantics, diagramType }) {
   }
   return (
     <div>
-      {downloadUrl && pngDownloadUrl
-        ? (
+      {downloadUrl && pngDownloadUrl ? (
         <></>
-          )
-        : (
+      ) : (
         <button onClick={genUrls}>Export</button>
-          )}
+      )}
       {downloadUrl && pngDownloadUrl && (
         <div>
           <a href={downloadUrl} download={`${diagramType}.svg`}>

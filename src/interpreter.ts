@@ -50,7 +50,7 @@ export interface TreeSemantics {
   edges: Edge[]
 }
 
-export type EDiagramType = 'problem' | 'conflict' | 'goal'
+export type EDiagramType = "problem" | "conflict" | "goal"
 
 export interface ParseResult {
   ast: Ast
@@ -206,8 +206,10 @@ const normalizeAstIds = (ast: Ast): Ast => {
   }
 }
 
-export const parseTextToAst = async (code: string | unknown): Promise<ParseResult> => {
-  if (typeof code !== 'string') {
+export const parseTextToAst = async (
+  code: string | unknown
+): Promise<ParseResult> => {
+  if (typeof code !== "string") {
     throw Error("Code missing")
   }
   // Since we don't have the full parsers yet, using a RegEx.
@@ -217,15 +219,17 @@ export const parseTextToAst = async (code: string | unknown): Promise<ParseResul
     throw Error("Type declaration missing")
   }
   const parserType: string = typeMatch[1]
-  if (['problem', 'conflict', 'goal'].includes(parserType)) {
+  if (["problem", "conflict", "goal"].includes(parserType)) {
     const parserEType = parserType as EDiagramType
 
     const parser: peggy.Parser = (await parsersPromise)[parserType]
     const ast = parser.parse(code)
     const normalizeAst = normalizeAstIds(ast)
-    const statements = normalizeAst.statements.filter(s => s.id !== 'type')
+    const statements = normalizeAst.statements.filter((s) => s.id !== "type")
     return { ast: { statements }, type: parserEType }
   } else {
-    throw Error(`Invalid type '${parserType}'. Must be one of: problem, conflict, goal`)
+    throw Error(
+      `Invalid type '${parserType}'. Must be one of: problem, conflict, goal`
+    )
   }
 }

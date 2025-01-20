@@ -48,7 +48,7 @@ textarea {
 .nav-item.title {
   font-size: 1.8em;
   font-weight: bold;
-  font-family: 'OCR A Std', monospace; 
+  font-family: "OCR A Std", monospace;
   color: var(--color-text);
 }
 
