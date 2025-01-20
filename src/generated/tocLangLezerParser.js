@@ -2,15 +2,15 @@
 import {LRParser} from "@lezer/lr"
 export const parser = LRParser.deserialize({
   version: 14,
-  states: "%WQYQPOOO_QQO'#CvOsQQO'#CuOOQO'#Cm'#CmOOQO'#Cg'#CgQYQPOOO!OQSO'#CoO!WQPO'#CpOOQO,59Y,59YO!`QPO,59YO!eQPO'#CiO!jQQO,59bOOQO'#Cw'#CwO!xQPO,59aOOQO-E6e-E6eOOQO,59Z,59ZO!}QPO'#CrOOQO'#Ch'#ChO#SQPO,59[OOQO,59[,59[OOQO1G.t1G.tOOQO,59T,59TOOQO-E6g-E6gO#[QPO'#CvO#jQPO1G.{O#uQSO,59^OOQO-E6f-E6fOOQO1G.v1G.vO#}QPO,59bOOQO7+$g7+$gOOQO'#Cs'#CsOOQO1G.x1G.x",
-  stateData: "$]~O`OSPOS~ORPO~OSUOVYOeVOWjXXjXYjX~OW[OX[OY[O~OT_OU_O~OR`OhcO~OeVO~OReO~OVYOWjaXjaYja~ORgO~OSiO~OR`OhkO~OVYORjXSjX^jX~OSUORii^ii~OTnOUnO~OVYORjaSja^ja~O",
-  goto: "!zlPPPPPPPPPPPmsyPPP!T!X!]!cP!i!mP!X!p!wQTOR^TQbVRjbQZPSfZlRlgTSOTTROTQXPRmhQWPRdXTaVbRoiSQOTRh]R]Q",
-  nodeNames: "⚠ LineComment start Ident : String Label && -> <- --",
-  maxTerm: 27,
+  states: "%WQYQPOOO_QQO'#CtOsQQO'#CsOOQO'#Cl'#ClOOQO'#Cf'#CfQYQPOOO!OQPO'#CnOOQO,59X,59XO!WQPO'#ChO!]QQO,59`O!kQPO,59XOOQO'#Cu'#CuO!pQPO,59_OOQO-E6d-E6dO!uQPO'#CpOOQO'#Cg'#CgO!zQPO,59YOOQO,59Y,59YOOQO,59S,59SOOQO-E6f-E6fO#SQPO1G.sO#XQPO'#CtO#gQPO1G.yO#rQPO,59[OOQO-E6e-E6eOOQO1G.t1G.tOOQO7+$_7+$_O#zQPO,59`O$YQPO7+$eOOQO'#Cq'#CqOOQO1G.v1G.vOOQO<<HP<<HP",
+  stateData: "$_~O_OSPOS~ORPO~OSYOUWOcUOVhXWhXXhX~OVZOWZOXZO~OR^OfaO~ORbO~OUWOVhaWhaXha~OTdO~OReO~OSgO~OR^OfiO~OcUO~OUWORhXShX]hX~OSlORgi]gi~ORmOTmO~OUWORhaSha]ha~OToO~O",
+  goto: "!rjPPPPPPPPPPkqwPPP!R!V!ZP!a!eP!V!h!oQTOR]TQ`URh`QXPScXkRkeTSOTTROTQVPRjdT_U`RngSQOTRf[R[Q",
+  nodeNames: "⚠ LineComment start Ident : String && -> <- --",
+  maxTerm: 25,
   skippedNodes: [0,1],
   repeatNodeCount: 3,
-  tokenData: ".i~RoOX#SXY#zYZ#zZ]#S]^#z^p#Spq#zqr#Srs$]st%ytv#Svw&bw}#S}!O'|!O!Q#S!Q![*n![!],n!]!^#S!^!_,s!_!c#S!c!}*n!}#R#S#R#S*n#S#T#S#T#o*n#o#p._#p#q#S#q#r.d#r;'S#S;'S;=`#t<%lO#SS#XXUSOY#SZ]#S^r#St![#S!]#o#S#p#q#S#r;'S#S;'S;=`#t<%lO#SS#wP;=`<%l#S~$PS`~XY#zYZ#z]^#zpq#z~$`VOr$]rs$us#O$]#O#P$z#P;'S$];'S;=`%s<%lO$]~$zOT~~$}RO;'S$];'S;=`%W;=`O$]~%ZWOr$]rs$us#O$]#O#P$z#P;'S$];'S;=`%s;=`<%l$]<%lO$]~%vP;=`<%l$]~&OSP~OY%yZ;'S%y;'S;=`&[<%lO%y~&_P;=`<%l%yV&gZUSOY#SZ]#S^r#Stv#Svw'Yw![#S!]#o#S#p#q#S#r;'S#S;'S;=`#t<%lO#SV'aXVRUSOY#SZ]#S^r#St![#S!]#o#S#p#q#S#r;'S#S;'S;=`#t<%lO#SV(TcRPUSOY#SZ]#S^r#St}#S}!O)`!O!Q#S!Q![*n!]!`#S!`!a+z!a!c#S!c!}*n!}#R#S#R#S*n#S#T#S#T#o*n#p#q#S#r;'S#S;'S;=`#t<%lO#SV)iaYQRPUSOY#SZ]#S^r#St}#S}!O*n!O!Q#S!Q![*n!]!c#S!c!}*n!}#R#S#R#S*n#S#T#S#T#o*n#p#q#S#r;'S#S;'S;=`#t<%lO#ST*uaRPUSOY#SZ]#S^r#St}#S}!O*n!O!Q#S!Q![*n!]!c#S!c!}*n!}#R#S#R#S*n#S#T#S#T#o*n#p#q#S#r;'S#S;'S;=`#t<%lO#SU,RXWQUSOY#SZ]#S^r#St![#S!]#o#S#p#q#S#r;'S#S;'S;=`#t<%lO#S~,sOS~U,xZUSOY#SZ]#S^r#St}#S}!O-k!O![#S!]#o#S#p#q#S#r;'S#S;'S;=`#t<%lO#SU-rXXQUSOY#SZ]#S^r#St![#S!]#o#S#p#q#S#r;'S#S;'S;=`#t<%lO#S~.dOe~~.iOh~",
-  tokenizers: [0, 1, 2],
+  tokenData: "&z~R`XY!TYZ!T]^!Tpq!Trs!fst$Svw$k}!O$v!Q![%u![!]&`!^!_&e!c!}%u#R#S%u#T#o%u#o#p&p#q#r&u~!YS_~XY!TYZ!T]^!Tpq!T~!iVOr!frs#Os#O!f#O#P#T#P;'S!f;'S;=`#|<%lO!f~#TOT~~#WRO;'S!f;'S;=`#a;=`O!f~#dWOr!frs#Os#O!f#O#P#T#P;'S!f;'S;=`#|;=`<%l!f<%lO!f~$PP;=`<%l!f~$XSP~OY$SZ;'S$S;'S;=`$e<%lO$S~$hP;=`<%l$S~$nPvw$q~$vOU~R${URP}!O%_!Q![%u!`!a&Z!c!}%u#R#S%u#T#o%uR%fTXQRP}!O%u!Q![%u!c!}%u#R#S%u#T#o%uP%zTRP}!O%u!Q![%u!c!}%u#R#S%u#T#o%uQ&`OVQ~&eOS~~&hP}!O&k~&pOW~~&uOc~~&zOf~",
+  tokenizers: [0, 1],
   topRules: {"start":[0,2]},
   tokenPrec: 0
 })

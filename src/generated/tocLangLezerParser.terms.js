@@ -3,5 +3,4 @@ export const
   LineComment = 1,
   start = 2,
   Ident = 3,
-  String = 5,
-  Label = 6
+  String = 5

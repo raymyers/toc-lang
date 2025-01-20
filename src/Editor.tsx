@@ -7,7 +7,7 @@ import {
   exampleGoalTreeText,
   exampleProblemTreeText
 } from "./examples"
-import { TOC_LANG } from "./highlight"
+import { TOC_LANG, TOC_LANG_HIGHLIGHT } from "./highlight"
 /* eslint react/prop-types: 0 */
 
 // const debounce = (func, wait) => {
@@ -91,7 +91,7 @@ export const EditorContainer = ({
       <CodeMirror
         value={text}
         height="80vh"
-        extensions={[TOC_LANG()]}
+        extensions={[TOC_LANG(), TOC_LANG_HIGHLIGHT]}
         onChange={handleEditorChange}
       />
       <p className={`edit-result ${error ? "error" : ""}`}>{error}</p>

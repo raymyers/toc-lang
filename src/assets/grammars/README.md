@@ -11,3 +11,8 @@ When updating the Lezer grammar, regenerate the parser code.
 ```sh
 npm run gen
 ```
+
+## Known differences
+
+The Lezer grammar is not aware that labels can contain free text,
+not just a quoted string.
