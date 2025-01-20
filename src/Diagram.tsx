@@ -34,22 +34,25 @@ export function Diagram({ ast, semantics, diagramType }) {
   }
   return (
     <div>
-      {downloadUrl && pngDownloadUrl ? (
-        <></>
-      ) : (
-        <button onClick={genUrls}>Export</button>
-      )}
-      {downloadUrl && pngDownloadUrl && (
-        <div>
-          <a href={downloadUrl} download={`${diagramType}.svg`}>
-            Download SVG
-          </a>
-          <span> | </span>
-          <a href={pngDownloadUrl} download={`${diagramType}.png`}>
-            PNG
-          </a>
-        </div>
-      )}
+      <div className="diagram-controls">
+        {downloadUrl && pngDownloadUrl ? (
+          <></>
+        ) : (
+          <button onClick={genUrls}>Export</button>
+        )}
+        {downloadUrl && pngDownloadUrl && (
+          <div>
+            <a href={downloadUrl} download={`${diagramType}.svg`}>
+              Download SVG
+            </a>
+            <span> | </span>
+            <a href={pngDownloadUrl} download={`${diagramType}.png`}>
+              PNG
+            </a>
+          </div>
+        )}
+      </div>
+
       {diagramType === "conflict" && (
         <Cloud ast={ast} setSvgElem={updateSvgElem} />
       )}

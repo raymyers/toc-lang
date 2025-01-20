@@ -2,7 +2,7 @@ import "./App.css"
 import React from "react"
 import Editor from "./Editor"
 import { Diagram } from "./Diagram"
-
+import { Container, Section, Bar } from "@column-resizer/react"
 import {
   parseTextToAst,
   parseGoalTreeSemantics,
@@ -52,8 +52,8 @@ function Draw() {
   //     // onEditorChange(examplesByType[type])
   //   }
   return (
-    <div className="flex-row">
-      <div className="flex-1">
+    <Container>
+      <Section minSize={50}>
         <Editor
           onChange={onEditorChange}
           rows={20}
@@ -61,11 +61,12 @@ function Draw() {
           setText={setText}
           error={error}
         />
-      </div>
-      <div className="flex-1">
+      </Section>
+      <Bar size={4} style={{ background: "#ddd", cursor: "col-resize" }} />
+      <Section minSize={100}>
         <Diagram ast={ast} semantics={semantics} diagramType={diagramType} />
-      </div>
-    </div>
+      </Section>
+    </Container>
   )
 }
 
