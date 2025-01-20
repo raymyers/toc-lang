@@ -1,13 +1,14 @@
 import React from "react"
-import { createBrowserRouter, RouterProvider, redirect } from "react-router-dom"
+
 import ReactDOM from "react-dom/client"
 import App from "./App"
 import "./index.css"
 import ErrorPage from "./ErrorPage"
 import Draw from "./Draw"
 import { About } from "./About"
+import { createHashRouter, redirect, RouterProvider } from "react-router-dom"
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   [
     {
       path: "/",
@@ -34,7 +35,7 @@ const router = createBrowserRouter(
       ]
     }
   ],
-  { basename: "/toc-lang" }
+  { basename: "/" }
 )
 const rootResetElt = document.getElementById("root-reset")
 if (rootResetElt) {
