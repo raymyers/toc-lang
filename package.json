@@ -16,6 +16,7 @@
     "gen": "lezer-generator src/assets/grammars/toc-lang.lezer -o src/generated/tocLangLezerParser.js"
   },
   "dependencies": {
+    "@codemirror/autocomplete": "^6.18.4",
     "@column-resizer/react": "^1.3.1",
     "@lezer/lr": "^1.4.2",
     "@uiw/react-codemirror": "^4.23.7",

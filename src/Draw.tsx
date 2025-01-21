@@ -7,12 +7,18 @@ import {
   parseTextToAst,
   parseGoalTreeSemantics,
   parseProblemTreeSemantics,
-  type TreeSemantics
+  type TreeSemantics,
+  type Completions
 } from "./interpreter"
+
+const completions: Completions = {
+  idents: []
+}
 
 function Draw() {
   const [ast, setAst] = React.useState<any>(null)
   const [semantics, setSemantics] = React.useState<TreeSemantics | null>(null)
+
   const [error, setError] = React.useState("")
   const [text, setText] = React.useState<string>()
   const [diagramType, setDiagramType] = React.useState<string | null>()
@@ -22,12 +28,17 @@ function Draw() {
       const { ast, type } = await parseTextToAst(value)
       console.log("diagramType", type)
       if (type === "goal") {
-        setSemantics(parseGoalTreeSemantics(ast))
+        const sem = parseGoalTreeSemantics(ast)
+        setSemantics(sem)
+        completions.idents = Array.from(sem.nodes.keys())
       } else if (type === "problem") {
-        setSemantics(parseProblemTreeSemantics(ast))
+        const sem = parseProblemTreeSemantics(ast)
+        setSemantics(sem)
+        completions.idents = Array.from(sem.nodes.keys())
       } else {
         setSemantics(null)
         setDiagramType(null)
+        completions.idents = ["A", "B", "C", "D", "D'"]
       }
       console.log(ast)
       setAst(ast)
@@ -60,6 +71,7 @@ function Draw() {
           text={text}
           setText={setText}
           error={error}
+          completions={completions}
         />
       </Section>
       <Bar size={4} style={{ background: "#ddd", cursor: "col-resize" }} />

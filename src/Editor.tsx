@@ -7,6 +7,7 @@ import {
   exampleGoalTreeText,
   exampleProblemTreeText
 } from "./examples"
+import { Completions } from "./interpreter"
 import { TOC_LANG, TOC_LANG_HIGHLIGHT } from "./highlight"
 /* eslint react/prop-types: 0 */
 
@@ -40,7 +41,8 @@ export const EditorContainer = ({
   autoFocus = false,
   text,
   setText,
-  error
+  error,
+  completions
 }) => {
   React.useEffect(() => {
     onChange(text)
@@ -91,8 +93,9 @@ export const EditorContainer = ({
       <CodeMirror
         value={text}
         height="80vh"
-        extensions={[TOC_LANG(), TOC_LANG_HIGHLIGHT]}
+        extensions={[TOC_LANG(completions), TOC_LANG_HIGHLIGHT]}
         onChange={handleEditorChange}
+        basicSetup={{ autocompletion: true, completionKeymap: true }}
       />
       <p className={`edit-result ${error ? "error" : ""}`}>{error}</p>
     </div>

@@ -50,6 +50,10 @@ export interface TreeSemantics {
   edges: Edge[]
 }
 
+export interface Completions {
+  idents: string[]
+}
+
 export type EDiagramType = "problem" | "conflict" | "goal"
 
 export interface ParseResult {
