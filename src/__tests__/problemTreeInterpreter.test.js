@@ -76,8 +76,26 @@ describe("problem tree interpreter", () => {
       `
       const expected = {
         statements: [
-          { text: "badness", type: "node", id: "b", params: { class: "UDE" } },
-          { text: "cause", type: "node", id: "c", params: {} },
+          { 
+            text: "badness", 
+            type: "node", 
+            id: "b", 
+            params: { class: "UDE" },
+            labelRange: {
+              start: { line: 3, column: 10, offset: 30 },
+              end: { line: 3, column: 19, offset: 39 }
+            }
+          },
+          { 
+            text: "cause", 
+            type: "node", 
+            id: "c", 
+            params: {},
+            labelRange: {
+              start: { line: 4, column: 10, offset: 62 },
+              end: { line: 4, column: 17, offset: 69 }
+            }
+          },
           { fromIds: ["c"], type: "edge", toId: "d", text: undefined }
         ]
       }

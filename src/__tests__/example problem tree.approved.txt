@@ -3,6 +3,18 @@
     "statements": [
       {
         "id": "bad",
+        "labelRange": {
+          "end": {
+            "column": 27,
+            "line": 3,
+            "offset": 41
+          },
+          "start": {
+            "column": 6,
+            "line": 3,
+            "offset": 20
+          }
+        },
         "params": {
           "class": "UDE"
         },
@@ -11,6 +23,18 @@
       },
       {
         "id": "cluttered",
+        "labelRange": {
+          "end": {
+            "column": 33,
+            "line": 6,
+            "offset": 93
+          },
+          "start": {
+            "column": 12,
+            "line": 6,
+            "offset": 72
+          }
+        },
         "params": {
           "class": "UDE"
         },
@@ -26,12 +50,36 @@
       },
       {
         "id": "ux",
+        "labelRange": {
+          "end": {
+            "column": 34,
+            "line": 10,
+            "offset": 163
+          },
+          "start": {
+            "column": 5,
+            "line": 10,
+            "offset": 134
+          }
+        },
         "params": {},
         "text": "Low investment in UX design",
         "type": "node"
       },
       {
         "id": "features",
+        "labelRange": {
+          "end": {
+            "column": 32,
+            "line": 11,
+            "offset": 195
+          },
+          "start": {
+            "column": 11,
+            "line": 11,
+            "offset": 174
+          }
+        },
         "params": {},
         "text": "Many features added",
         "type": "node"
@@ -69,20 +117,68 @@
       "bad": {
         "annotation": "UDE",
         "key": "bad",
-        "label": "Bad user experience"
+        "label": "Bad user experience",
+        "labelRange": {
+          "end": {
+            "column": 27,
+            "line": 3,
+            "offset": 41
+          },
+          "start": {
+            "column": 6,
+            "line": 3,
+            "offset": 20
+          }
+        }
       },
       "cluttered": {
         "annotation": "UDE",
         "key": "cluttered",
-        "label": "Cluttered interface"
+        "label": "Cluttered interface",
+        "labelRange": {
+          "end": {
+            "column": 33,
+            "line": 6,
+            "offset": 93
+          },
+          "start": {
+            "column": 12,
+            "line": 6,
+            "offset": 72
+          }
+        }
       },
       "features": {
         "key": "features",
-        "label": "Many features added"
+        "label": "Many features added",
+        "labelRange": {
+          "end": {
+            "column": 32,
+            "line": 11,
+            "offset": 195
+          },
+          "start": {
+            "column": 11,
+            "line": 11,
+            "offset": 174
+          }
+        }
       },
       "ux": {
         "key": "ux",
-        "label": "Low investment in UX design"
+        "label": "Low investment in UX design",
+        "labelRange": {
+          "end": {
+            "column": 34,
+            "line": 10,
+            "offset": 163
+          },
+          "start": {
+            "column": 5,
+            "line": 10,
+            "offset": 134
+          }
+        }
       },
       "ux_features_cause_cluttered": {
         "intermediate": true,

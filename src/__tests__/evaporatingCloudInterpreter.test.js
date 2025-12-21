@@ -100,31 +100,51 @@ D': "Attend to people's needs (& let people work)"
             id: "A",
             text: "Maximize business performance {",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 3, column: 4, offset: 19 },
+              end: { line: 3, column: 37, offset: 52 }
+            }
           },
           {
             id: "B",
             text: "Subordinate all decisions to the financial goal",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 4, column: 4, offset: 56 },
+              end: { line: 4, column: 53, offset: 105 }
+            }
           },
           {
             id: "C",
             text: "Ensure people are in a state of optimal performance",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 5, column: 4, offset: 109 },
+              end: { line: 5, column: 57, offset: 162 }
+            }
           },
           {
             id: "D",
             text: "Subordinate people's needs to the financial goal",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 6, column: 4, offset: 166 },
+              end: { line: 6, column: 54, offset: 216 }
+            }
           },
           {
             id: "D'",
             text: "Attend to people's needs (& let people work)",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 7, column: 5, offset: 221 },
+              end: { line: 7, column: 51, offset: 267 }
+            }
           }
         ]
       }

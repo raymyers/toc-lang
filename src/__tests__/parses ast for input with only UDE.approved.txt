@@ -4,9 +4,9 @@
       "id": "b",
       "labelRange": {
         "end": {
-          "column": 11,
+          "column": 12,
           "line": 2,
-          "offset": 24
+          "offset": 25
         },
         "start": {
           "column": 4,

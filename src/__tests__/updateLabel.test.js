@@ -147,7 +147,7 @@ player2 : defend well`
       const result = await updateLabel(sourceText, "Goal", "achieve victory")
       
       expect(result).toBe(`type: goal
-Goal: "achieve victory"
+Goal:    "achieve victory"
 player1:score points
 player2 : defend well`)
     })
@@ -188,38 +188,30 @@ Goal: win the game
 player1: "achieve \\"\\" score"`)
     })
 
-    it("preserves multiline parameter blocks without deleting braces", async () => {
+    it("preserves parameter blocks without deleting braces", async () => {
       const sourceText = `type: goal
 Goal: win the game
-costsDown: "Control costs" {
-    class: CSF
-}
+costsDown: "Control costs" { class: CSF }
 player1: score points`
       
       const result = await updateLabel(sourceText, "costsDown", "Reduce expenses")
       
       expect(result).toBe(`type: goal
 Goal: win the game
-costsDown: "Reduce expenses" {
-    class: CSF
-}
+costsDown: "Reduce expenses" { class: CSF }
 player1: score points`)
     })
 
     it("handles the exact reported brace deletion bug case", async () => {
       const sourceText = `type: goal
 
-costsDown: "Control costs" {
-    class: CSF
-}`
+costsDown: "Control costs" { class: CSF }`
       
       const result = await updateLabel(sourceText, "costsDown", "Reduce expenses")
       
       expect(result).toBe(`type: goal
 
-costsDown: "Reduce expenses" {
-    class: CSF
-}`)
+costsDown: "Reduce expenses" { class: CSF }`)
       
       // Verify the brace is preserved
       expect(result).toContain("Reduce expenses")

@@ -2,6 +2,18 @@
   "statements": [
     {
       "id": "b",
+      "labelRange": {
+        "end": {
+          "column": 13,
+          "line": 2,
+          "offset": 26
+        },
+        "start": {
+          "column": 4,
+          "line": 2,
+          "offset": 17
+        }
+      },
       "params": {
         "class": "UDE"
       },

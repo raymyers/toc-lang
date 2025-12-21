@@ -15,7 +15,11 @@ describe("goal tree interpreter", () => {
             text: "win",
             type: "node",
             id: "Goal",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 3, column: 13, offset: 30 },
+              end: { line: 3, column: 18, offset: 35 }
+            }
           }
         ]
       }
@@ -58,7 +62,7 @@ describe("goal tree interpreter", () => {
             params: { class: "CSF" },
             labelRange: {
               start: { line: 6, column: 16, offset: 51 },
-              end: { line: 6, column: 31, offset: 66 }
+              end: { line: 6, column: 32, offset: 67 }
             }
           },
           {
@@ -68,7 +72,7 @@ describe("goal tree interpreter", () => {
             params: { class: "CSF" },
             labelRange: {
               start: { line: 7, column: 17, offset: 98 },
-              end: { line: 7, column: 41, offset: 122 }
+              end: { line: 7, column: 42, offset: 123 }
             }
           },
           {
@@ -136,7 +140,11 @@ describe("goal tree interpreter", () => {
             text: "win",
             type: "node",
             id: "mynode",
-            params: { status: 50 }
+            params: { status: 50 },
+            labelRange: {
+              start: { line: 3, column: 17, offset: 36 },
+              end: { line: 3, column: 22, offset: 41 }
+            }
           }
         ]
       }
@@ -207,45 +215,85 @@ describe("goal tree interpreter", () => {
           Goal: {
             annotation: "G",
             key: "Goal",
-            label: "Make money now and in the future"
+            label: "Make money now and in the future",
+            labelRange: {
+              start: { line: 3, column: 7, offset: 18 },
+              end: { line: 3, column: 41, offset: 52 }
+            }
           },
           revUp: {
             annotation: "CSF",
             key: "revUp",
-            label: "Generate more revenue"
+            label: "Generate more revenue",
+            labelRange: {
+              start: { line: 5, column: 8, offset: 61 },
+              end: { line: 5, column: 31, offset: 84 }
+            }
           },
           costsDown: {
             annotation: "CSF",
             key: "costsDown",
-            label: "Control costs"
+            label: "Control costs",
+            labelRange: {
+              start: { line: 8, column: 12, offset: 115 },
+              end: { line: 8, column: 27, offset: 130 }
+            }
           },
           keepCust: {
             key: "keepCust",
-            label: "Protect relationship with existing customers"
+            label: "Protect relationship with existing customers",
+            labelRange: {
+              start: { line: 15, column: 11, offset: 194 },
+              end: { line: 15, column: 57, offset: 240 }
+            }
           },
           newCust: {
             key: "newCust",
-            label: "Acquire new customers"
+            label: "Acquire new customers",
+            labelRange: {
+              start: { line: 16, column: 10, offset: 250 },
+              end: { line: 16, column: 33, offset: 273 }
+            }
           },
           reduceInfra: {
             key: "reduceInfra",
-            label: "Reduce infrastructure spending"
+            label: "Reduce infrastructure spending",
+            labelRange: {
+              start: { line: 18, column: 14, offset: 288 },
+              end: { line: 18, column: 46, offset: 320 }
+            }
           },
           retain: {
             key: "retain",
-            label: "Retain employees"
+            label: "Retain employees",
+            labelRange: {
+              start: { line: 19, column: 9, offset: 329 },
+              end: { line: 19, column: 27, offset: 347 }
+            }
           },
           marketSalary: {
             key: "marketSalary",
-            label: "Keep up with market salaries"
+            label: "Keep up with market salaries",
+            labelRange: {
+              start: { line: 20, column: 15, offset: 362 },
+              end: { line: 20, column: 45, offset: 392 }
+            }
           },
           morale: {
             key: "morale",
-            label: "Maintain employee morale"
+            label: "Maintain employee morale",
+            labelRange: {
+              start: { line: 22, column: 9, offset: 402 },
+              end: { line: 22, column: 35, offset: 428 }
+            }
           },
           features: {
             key: "features",
-            label: "Develop new features"
+            label: "Develop new features",
+            labelRange: {
+              start: { line: 23, column: 11, offset: 439 },
+              end: { line: 23, column: 33, offset: 461 }
+            }
           }
         })
       ),

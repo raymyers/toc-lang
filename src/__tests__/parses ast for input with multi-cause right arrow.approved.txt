@@ -2,18 +2,54 @@
   "statements": [
     {
       "id": "b",
+      "labelRange": {
+        "end": {
+          "column": 17,
+          "line": 3,
+          "offset": 31
+        },
+        "start": {
+          "column": 8,
+          "line": 3,
+          "offset": 22
+        }
+      },
       "params": {},
       "text": "badness",
       "type": "node"
     },
     {
       "id": "c1",
+      "labelRange": {
+        "end": {
+          "column": 18,
+          "line": 4,
+          "offset": 49
+        },
+        "start": {
+          "column": 9,
+          "line": 4,
+          "offset": 40
+        }
+      },
       "params": {},
       "text": "cause 1",
       "type": "node"
     },
     {
       "id": "c2",
+      "labelRange": {
+        "end": {
+          "column": 18,
+          "line": 5,
+          "offset": 67
+        },
+        "start": {
+          "column": 9,
+          "line": 5,
+          "offset": 58
+        }
+      },
       "params": {},
       "text": "cause 2",
       "type": "node"

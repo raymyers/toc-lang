@@ -203,60 +203,7 @@ interface StatementAst {
 
 type ParamsAst = Record<string, number | string>
 
-const addSourceLocationTracking = (ast: Ast, sourceText: string): Ast => {
-  const lines = sourceText.split('\n')
-  
-  // Create a map to track processed statements
-  const processedStatements = ast.statements.map(statement => {
-    if (statement.type === 'node' && statement.id && statement.text) {
-      // Find the line containing this node definition
-      for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-        const line = lines[lineIndex]
-        const nodePattern = new RegExp(`\\b${statement.id}\\s*:\\s*(.*)`)
-        const match = line.match(nodePattern)
-        
-        if (match) {
-          const labelText = match[1].trim()
-          // Remove any trailing parameter blocks
-          const cleanLabelText = labelText.replace(/\s*\{.*\}$/, '').trim()
-          
-          if (cleanLabelText === statement.text || cleanLabelText.startsWith(statement.text)) {
-            // Calculate the position of the label text
-            const colonIndex = line.indexOf(':')
-            const labelStartColumn = line.indexOf(statement.text, colonIndex)
-            
-            if (labelStartColumn !== -1) {
-              const labelRange: Range = {
-                start: {
-                  line: lineIndex + 1, // 1-based line numbers
-                  column: labelStartColumn + 1, // 1-based column numbers
-                  offset: lines.slice(0, lineIndex).join('\n').length + (lineIndex > 0 ? 1 : 0) + labelStartColumn
-                },
-                end: {
-                  line: lineIndex + 1,
-                  column: labelStartColumn + statement.text.length + 1,
-                  offset: lines.slice(0, lineIndex).join('\n').length + (lineIndex > 0 ? 1 : 0) + labelStartColumn + statement.text.length
-                }
-              }
-              
-              return {
-                ...statement,
-                labelRange
-              }
-            }
-          }
-        }
-      }
-    }
-    
-    return statement
-  })
-  
-  return {
-    ...ast,
-    statements: processedStatements
-  }
-}
+// Source location tracking is now handled directly by the PeggyJS parser
 
 const normalizeAstIds = (ast: Ast): Ast => {
   const { statements: oldStatments, ...etc } = ast
@@ -300,8 +247,7 @@ export const parseTextToAst = async (
 
     const parser: peggy.Parser = (await parsersPromise)[parserType]
     const ast = parser.parse(code)
-    const astWithSourceLocations = addSourceLocationTracking(ast, code)
-    const normalizeAst = normalizeAstIds(astWithSourceLocations)
+    const normalizeAst = normalizeAstIds(ast)
     const statements = normalizeAst.statements.filter((s) => s.id !== "type")
     return { ast: { statements }, type: parserEType }
   } else {
@@ -331,64 +277,27 @@ export const updateLabel = async (sourceText: string, nodeId: string, newLabel: 
       const startOffset = targetNode.labelRange.start.offset
       const endOffset = targetNode.labelRange.end.offset
       
-      // Replace only the label text, preserving everything else
+      // Get the text before and after the label
       const beforeLabel = sourceText.substring(0, startOffset)
-      const afterLabel = sourceText.substring(endOffset)
+      const afterLabelText = sourceText.substring(endOffset)
       
-      return beforeLabel + quotedLabel + afterLabel
+      // Check if there's whitespace followed by a parameter block
+      // If so, ensure there's a space between the quoted label and the parameter block
+      if (afterLabelText.match(/^\s*\{/)) {
+        // There's a parameter block after the label
+        const trimmedAfter = afterLabelText.trimStart()
+        if (trimmedAfter.startsWith('{')) {
+          // Add a space before the parameter block
+          return beforeLabel + quotedLabel + ' ' + trimmedAfter
+        }
+      }
+      
+      return beforeLabel + quotedLabel + afterLabelText
     }
   } catch (error) {
-    // If parsing fails, fall back to regex-based approach
-    console.error('Parsing failed, falling back to regex approach:', error)
-  }
-  
-  // Fallback: Use regex-based approach for cases where parsing fails
-  const lines = sourceText.split('\n')
-  
-  // Find the line containing the node definition
-  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-    const line = lines[lineIndex]
-    const nodePattern = new RegExp(`\\b${nodeId}\\s*:\\s*(.*)`)
-    const match = line.match(nodePattern)
-    
-    if (match) {
-      const labelText = match[1].trim()
-      
-      // Check if there are parameters at the end (single line)
-      const paramMatch = labelText.match(/^(.*?)\s*(\{.*\})$/)
-      let params = ''
-      let actualLabelText = labelText
-      
-      if (paramMatch) {
-        // Single-line parameters
-        actualLabelText = paramMatch[1].trim()
-        params = ' ' + paramMatch[2]
-      } else if (labelText.endsWith(' {')) {
-        // Multi-line parameters start on this line
-        actualLabelText = labelText.substring(0, labelText.length - 2).trim()
-        params = ' {'
-      }
-      
-      // Remove existing quotes if present
-      if (actualLabelText.startsWith('"') && actualLabelText.endsWith('"')) {
-        actualLabelText = actualLabelText.slice(1, -1)
-      }
-      
-      // Escape quotes in the new label and wrap in quotes
-      const escapedLabel = newLabel.replace(/"/g, '\\"')
-      const quotedLabel = `"${escapedLabel}"`
-      
-      // Construct the new line
-      const colonIndex = line.indexOf(':')
-      const beforeColon = line.substring(0, colonIndex + 1)
-      const newLine = `${beforeColon} ${quotedLabel}${params}`
-      
-      // Replace the line
-      const newLines = [...lines]
-      newLines[lineIndex] = newLine
-      
-      return newLines.join('\n')
-    }
+    // If parsing fails, return original text
+    console.error('Parsing failed:', error)
+    return sourceText
   }
   
   // If node not found, return original text
