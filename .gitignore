@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Approval testing - .received files indicate test failures
+*.received.txt
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
