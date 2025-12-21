@@ -311,7 +311,38 @@ export const parseTextToAst = async (
   }
 }
 
-export const updateLabel = (sourceText: string, nodeId: string, newLabel: string): string => {
+export const updateLabel = async (sourceText: string, nodeId: string, newLabel: string): Promise<string> => {
+  try {
+    // Try to parse the source to get AST with source locations
+    const parseResult = await parseTextToAst(sourceText)
+    const ast = parseResult.ast
+    
+    // Find the node by ID
+    const targetNode = ast.statements.find(statement => 
+      statement.type === 'node' && statement.id === nodeId
+    )
+    
+    if (targetNode && targetNode.labelRange) {
+      // Escape quotes in the new label and wrap in quotes
+      const escapedLabel = newLabel.replace(/"/g, '\\"')
+      const quotedLabel = `"${escapedLabel}"`
+      
+      // Use the labelRange to replace exactly the label text
+      const startOffset = targetNode.labelRange.start.offset
+      const endOffset = targetNode.labelRange.end.offset
+      
+      // Replace only the label text, preserving everything else
+      const beforeLabel = sourceText.substring(0, startOffset)
+      const afterLabel = sourceText.substring(endOffset)
+      
+      return beforeLabel + quotedLabel + afterLabel
+    }
+  } catch (error) {
+    // If parsing fails, fall back to regex-based approach
+    console.error('Parsing failed, falling back to regex approach:', error)
+  }
+  
+  // Fallback: Use regex-based approach for cases where parsing fails
   const lines = sourceText.split('\n')
   
   // Find the line containing the node definition
@@ -321,12 +352,27 @@ export const updateLabel = (sourceText: string, nodeId: string, newLabel: string
     const match = line.match(nodePattern)
     
     if (match) {
-      const fullMatch = match[0]
       const labelText = match[1].trim()
       
-      // Check if there are parameters at the end
+      // Check if there are parameters at the end (single line)
       const paramMatch = labelText.match(/^(.*?)\s*(\{.*\})$/)
-      const params = paramMatch ? paramMatch[2] : ''
+      let params = ''
+      let actualLabelText = labelText
+      
+      if (paramMatch) {
+        // Single-line parameters
+        actualLabelText = paramMatch[1].trim()
+        params = ' ' + paramMatch[2]
+      } else if (labelText.endsWith(' {')) {
+        // Multi-line parameters start on this line
+        actualLabelText = labelText.substring(0, labelText.length - 2).trim()
+        params = ' {'
+      }
+      
+      // Remove existing quotes if present
+      if (actualLabelText.startsWith('"') && actualLabelText.endsWith('"')) {
+        actualLabelText = actualLabelText.slice(1, -1)
+      }
       
       // Escape quotes in the new label and wrap in quotes
       const escapedLabel = newLabel.replace(/"/g, '\\"')
@@ -335,7 +381,7 @@ export const updateLabel = (sourceText: string, nodeId: string, newLabel: string
       // Construct the new line
       const colonIndex = line.indexOf(':')
       const beforeColon = line.substring(0, colonIndex + 1)
-      const newLine = `${beforeColon} ${quotedLabel}${params ? ' ' + params : ''}`
+      const newLine = `${beforeColon} ${quotedLabel}${params}`
       
       // Replace the line
       const newLines = [...lines]

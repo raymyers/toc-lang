@@ -54,7 +54,7 @@ function Draw() {
   const onLabelUpdate = async (nodeId: string, newLabel: string) => {
     try {
       if (!text) return
-      const updatedText = updateLabel(text, nodeId, newLabel)
+      const updatedText = await updateLabel(text, nodeId, newLabel)
       setText(updatedText)
       await onEditorChange(updatedText)
     } catch (e) {
