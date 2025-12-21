@@ -33,16 +33,16 @@ export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
     setDownloadUrl(null)
     setPngDownloadUrl(null)
   }
-  
+
   const toggleEditing = () => {
     setIsEditing(!isEditing)
   }
   return (
     <div className={isEditing ? 'diagram-container editing' : 'diagram-container'}>
       <div className="diagram-controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <button 
+        <button
           onClick={toggleEditing}
-          style={{ 
+          style={{
             backgroundColor: isEditing ? '#007bff' : '#f8f9fa',
             color: isEditing ? 'white' : 'black',
             border: '1px solid #ccc',
@@ -54,7 +54,8 @@ export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
           {isEditing ? 'Editing: ON' : 'Editing: OFF'}
         </button>
         <div>
-          {downloadUrl && pngDownloadUrl ? (
+          {downloadUrl && pngDownloadUrl
+            ? (
             <div>
               <a href={downloadUrl} download={`${diagramType}.svg`}>
                 Download SVG
@@ -64,33 +65,34 @@ export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
                 PNG
               </a>
             </div>
-          ) : (
+              )
+            : (
             <button onClick={genUrls}>Export</button>
-          )}
+              )}
         </div>
       </div>
 
       {diagramType === "conflict" && (
-        <Cloud 
-          ast={ast} 
-          setSvgElem={updateSvgElem} 
-          isEditing={isEditing} 
+        <Cloud
+          ast={ast}
+          setSvgElem={updateSvgElem}
+          isEditing={isEditing}
           onLabelUpdate={onLabelUpdate}
         />
       )}
       {diagramType === "goal" && (
-        <Tree 
-          semantics={semantics} 
-          setSvgElem={updateSvgElem} 
-          isEditing={isEditing} 
+        <Tree
+          semantics={semantics}
+          setSvgElem={updateSvgElem}
+          isEditing={isEditing}
           onLabelUpdate={onLabelUpdate}
         />
       )}
       {diagramType === "problem" && (
-        <Tree 
-          semantics={semantics} 
-          setSvgElem={updateSvgElem} 
-          isEditing={isEditing} 
+        <Tree
+          semantics={semantics}
+          setSvgElem={updateSvgElem}
+          isEditing={isEditing}
           onLabelUpdate={onLabelUpdate}
         />
       )}

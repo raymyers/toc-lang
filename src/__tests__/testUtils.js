@@ -22,7 +22,7 @@ export function stripLocations(obj) {
     if (key === 'labelRange') {
       continue
     }
-    
+
     // Recursively strip locations from nested objects
     result[key] = stripLocations(value)
   }

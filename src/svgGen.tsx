@@ -112,10 +112,10 @@ export const CloudNode = ({ text, x, y, width, height, annotation, isEditing, on
   return (
     <>
       <rect x={x} y={y} rx="10" ry="10" width={width} height={height} />
-      <text 
-        x={textX} 
+      <text
+        x={textX}
         y={textY}
-        style={{ 
+        style={{
           cursor: isEditing ? 'pointer' : 'default',
           userSelect: 'none'
         }}

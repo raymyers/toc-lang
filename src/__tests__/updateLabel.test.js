@@ -7,9 +7,9 @@ describe("updateLabel functionality", () => {
       const sourceText = `type: goal
 Goal: win the game
 player1: score points`
-      
+
       const result = await updateLabel(sourceText, "Goal", "achieve victory")
-      
+
       expect(result).toBe(`type: goal
 Goal: "achieve victory"
 player1: score points`)
@@ -20,9 +20,9 @@ player1: score points`)
 Goal: win the game
 player1: score points
 player2: defend well`
-      
+
       const result = await updateLabel(sourceText, "player1", "get high score")
-      
+
       expect(result).toBe(`type: goal
 Goal: win the game
 player1: "get high score"
@@ -34,9 +34,9 @@ player2: defend well`)
 Goal: win the game
 player1: score points { status: 75 }
 player2: defend well`
-      
+
       const result = await updateLabel(sourceText, "player1", "get high score")
-      
+
       expect(result).toBe(`type: goal
 Goal: win the game
 player1: "get high score" { status: 75 }
@@ -49,9 +49,9 @@ player2: defend well`)
       const sourceText = `type: problem
 UDE1: System is slow { class: UDE }
 cause1: Database queries are inefficient`
-      
+
       const result = await updateLabel(sourceText, "UDE1", "Application performance is poor")
-      
+
       expect(result).toBe(`type: problem
 UDE1: "Application performance is poor" { class: UDE }
 cause1: Database queries are inefficient`)
@@ -61,9 +61,9 @@ cause1: Database queries are inefficient`)
       const sourceText = `type: problem
 UDE1: System is slow { class: UDE }
 cause1: Database queries are inefficient`
-      
+
       const result = await updateLabel(sourceText, "cause1", "SQL queries lack proper indexing")
-      
+
       expect(result).toBe(`type: problem
 UDE1: System is slow { class: UDE }
 cause1: "SQL queries lack proper indexing"`)
@@ -76,9 +76,9 @@ cause1: "SQL queries lack proper indexing"`)
 A: Maximize business performance
 B: Subordinate all decisions to the financial goal
 C: Ensure people are in a state of optimal performance`
-      
+
       const result = await updateLabel(sourceText, "A", "Optimize company results")
-      
+
       expect(result).toBe(`type: conflict
 A: "Optimize company results"
 B: Subordinate all decisions to the financial goal
@@ -90,10 +90,10 @@ C: Ensure people are in a state of optimal performance`)
 A: Maximize business performance
 B: Subordinate all decisions to the financial goal
 C: Ensure people are in a state of optimal performance`
-      
+
       let result = await updateLabel(sourceText, "A", "Optimize company results")
       result = await updateLabel(result, "B", "Prioritize financial metrics")
-      
+
       expect(result).toBe(`type: conflict
 A: "Optimize company results"
 B: "Prioritize financial metrics"
@@ -106,9 +106,9 @@ C: Ensure people are in a state of optimal performance`)
       const sourceText = `type: goal
 Goal: win the game
 player1: score points`
-      
+
       const result = await updateLabel(sourceText, "nonexistent", "new label")
-      
+
       expect(result).toBe(sourceText)
     })
 
@@ -117,9 +117,9 @@ player1: score points`
 Goal: win the game
 player1: score points { status: 75, class: "important" }
 player2: defend well`
-      
+
       const result = await updateLabel(sourceText, "player1", "achieve high score")
-      
+
       expect(result).toBe(`type: goal
 Goal: win the game
 player1: "achieve high score" { status: 75, class: "important" }
@@ -130,9 +130,9 @@ player2: defend well`)
       const sourceText = `type: goal
 Goal: win the game
 player1: score points`
-      
+
       const result = await updateLabel(sourceText, "player1", "score 100+ points & win!")
-      
+
       expect(result).toBe(`type: goal
 Goal: win the game
 player1: "score 100+ points & win!"`)
@@ -143,9 +143,9 @@ player1: "score 100+ points & win!"`)
 Goal:    win the game
 player1:score points
 player2 : defend well`
-      
+
       const result = await updateLabel(sourceText, "Goal", "achieve victory")
-      
+
       expect(result).toBe(`type: goal
 Goal:    "achieve victory"
 player1:score points
@@ -156,9 +156,9 @@ player2 : defend well`)
       const sourceText = `type: goal
 Goal: win the game
 player1: score points`
-      
+
       const result = await updateLabel(sourceText, "player1", 'achieve "high score" today')
-      
+
       expect(result).toBe(`type: goal
 Goal: win the game
 player1: "achieve \\"high score\\" today"`)
@@ -168,9 +168,9 @@ player1: "achieve \\"high score\\" today"`)
       const sourceText = `type: conflict
 A: Maximize business performance
 B: Subordinate all decisions to the financial goal`
-      
+
       const result = await updateLabel(sourceText, "A", 'Optimize "company" results and "performance"')
-      
+
       expect(result).toBe(`type: conflict
 A: "Optimize \\"company\\" results and \\"performance\\""
 B: Subordinate all decisions to the financial goal`)
@@ -180,9 +180,9 @@ B: Subordinate all decisions to the financial goal`)
       const sourceText = `type: goal
 Goal: win the game
 player1: score points`
-      
+
       const result = await updateLabel(sourceText, "player1", 'achieve "" score')
-      
+
       expect(result).toBe(`type: goal
 Goal: win the game
 player1: "achieve \\"\\" score"`)
@@ -193,9 +193,9 @@ player1: "achieve \\"\\" score"`)
 Goal: win the game
 costsDown: "Control costs" { class: CSF }
 player1: score points`
-      
+
       const result = await updateLabel(sourceText, "costsDown", "Reduce expenses")
-      
+
       expect(result).toBe(`type: goal
 Goal: win the game
 costsDown: "Reduce expenses" { class: CSF }
@@ -206,13 +206,13 @@ player1: score points`)
       const sourceText = `type: goal
 
 costsDown: "Control costs" { class: CSF }`
-      
+
       const result = await updateLabel(sourceText, "costsDown", "Reduce expenses")
-      
+
       expect(result).toBe(`type: goal
 
 costsDown: "Reduce expenses" { class: CSF }`)
-      
+
       // Verify the brace is preserved
       expect(result).toContain("Reduce expenses")
       expect(result).toContain("{")

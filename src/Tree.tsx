@@ -193,23 +193,23 @@ export default function Tree({
     const allNodes = inner.selectAll("g.node").filter(function (v) {
       return !semantics?.nodes.get(v)?.intermediate
     })
-    
+
     // Add click handlers to the main text labels
     allNodes.selectAll("text").filter(function() {
       // Filter to get the main label text (not annotation text)
       return !d3.select(this).classed("annotation-label")
     })
-    .style("cursor", isEditing ? "pointer" : "default")
-    .style("user-select", "none")
-    .on("click", function(event, nodeId) {
-      if (isEditing && onLabelUpdate) {
-        const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
-        const newLabel = prompt("Edit label:", currentLabel)
-        if (newLabel !== null && newLabel !== currentLabel) {
-          onLabelUpdate(nodeId, newLabel)
+      .style("cursor", isEditing ? "pointer" : "default")
+      .style("user-select", "none")
+      .on("click", function(event, nodeId) {
+        if (isEditing && onLabelUpdate) {
+          const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
+          const newLabel = prompt("Edit label:", currentLabel)
+          if (newLabel !== null && newLabel !== currentLabel) {
+            onLabelUpdate(nodeId, newLabel)
+          }
         }
-      }
-    })
+      })
 
     setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
   }, [semantics, isEditing])

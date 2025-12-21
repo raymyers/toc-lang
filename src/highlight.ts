@@ -11,7 +11,7 @@ import {
   defaultHighlightStyle,
   syntaxTree
 } from "@codemirror/language"
-import { CompletionSource, CompletionContext } from "@codemirror/autocomplete"
+import { type CompletionSource, type CompletionContext } from "@codemirror/autocomplete"
 import { styleTags, tags as t } from "@lezer/highlight"
 
 export const TocLangLanguage = LRLanguage.define({
@@ -57,7 +57,7 @@ export const TOC_LANG_HIGHLIGHT = syntaxHighlighting(
 
 export function TOC_LANG(options: { idents: string[] }) {
   const autocomplete: CompletionSource = (context: CompletionContext) => {
-    let word = context.matchBefore(/\w*/)
+    const word = context.matchBefore(/\w*/)
     if (word && word.from == word.to && !context.explicit) {
       return null
     }

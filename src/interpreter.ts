@@ -262,25 +262,25 @@ export const updateLabel = async (sourceText: string, nodeId: string, newLabel: 
     // Try to parse the source to get AST with source locations
     const parseResult = await parseTextToAst(sourceText)
     const ast = parseResult.ast
-    
+
     // Find the node by ID
-    const targetNode = ast.statements.find(statement => 
+    const targetNode = ast.statements.find(statement =>
       statement.type === 'node' && statement.id === nodeId
     )
-    
-    if (targetNode && targetNode.labelRange) {
+
+    if (targetNode?.labelRange) {
       // Escape quotes in the new label and wrap in quotes
       const escapedLabel = newLabel.replace(/"/g, '\\"')
       const quotedLabel = `"${escapedLabel}"`
-      
+
       // Use the labelRange to replace exactly the label text
       const startOffset = targetNode.labelRange.start.offset
       const endOffset = targetNode.labelRange.end.offset
-      
+
       // Get the text before and after the label
       const beforeLabel = sourceText.substring(0, startOffset)
       const afterLabelText = sourceText.substring(endOffset)
-      
+
       // Check if there's whitespace followed by a parameter block
       // If so, ensure there's a space between the quoted label and the parameter block
       if (afterLabelText.match(/^\s*\{/)) {
@@ -291,7 +291,7 @@ export const updateLabel = async (sourceText: string, nodeId: string, newLabel: 
           return beforeLabel + quotedLabel + ' ' + trimmedAfter
         }
       }
-      
+
       return beforeLabel + quotedLabel + afterLabelText
     }
   } catch (error) {
@@ -299,7 +299,7 @@ export const updateLabel = async (sourceText: string, nodeId: string, newLabel: 
     console.error('Parsing failed:', error)
     return sourceText
   }
-  
+
   // If node not found, return original text
   return sourceText
 }

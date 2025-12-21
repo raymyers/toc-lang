@@ -89,10 +89,10 @@ function Draw() {
       </Section>
       <Bar size={4} style={{ background: "#ddd", cursor: "col-resize" }} />
       <Section minSize={100}>
-        <Diagram 
-          ast={ast} 
-          semantics={semantics} 
-          diagramType={diagramType} 
+        <Diagram
+          ast={ast}
+          semantics={semantics}
+          diagramType={diagramType}
           onLabelUpdate={onLabelUpdate}
         />
       </Section>
