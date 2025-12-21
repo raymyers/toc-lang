@@ -132,13 +132,23 @@ export const CloudNode = ({ text, x, y, width, height, annotation, isEditing }) 
       </text>
       {isEditing && (
         <text 
-          x={x + width - 20} 
-          y={y + 20} 
+          x={x + width - 18} 
+          y={y + height / 2 + 4} 
           style={{ 
-            fontSize: '14px', 
-            fill: '#666', 
+            fontSize: '12px', 
+            fill: '#888', 
             cursor: 'pointer',
-            fontFamily: 'Arial, sans-serif'
+            fontFamily: 'Arial, sans-serif',
+            opacity: '0.7',
+            userSelect: 'none'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.opacity = '1'
+            e.target.style.fill = '#555'
+          }}
+          onMouseOut={(e) => {
+            e.target.style.opacity = '0.7'
+            e.target.style.fill = '#888'
           }}
         >
           ✏️

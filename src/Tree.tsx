@@ -196,9 +196,11 @@ export default function Tree({
         .append("text")
         .attr("class", "edit-pencil")
         .style("font-family", "Arial, sans-serif")
-        .style("font-size", "14px")
-        .style("fill", "#666")
+        .style("font-size", "12px")
+        .style("fill", "#888")
         .style("cursor", "pointer")
+        .style("opacity", "0.7")
+        .style("user-select", "none")
         .attr("x", function () {
           const elem = this.parentNode
           const rectElem = elem.getElementsByTagName("rect")[0]
@@ -206,7 +208,7 @@ export default function Tree({
             return 0
           }
           const width = rectElem.width.baseVal.value
-          return width / 2 - 15
+          return width / 2 - 12
         })
         .attr("y", function () {
           const elem = this.parentNode
@@ -215,9 +217,15 @@ export default function Tree({
             return 0
           }
           const height = rectElem.height.baseVal.value
-          return -height / 2 + 15
+          return height / 2 - 8
         })
         .text("✏️")
+        .on("mouseover", function() {
+          d3.select(this).style("opacity", "1").style("fill", "#555")
+        })
+        .on("mouseout", function() {
+          d3.select(this).style("opacity", "0.7").style("fill", "#888")
+        })
     }
 
     setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
