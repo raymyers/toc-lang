@@ -7,6 +7,7 @@ import {
   parseTextToAst,
   parseGoalTreeSemantics,
   parseProblemTreeSemantics,
+  updateLabel,
   type TreeSemantics,
   type Completions
 } from "./interpreter"
@@ -49,6 +50,18 @@ function Draw() {
       setError(e.toString() as string)
     }
   }
+
+  const onLabelUpdate = async (nodeId: string, newLabel: string) => {
+    try {
+      if (!text) return
+      const updatedText = updateLabel(text, nodeId, newLabel)
+      setText(updatedText)
+      await onEditorChange(updatedText)
+    } catch (e) {
+      console.error("Error updating label:", e)
+      setError(e.toString() as string)
+    }
+  }
   //   const changeDiagramType = async (type) => {
   //     setAst(null)
   //     setSemantics(null)
@@ -76,7 +89,12 @@ function Draw() {
       </Section>
       <Bar size={4} style={{ background: "#ddd", cursor: "col-resize" }} />
       <Section minSize={100}>
-        <Diagram ast={ast} semantics={semantics} diagramType={diagramType} />
+        <Diagram 
+          ast={ast} 
+          semantics={semantics} 
+          diagramType={diagramType} 
+          onLabelUpdate={onLabelUpdate}
+        />
       </Section>
     </Container>
   )

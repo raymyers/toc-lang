@@ -6,7 +6,7 @@ import { toPng } from "./imageExport"
 
 /* eslint react/prop-types: 0 */
 
-export function Diagram({ ast, semantics, diagramType }) {
+export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
   const [downloadUrl, setDownloadUrl] = React.useState<string | null>(null)
   const [pngDownloadUrl, setPngDownloadUrl] = React.useState<string | null>(
     null
@@ -73,13 +73,28 @@ export function Diagram({ ast, semantics, diagramType }) {
       </div>
 
       {diagramType === "conflict" && (
-        <Cloud ast={ast} setSvgElem={updateSvgElem} isEditing={isEditing} />
+        <Cloud 
+          ast={ast} 
+          setSvgElem={updateSvgElem} 
+          isEditing={isEditing} 
+          onLabelUpdate={onLabelUpdate}
+        />
       )}
       {diagramType === "goal" && (
-        <Tree semantics={semantics} setSvgElem={updateSvgElem} isEditing={isEditing} />
+        <Tree 
+          semantics={semantics} 
+          setSvgElem={updateSvgElem} 
+          isEditing={isEditing} 
+          onLabelUpdate={onLabelUpdate}
+        />
       )}
       {diagramType === "problem" && (
-        <Tree semantics={semantics} setSvgElem={updateSvgElem} isEditing={isEditing} />
+        <Tree 
+          semantics={semantics} 
+          setSvgElem={updateSvgElem} 
+          isEditing={isEditing} 
+          onLabelUpdate={onLabelUpdate}
+        />
       )}
     </div>
   )

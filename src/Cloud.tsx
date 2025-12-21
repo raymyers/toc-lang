@@ -13,11 +13,13 @@ import {
 export default function Cloud({
   ast,
   setSvgElem,
-  isEditing
+  isEditing,
+  onLabelUpdate
 }: {
   ast: any
   setSvgElem: (svgElem: SVGElement | null) => void
   isEditing?: boolean
+  onLabelUpdate?: (nodeId: string, newLabel: string) => void
 }) {
   if (ast) {
     React.useEffect(() => {
@@ -32,7 +34,7 @@ export default function Cloud({
   }
   return (
     <div id="cloudSvgContainer" style={{ width: "100%", height: "500" }}>
-      {ast && drawCloud(ast, isEditing)};
+      {ast && drawCloud(ast, isEditing, onLabelUpdate)};
     </div>
   )
 }

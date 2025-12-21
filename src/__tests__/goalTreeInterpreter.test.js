@@ -45,37 +45,61 @@ describe("goal tree interpreter", () => {
             id: "Goal",
             text: "win",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 4, column: 13, offset: 31 },
+              end: { line: 4, column: 16, offset: 34 }
+            }
           },
           {
             id: "weScore",
             text: "We score points",
             type: "node",
-            params: { class: "CSF" }
+            params: { class: "CSF" },
+            labelRange: {
+              start: { line: 6, column: 16, offset: 51 },
+              end: { line: 6, column: 31, offset: 66 }
+            }
           },
           {
             id: "theyDont",
             text: "Other team doesn't score",
             type: "node",
-            params: { class: "CSF" }
+            params: { class: "CSF" },
+            labelRange: {
+              start: { line: 7, column: 17, offset: 98 },
+              end: { line: 7, column: 41, offset: 122 }
+            }
           },
           {
             id: "possession",
             text: "We get the ball",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 9, column: 19, offset: 157 },
+              end: { line: 9, column: 34, offset: 172 }
+            }
           },
           {
             id: "shooting",
             text: "We shoot the ball accurately",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 10, column: 17, offset: 189 },
+              end: { line: 10, column: 45, offset: 217 }
+            }
           },
           {
             id: "defense",
             text: "We have good defense",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 11, column: 16, offset: 233 },
+              end: { line: 11, column: 36, offset: 253 }
+            }
           },
           {
             toId: "theyDont",

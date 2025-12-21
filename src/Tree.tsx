@@ -20,11 +20,13 @@ interface DagreNodeProps {
 export default function Tree({
   semantics,
   setSvgElem,
-  isEditing
+  isEditing,
+  onLabelUpdate
 }: {
   semantics: TreeSemantics | null
   setSvgElem: (svgElem: SVGElement | null) => void
   isEditing?: boolean
+  onLabelUpdate?: (nodeId: string, newLabel: string) => void
 }) {
   console.log("rendering tree: ", semantics)
 
@@ -225,6 +227,15 @@ export default function Tree({
         })
         .on("mouseout", function() {
           d3.select(this).style("opacity", "0.7").style("fill", "#888")
+        })
+        .on("click", function(event, nodeId) {
+          if (onLabelUpdate) {
+            const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
+            const newLabel = prompt("Edit label:", currentLabel)
+            if (newLabel !== null && newLabel !== currentLabel) {
+              onLabelUpdate(nodeId, newLabel)
+            }
+          }
         })
     }
 

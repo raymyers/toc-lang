@@ -31,12 +31,24 @@ const parsersPromise = Promise.all([tocLangParserPromise]).then(([tocLang]) => {
   }
 })
 
+export interface SourceLocation {
+  line: number
+  column: number
+  offset: number
+}
+
+export interface Range {
+  start: SourceLocation
+  end: SourceLocation
+}
+
 export interface Node {
   key: string
   label: string
   statusPercentage?: number
   annotation?: string
   intermediate?: boolean
+  labelRange?: Range
 }
 
 export interface Edge {
@@ -72,7 +84,9 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const goalStatement = ast.statements.find(isGoalNodeStatement)
   if (goalStatement) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    nodes.get("Goal")!.label = goalStatement.text
+    const goalNode = nodes.get("Goal")!
+    goalNode.label = goalStatement.text
+    goalNode.labelRange = goalStatement.labelRange
     // nodes.get("goal")!.statusPercentage = ast.goal.params.status
   }
 
@@ -81,7 +95,8 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     .forEach((statement) => {
       const node: Node = {
         key: statement.id,
-        label: statement.text
+        label: statement.text,
+        labelRange: statement.labelRange
       }
       if (statement.params.class) {
         node.annotation = statement.params.class
@@ -138,7 +153,8 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
       nodes.set(statement.id, {
         annotation: findNodeAnnotation(statement),
         key: statement.id,
-        label: statement.text
+        label: statement.text,
+        labelRange: statement.labelRange
       })
     })
 
@@ -182,9 +198,65 @@ interface StatementAst {
   toId?: string
   biDir?: boolean
   params?: ParamsAst
+  labelRange?: Range
 }
 
 type ParamsAst = Record<string, number | string>
+
+const addSourceLocationTracking = (ast: Ast, sourceText: string): Ast => {
+  const lines = sourceText.split('\n')
+  
+  // Create a map to track processed statements
+  const processedStatements = ast.statements.map(statement => {
+    if (statement.type === 'node' && statement.id && statement.text) {
+      // Find the line containing this node definition
+      for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+        const line = lines[lineIndex]
+        const nodePattern = new RegExp(`\\b${statement.id}\\s*:\\s*(.*)`)
+        const match = line.match(nodePattern)
+        
+        if (match) {
+          const labelText = match[1].trim()
+          // Remove any trailing parameter blocks
+          const cleanLabelText = labelText.replace(/\s*\{.*\}$/, '').trim()
+          
+          if (cleanLabelText === statement.text || cleanLabelText.startsWith(statement.text)) {
+            // Calculate the position of the label text
+            const colonIndex = line.indexOf(':')
+            const labelStartColumn = line.indexOf(statement.text, colonIndex)
+            
+            if (labelStartColumn !== -1) {
+              const labelRange: Range = {
+                start: {
+                  line: lineIndex + 1, // 1-based line numbers
+                  column: labelStartColumn + 1, // 1-based column numbers
+                  offset: lines.slice(0, lineIndex).join('\n').length + (lineIndex > 0 ? 1 : 0) + labelStartColumn
+                },
+                end: {
+                  line: lineIndex + 1,
+                  column: labelStartColumn + statement.text.length + 1,
+                  offset: lines.slice(0, lineIndex).join('\n').length + (lineIndex > 0 ? 1 : 0) + labelStartColumn + statement.text.length
+                }
+              }
+              
+              return {
+                ...statement,
+                labelRange
+              }
+            }
+          }
+        }
+      }
+    }
+    
+    return statement
+  })
+  
+  return {
+    ...ast,
+    statements: processedStatements
+  }
+}
 
 const normalizeAstIds = (ast: Ast): Ast => {
   const { statements: oldStatments, ...etc } = ast
@@ -228,7 +300,8 @@ export const parseTextToAst = async (
 
     const parser: peggy.Parser = (await parsersPromise)[parserType]
     const ast = parser.parse(code)
-    const normalizeAst = normalizeAstIds(ast)
+    const astWithSourceLocations = addSourceLocationTracking(ast, code)
+    const normalizeAst = normalizeAstIds(astWithSourceLocations)
     const statements = normalizeAst.statements.filter((s) => s.id !== "type")
     return { ast: { statements }, type: parserEType }
   } else {
@@ -236,4 +309,38 @@ export const parseTextToAst = async (
       `Invalid type '${parserType}'. Must be one of: problem, conflict, goal`
     )
   }
+}
+
+export const updateLabel = (sourceText: string, nodeId: string, newLabel: string): string => {
+  const lines = sourceText.split('\n')
+  
+  // Find the line containing the node definition
+  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+    const line = lines[lineIndex]
+    const nodePattern = new RegExp(`\\b${nodeId}\\s*:\\s*(.*)`)
+    const match = line.match(nodePattern)
+    
+    if (match) {
+      const fullMatch = match[0]
+      const labelText = match[1].trim()
+      
+      // Check if there are parameters at the end
+      const paramMatch = labelText.match(/^(.*?)\s*(\{.*\})$/)
+      const params = paramMatch ? paramMatch[2] : ''
+      
+      // Construct the new line
+      const colonIndex = line.indexOf(':')
+      const beforeColon = line.substring(0, colonIndex + 1)
+      const newLine = `${beforeColon} ${newLabel}${params ? ' ' + params : ''}`
+      
+      // Replace the line
+      const newLines = [...lines]
+      newLines[lineIndex] = newLine
+      
+      return newLines.join('\n')
+    }
+  }
+  
+  // If node not found, return original text
+  return sourceText
 }

@@ -34,31 +34,51 @@ D': Attend to people's needs (& let people work)
             id: "A",
             text: "Maximize business performance",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 3, column: 4, offset: 19 },
+              end: { line: 3, column: 33, offset: 48 }
+            }
           },
           {
             id: "B",
             text: "Subordinate all decisions to the financial goal",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 4, column: 4, offset: 52 },
+              end: { line: 4, column: 51, offset: 99 }
+            }
           },
           {
             id: "C",
             text: "Ensure people are in a state of optimal performance",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 5, column: 4, offset: 103 },
+              end: { line: 5, column: 55, offset: 154 }
+            }
           },
           {
             id: "D",
             text: "Subordinate people's needs to the financial goal",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 6, column: 4, offset: 158 },
+              end: { line: 6, column: 52, offset: 206 }
+            }
           },
           {
             id: "D'",
             text: "Attend to people's needs (& let people work)",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 7, column: 5, offset: 211 },
+              end: { line: 7, column: 49, offset: 255 }
+            }
           }
         ]
       }
@@ -124,13 +144,21 @@ A <- D: inject Psychological flow triggers
             id: "A",
             text: "Maximize business performance",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 3, column: 4, offset: 19 },
+              end: { line: 3, column: 33, offset: 48 }
+            }
           },
           {
             id: "D",
             text: "Subordinate people's needs to the financial goal",
             type: "node",
-            params: {}
+            params: {},
+            labelRange: {
+              start: { line: 4, column: 4, offset: 52 },
+              end: { line: 4, column: 52, offset: 100 }
+            }
           },
           {
             fromIds: ["D"],
