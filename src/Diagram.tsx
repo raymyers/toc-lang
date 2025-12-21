@@ -38,7 +38,7 @@ export function Diagram({ ast, semantics, diagramType }) {
     setIsEditing(!isEditing)
   }
   return (
-    <div>
+    <div className={isEditing ? 'diagram-container editing' : 'diagram-container'}>
       <div className="diagram-controls">
         <button 
           onClick={toggleEditing}
@@ -73,13 +73,13 @@ export function Diagram({ ast, semantics, diagramType }) {
       </div>
 
       {diagramType === "conflict" && (
-        <Cloud ast={ast} setSvgElem={updateSvgElem} />
+        <Cloud ast={ast} setSvgElem={updateSvgElem} isEditing={isEditing} />
       )}
       {diagramType === "goal" && (
-        <Tree semantics={semantics} setSvgElem={updateSvgElem} />
+        <Tree semantics={semantics} setSvgElem={updateSvgElem} isEditing={isEditing} />
       )}
       {diagramType === "problem" && (
-        <Tree semantics={semantics} setSvgElem={updateSvgElem} />
+        <Tree semantics={semantics} setSvgElem={updateSvgElem} isEditing={isEditing} />
       )}
     </div>
   )

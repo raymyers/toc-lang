@@ -102,7 +102,7 @@ export const CloudEdge = ({ edge }) => {
   )
 }
 
-export const CloudNode = ({ text, x, y, width, height, annotation }) => {
+export const CloudNode = ({ text, x, y, width, height, annotation, isEditing }) => {
   const lines = wrapLines(text, 20)
   const lineHeight = 16
   const textMargin = 12
@@ -130,11 +130,25 @@ export const CloudNode = ({ text, x, y, width, height, annotation }) => {
       <text x={x - 4} y={y + 4}>
         {annotation}
       </text>
+      {isEditing && (
+        <text 
+          x={x + width - 20} 
+          y={y + 20} 
+          style={{ 
+            fontSize: '14px', 
+            fill: '#666', 
+            cursor: 'pointer',
+            fontFamily: 'Arial, sans-serif'
+          }}
+        >
+          ✏️
+        </text>
+      )}
     </>
   )
 }
 
-export const drawCloud = (ast) => {
+export const drawCloud = (ast, isEditing = false) => {
   const nodeLabels = {
     A: "",
     B: "",
@@ -268,6 +282,7 @@ export const drawCloud = (ast) => {
           y={nodeA.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
         />
         <CloudNode
           annotation={"B"}
@@ -276,6 +291,7 @@ export const drawCloud = (ast) => {
           y={nodeB.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
         />
         <CloudNode
           annotation={"C"}
@@ -284,6 +300,7 @@ export const drawCloud = (ast) => {
           y={nodeC.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
         />
         <CloudNode
           annotation={"D"}
@@ -292,6 +309,7 @@ export const drawCloud = (ast) => {
           y={nodeD.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
         />
         <CloudNode
           annotation={"D'"}
@@ -300,6 +318,7 @@ export const drawCloud = (ast) => {
           y={nodeDp.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
         />
         <CloudEdge edge={edgeAB} />
         <CloudEdge edge={edgeAC} />

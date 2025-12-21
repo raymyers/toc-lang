@@ -19,10 +19,12 @@ interface DagreNodeProps {
 // functional component Tree with prop ast
 export default function Tree({
   semantics,
-  setSvgElem
+  setSvgElem,
+  isEditing
 }: {
   semantics: TreeSemantics | null
   setSvgElem: (svgElem: SVGElement | null) => void
+  isEditing?: boolean
 }) {
   console.log("rendering tree: ", semantics)
 
@@ -181,10 +183,45 @@ export default function Tree({
       })
       .attr("r", radius)
       .text(function () {
-        return nodes.get(this.parentNode.__data__)?.annotation
+        return semantics?.nodes.get(this.parentNode.__data__)?.annotation
       })
+
+    // Add pencil icons when in edit mode
+    inner.selectAll("g.node .edit-pencil").remove()
+    if (isEditing) {
+      const allNodes = inner.selectAll("g.node").filter(function (v) {
+        return !semantics?.nodes.get(v)?.intermediate
+      })
+      allNodes
+        .append("text")
+        .attr("class", "edit-pencil")
+        .style("font-family", "Arial, sans-serif")
+        .style("font-size", "14px")
+        .style("fill", "#666")
+        .style("cursor", "pointer")
+        .attr("x", function () {
+          const elem = this.parentNode
+          const rectElem = elem.getElementsByTagName("rect")[0]
+          if (!rectElem) {
+            return 0
+          }
+          const width = rectElem.width.baseVal.value
+          return width / 2 - 15
+        })
+        .attr("y", function () {
+          const elem = this.parentNode
+          const rectElem = elem.getElementsByTagName("rect")[0]
+          if (!rectElem) {
+            return 0
+          }
+          const height = rectElem.height.baseVal.value
+          return -height / 2 + 15
+        })
+        .text("✏️")
+    }
+
     setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
-  }, [semantics])
+  }, [semantics, isEditing])
   if (!semantics) {
     // Check for goal because it's possible for us to get the wrong diagram type
     return <div> No AST </div>
