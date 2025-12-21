@@ -11,7 +11,7 @@ player1: score points`
       const result = updateLabel(sourceText, "Goal", "achieve victory")
       
       expect(result).toBe(`type: goal
-Goal: achieve victory
+Goal: "achieve victory"
 player1: score points`)
     })
 
@@ -25,7 +25,7 @@ player2: defend well`
       
       expect(result).toBe(`type: goal
 Goal: win the game
-player1: get high score
+player1: "get high score"
 player2: defend well`)
     })
 
@@ -39,7 +39,7 @@ player2: defend well`
       
       expect(result).toBe(`type: goal
 Goal: win the game
-player1: get high score { status: 75 }
+player1: "get high score" { status: 75 }
 player2: defend well`)
     })
   })
@@ -53,7 +53,7 @@ cause1: Database queries are inefficient`
       const result = updateLabel(sourceText, "UDE1", "Application performance is poor")
       
       expect(result).toBe(`type: problem
-UDE1: Application performance is poor { class: UDE }
+UDE1: "Application performance is poor" { class: UDE }
 cause1: Database queries are inefficient`)
     })
 
@@ -66,7 +66,7 @@ cause1: Database queries are inefficient`
       
       expect(result).toBe(`type: problem
 UDE1: System is slow { class: UDE }
-cause1: SQL queries lack proper indexing`)
+cause1: "SQL queries lack proper indexing"`)
     })
   })
 
@@ -80,7 +80,7 @@ C: Ensure people are in a state of optimal performance`
       const result = updateLabel(sourceText, "A", "Optimize company results")
       
       expect(result).toBe(`type: conflict
-A: Optimize company results
+A: "Optimize company results"
 B: Subordinate all decisions to the financial goal
 C: Ensure people are in a state of optimal performance`)
     })
@@ -95,8 +95,8 @@ C: Ensure people are in a state of optimal performance`
       result = updateLabel(result, "B", "Prioritize financial metrics")
       
       expect(result).toBe(`type: conflict
-A: Optimize company results
-B: Prioritize financial metrics
+A: "Optimize company results"
+B: "Prioritize financial metrics"
 C: Ensure people are in a state of optimal performance`)
     })
   })
@@ -122,7 +122,7 @@ player2: defend well`
       
       expect(result).toBe(`type: goal
 Goal: win the game
-player1: achieve high score { status: 75, class: "important" }
+player1: "achieve high score" { status: 75, class: "important" }
 player2: defend well`)
     })
 
@@ -135,7 +135,7 @@ player1: score points`
       
       expect(result).toBe(`type: goal
 Goal: win the game
-player1: score 100+ points & win!`)
+player1: "score 100+ points & win!"`)
     })
 
     it("handles whitespace variations", () => {
@@ -147,9 +147,45 @@ player2 : defend well`
       const result = updateLabel(sourceText, "Goal", "achieve victory")
       
       expect(result).toBe(`type: goal
-Goal: achieve victory
+Goal: "achieve victory"
 player1:score points
 player2 : defend well`)
+    })
+
+    it("handles labels with quotes by escaping them", () => {
+      const sourceText = `type: goal
+Goal: win the game
+player1: score points`
+      
+      const result = updateLabel(sourceText, "player1", 'achieve "high score" today')
+      
+      expect(result).toBe(`type: goal
+Goal: win the game
+player1: "achieve \\"high score\\" today"`)
+    })
+
+    it("handles labels with multiple quotes", () => {
+      const sourceText = `type: conflict
+A: Maximize business performance
+B: Subordinate all decisions to the financial goal`
+      
+      const result = updateLabel(sourceText, "A", 'Optimize "company" results and "performance"')
+      
+      expect(result).toBe(`type: conflict
+A: "Optimize \\"company\\" results and \\"performance\\""
+B: Subordinate all decisions to the financial goal`)
+    })
+
+    it("handles empty quotes in labels", () => {
+      const sourceText = `type: goal
+Goal: win the game
+player1: score points`
+      
+      const result = updateLabel(sourceText, "player1", 'achieve "" score')
+      
+      expect(result).toBe(`type: goal
+Goal: win the game
+player1: "achieve \\"\\" score"`)
     })
   })
 })

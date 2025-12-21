@@ -328,10 +328,14 @@ export const updateLabel = (sourceText: string, nodeId: string, newLabel: string
       const paramMatch = labelText.match(/^(.*?)\s*(\{.*\})$/)
       const params = paramMatch ? paramMatch[2] : ''
       
+      // Escape quotes in the new label and wrap in quotes
+      const escapedLabel = newLabel.replace(/"/g, '\\"')
+      const quotedLabel = `"${escapedLabel}"`
+      
       // Construct the new line
       const colonIndex = line.indexOf(':')
       const beforeColon = line.substring(0, colonIndex + 1)
-      const newLine = `${beforeColon} ${newLabel}${params ? ' ' + params : ''}`
+      const newLine = `${beforeColon} ${quotedLabel}${params ? ' ' + params : ''}`
       
       // Replace the line
       const newLines = [...lines]
