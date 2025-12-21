@@ -2,11 +2,10 @@ import peggy from "peggy"
 import tocLangGrammarUrl from "./assets/grammars/toc-lang.peggy"
 /* eslint @typescript-eslint/no-unsafe-argument: 0 */
 
-const loadFile = async (url) => {
+const loadFile = async (url: string) => {
   if (process.env.NODE_ENV === "test") {
-    // Load the file from the filesystem
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const fs = require("fs")
+    // Load the file from the filesystem using dynamic import
+    const fs = await import("fs")
     // project root
     const root = process.cwd()
     const urlSubPath = url.replace(/^\/toc-lang/, "")
@@ -83,7 +82,6 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const edges = [] as Edge[]
   const goalStatement = ast.statements.find(isGoalNodeStatement)
   if (goalStatement) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const goalNode = nodes.get("Goal")!
     goalNode.label = goalStatement.text
     goalNode.labelRange = goalStatement.labelRange
@@ -257,15 +255,19 @@ export const parseTextToAst = async (
   }
 }
 
-export const updateLabel = async (sourceText: string, nodeId: string, newLabel: string): Promise<string> => {
+export const updateLabel = async (
+  sourceText: string,
+  nodeId: string,
+  newLabel: string
+): Promise<string> => {
   try {
     // Try to parse the source to get AST with source locations
     const parseResult = await parseTextToAst(sourceText)
     const ast = parseResult.ast
 
     // Find the node by ID
-    const targetNode = ast.statements.find(statement =>
-      statement.type === 'node' && statement.id === nodeId
+    const targetNode = ast.statements.find(
+      (statement) => statement.type === "node" && statement.id === nodeId
     )
 
     if (targetNode?.labelRange) {
@@ -286,9 +288,9 @@ export const updateLabel = async (sourceText: string, nodeId: string, newLabel: 
       if (afterLabelText.match(/^\s*\{/)) {
         // There's a parameter block after the label
         const trimmedAfter = afterLabelText.trimStart()
-        if (trimmedAfter.startsWith('{')) {
+        if (trimmedAfter.startsWith("{")) {
           // Add a space before the parameter block
-          return beforeLabel + quotedLabel + ' ' + trimmedAfter
+          return beforeLabel + quotedLabel + " " + trimmedAfter
         }
       }
 
@@ -296,7 +298,7 @@ export const updateLabel = async (sourceText: string, nodeId: string, newLabel: 
     }
   } catch (error) {
     // If parsing fails, return original text
-    console.error('Parsing failed:', error)
+    console.error("Parsing failed:", error)
     return sourceText
   }
 

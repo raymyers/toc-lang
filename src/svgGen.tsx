@@ -102,7 +102,16 @@ export const CloudEdge = ({ edge }) => {
   )
 }
 
-export const CloudNode = ({ text, x, y, width, height, annotation, isEditing, onLabelUpdate }) => {
+export const CloudNode = ({
+  text,
+  x,
+  y,
+  width,
+  height,
+  annotation,
+  isEditing,
+  onLabelUpdate
+}) => {
   const lines = wrapLines(text, 20)
   const lineHeight = 16
   const textMargin = 12
@@ -116,8 +125,8 @@ export const CloudNode = ({ text, x, y, width, height, annotation, isEditing, on
         x={textX}
         y={textY}
         style={{
-          cursor: isEditing ? 'pointer' : 'default',
-          userSelect: 'none'
+          cursor: isEditing ? "pointer" : "default",
+          userSelect: "none"
         }}
         onClick={() => {
           if (isEditing && onLabelUpdate) {
@@ -149,7 +158,11 @@ export const CloudNode = ({ text, x, y, width, height, annotation, isEditing, on
   )
 }
 
-export const drawCloud = (ast, isEditing = false, onLabelUpdate?: (nodeId: string, newLabel: string) => void) => {
+export const drawCloud = (
+  ast,
+  isEditing = false,
+  onLabelUpdate?: (nodeId: string, newLabel: string) => void
+) => {
   const nodeLabels = {
     A: "",
     B: "",

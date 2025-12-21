@@ -195,13 +195,15 @@ export default function Tree({
     })
 
     // Add click handlers to the main text labels
-    allNodes.selectAll("text").filter(function() {
-      // Filter to get the main label text (not annotation text)
-      return !d3.select(this).classed("annotation-label")
-    })
+    allNodes
+      .selectAll("text")
+      .filter(function () {
+        // Filter to get the main label text (not annotation text)
+        return !d3.select(this).classed("annotation-label")
+      })
       .style("cursor", isEditing ? "pointer" : "default")
       .style("user-select", "none")
-      .on("click", function(event, nodeId) {
+      .on("click", function (event, nodeId) {
         if (isEditing && onLabelUpdate) {
           const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
           const newLabel = prompt("Edit label:", currentLabel)

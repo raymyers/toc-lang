@@ -38,24 +38,32 @@ export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
     setIsEditing(!isEditing)
   }
   return (
-    <div className={isEditing ? 'diagram-container editing' : 'diagram-container'}>
-      <div className="diagram-controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <div
+      className={isEditing ? "diagram-container editing" : "diagram-container"}
+    >
+      <div
+        className="diagram-controls"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center"
+        }}
+      >
         <button
           onClick={toggleEditing}
           style={{
-            backgroundColor: isEditing ? '#007bff' : '#f8f9fa',
-            color: isEditing ? 'white' : 'black',
-            border: '1px solid #ccc',
-            padding: '5px 10px',
-            borderRadius: '4px',
-            cursor: 'pointer'
+            backgroundColor: isEditing ? "#007bff" : "#f8f9fa",
+            color: isEditing ? "white" : "black",
+            border: "1px solid #ccc",
+            padding: "5px 10px",
+            borderRadius: "4px",
+            cursor: "pointer"
           }}
         >
-          {isEditing ? 'Editing: ON' : 'Editing: OFF'}
+          {isEditing ? "Editing: ON" : "Editing: OFF"}
         </button>
         <div>
-          {downloadUrl && pngDownloadUrl
-            ? (
+          {downloadUrl && pngDownloadUrl ? (
             <div>
               <a href={downloadUrl} download={`${diagramType}.svg`}>
                 Download SVG
@@ -65,10 +73,9 @@ export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
                 PNG
               </a>
             </div>
-              )
-            : (
+          ) : (
             <button onClick={genUrls}>Export</button>
-              )}
+          )}
         </div>
       </div>
 
