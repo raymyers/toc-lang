@@ -11,7 +11,10 @@ import {
   defaultHighlightStyle,
   syntaxTree
 } from "@codemirror/language"
-import { type CompletionSource, type CompletionContext } from "@codemirror/autocomplete"
+import {
+  type CompletionSource,
+  type CompletionContext
+} from "@codemirror/autocomplete"
 import { styleTags, tags as t } from "@lezer/highlight"
 
 export const TocLangLanguage = LRLanguage.define({

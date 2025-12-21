@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest"
-import { parseTextToAst, parseGoalTreeSemantics, parseProblemTreeSemantics } from "../interpreter"
+import {
+  parseTextToAst,
+  parseGoalTreeSemantics,
+  parseProblemTreeSemantics
+} from "../interpreter"
 
 describe("source location tracking", () => {
   describe("goal tree", () => {
@@ -72,12 +76,12 @@ B: Subordinate all decisions to the financial goal
 C: Ensure people are in a state of optimal performance`
       const result = await parseTextToAst(text)
 
-      const nodeA = result.ast.statements.find(s => s.id === "A")
+      const nodeA = result.ast.statements.find((s) => s.id === "A")
       expect(nodeA).toBeDefined()
       expect(nodeA.labelRange).toBeDefined()
       expect(nodeA.text).toBe("Maximize business performance")
 
-      const nodeB = result.ast.statements.find(s => s.id === "B")
+      const nodeB = result.ast.statements.find((s) => s.id === "B")
       expect(nodeB).toBeDefined()
       expect(nodeB.labelRange).toBeDefined()
       expect(nodeB.text).toBe("Subordinate all decisions to the financial goal")

@@ -1,14 +1,6 @@
 import React from "react"
-import { computeResizeTransform, wrapLines } from "./util"
-import {
-  CloudEdge,
-  CloudNode,
-  Injection,
-  midPoint,
-  intermediatePoint,
-  drawCloud
-} from "./svgGen"
-/* eslint react/prop-types: 0 */
+import { computeResizeTransform } from "./util"
+import { drawCloud } from "./svgGen"
 
 export default function Cloud({
   ast,
@@ -21,17 +13,18 @@ export default function Cloud({
   isEditing?: boolean
   onLabelUpdate?: (nodeId: string, newLabel: string) => void
 }) {
-  if (ast) {
-    React.useEffect(() => {
+  React.useEffect(() => {
+    if (ast) {
       const g = document.getElementById("cloudSvgInner")
       const svgContainer = document.getElementById("cloudSvgContainer")
       g?.setAttribute(
         "transform",
         computeResizeTransform(g, svgContainer, 10, 0) + ", translate(-10, 0)"
       )
-      setSvgElem(document.getElementById("cloudSvg") as any as SVGElement)
-    }, [ast, isEditing])
-  }
+      setSvgElem(document.getElementById("cloudSvg") as SVGElement | null)
+    }
+  }, [ast, isEditing, setSvgElem])
+
   return (
     <div id="cloudSvgContainer" style={{ width: "100%", height: "500" }}>
       {ast && drawCloud(ast, isEditing, onLabelUpdate)};

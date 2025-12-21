@@ -8,7 +8,7 @@
  * @returns {any} - The object with labelRange properties removed
  */
 export function stripLocations(obj) {
-  if (obj === null || typeof obj !== 'object') {
+  if (obj === null || typeof obj !== "object") {
     return obj
   }
 
@@ -19,7 +19,7 @@ export function stripLocations(obj) {
   const result = {}
   for (const [key, value] of Object.entries(obj)) {
     // Skip labelRange properties
-    if (key === 'labelRange') {
+    if (key === "labelRange") {
       continue
     }
 
