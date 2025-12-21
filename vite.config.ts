@@ -8,6 +8,14 @@ export default defineConfig({
   plugins: [react() /*, eslint() */],
   base: '/toc-lang/',
   assetsInclude: ['**/*.peggy'],
+  server: {
+    host: '0.0.0.0',
+    port: 12000,
+    cors: true,
+    headers: {
+      'X-Frame-Options': 'ALLOWALL'
+    }
+  },
   test: {
   }
 })

@@ -12,6 +12,7 @@ export function Diagram({ ast, semantics, diagramType }) {
     null
   )
   const [svgElem, setSvgElem] = React.useState<SVGElement | null>(null)
+  const [isEditing, setIsEditing] = React.useState<boolean>(false)
   const genUrls = async () => {
     if (svgElem) {
       setDownloadUrl(saveSvgUrl(svgElem))
@@ -32,9 +33,27 @@ export function Diagram({ ast, semantics, diagramType }) {
     setDownloadUrl(null)
     setPngDownloadUrl(null)
   }
+  
+  const toggleEditing = () => {
+    setIsEditing(!isEditing)
+  }
   return (
     <div>
       <div className="diagram-controls">
+        <button 
+          onClick={toggleEditing}
+          style={{ 
+            marginRight: '10px',
+            backgroundColor: isEditing ? '#007bff' : '#f8f9fa',
+            color: isEditing ? 'white' : 'black',
+            border: '1px solid #ccc',
+            padding: '5px 10px',
+            borderRadius: '4px',
+            cursor: 'pointer'
+          }}
+        >
+          {isEditing ? 'Editing: ON' : 'Editing: OFF'}
+        </button>
         {downloadUrl && pngDownloadUrl ? (
           <></>
         ) : (
