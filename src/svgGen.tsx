@@ -102,7 +102,7 @@ export const CloudEdge = ({ edge }) => {
   )
 }
 
-export const CloudNode = ({ text, x, y, width, height, annotation }) => {
+export const CloudNode = ({ text, x, y, width, height, annotation, isEditing, onLabelUpdate }) => {
   const lines = wrapLines(text, 20)
   const lineHeight = 16
   const textMargin = 12
@@ -112,7 +112,22 @@ export const CloudNode = ({ text, x, y, width, height, annotation }) => {
   return (
     <>
       <rect x={x} y={y} rx="10" ry="10" width={width} height={height} />
-      <text x={textX} y={textY}>
+      <text
+        x={textX}
+        y={textY}
+        style={{
+          cursor: isEditing ? 'pointer' : 'default',
+          userSelect: 'none'
+        }}
+        onClick={() => {
+          if (isEditing && onLabelUpdate) {
+            const newLabel = prompt("Edit label:", text)
+            if (newLabel !== null && newLabel !== text) {
+              onLabelUpdate(annotation, newLabel)
+            }
+          }
+        }}
+      >
         {lines.map((line, i) => {
           return (
             <tspan key={i} x={textX} dy={lineHeight}>
@@ -134,7 +149,7 @@ export const CloudNode = ({ text, x, y, width, height, annotation }) => {
   )
 }
 
-export const drawCloud = (ast) => {
+export const drawCloud = (ast, isEditing = false, onLabelUpdate?: (nodeId: string, newLabel: string) => void) => {
   const nodeLabels = {
     A: "",
     B: "",
@@ -268,6 +283,8 @@ export const drawCloud = (ast) => {
           y={nodeA.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
+          onLabelUpdate={onLabelUpdate}
         />
         <CloudNode
           annotation={"B"}
@@ -276,6 +293,8 @@ export const drawCloud = (ast) => {
           y={nodeB.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
+          onLabelUpdate={onLabelUpdate}
         />
         <CloudNode
           annotation={"C"}
@@ -284,6 +303,8 @@ export const drawCloud = (ast) => {
           y={nodeC.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
+          onLabelUpdate={onLabelUpdate}
         />
         <CloudNode
           annotation={"D"}
@@ -292,6 +313,8 @@ export const drawCloud = (ast) => {
           y={nodeD.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
+          onLabelUpdate={onLabelUpdate}
         />
         <CloudNode
           annotation={"D'"}
@@ -300,6 +323,8 @@ export const drawCloud = (ast) => {
           y={nodeDp.y}
           width={nodeWidth}
           height={nodeHeight}
+          isEditing={isEditing}
+          onLabelUpdate={onLabelUpdate}
         />
         <CloudEdge edge={edgeAB} />
         <CloudEdge edge={edgeAC} />

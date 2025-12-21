@@ -19,10 +19,14 @@ interface DagreNodeProps {
 // functional component Tree with prop ast
 export default function Tree({
   semantics,
-  setSvgElem
+  setSvgElem,
+  isEditing,
+  onLabelUpdate
 }: {
   semantics: TreeSemantics | null
   setSvgElem: (svgElem: SVGElement | null) => void
+  isEditing?: boolean
+  onLabelUpdate?: (nodeId: string, newLabel: string) => void
 }) {
   console.log("rendering tree: ", semantics)
 
@@ -181,10 +185,34 @@ export default function Tree({
       })
       .attr("r", radius)
       .text(function () {
-        return nodes.get(this.parentNode.__data__)?.annotation
+        return semantics?.nodes.get(this.parentNode.__data__)?.annotation
       })
+
+    // Make text labels clickable when in edit mode
+    inner.selectAll("g.node .edit-pencil").remove()
+    const allNodes = inner.selectAll("g.node").filter(function (v) {
+      return !semantics?.nodes.get(v)?.intermediate
+    })
+
+    // Add click handlers to the main text labels
+    allNodes.selectAll("text").filter(function() {
+      // Filter to get the main label text (not annotation text)
+      return !d3.select(this).classed("annotation-label")
+    })
+      .style("cursor", isEditing ? "pointer" : "default")
+      .style("user-select", "none")
+      .on("click", function(event, nodeId) {
+        if (isEditing && onLabelUpdate) {
+          const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
+          const newLabel = prompt("Edit label:", currentLabel)
+          if (newLabel !== null && newLabel !== currentLabel) {
+            onLabelUpdate(nodeId, newLabel)
+          }
+        }
+      })
+
     setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
-  }, [semantics])
+  }, [semantics, isEditing])
   if (!semantics) {
     // Check for goal because it's possible for us to get the wrong diagram type
     return <div> No AST </div>

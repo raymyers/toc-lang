@@ -2,6 +2,18 @@
   "statements": [
     {
       "id": "b",
+      "labelRange": {
+        "end": {
+          "column": 17,
+          "line": 3,
+          "offset": 31
+        },
+        "start": {
+          "column": 8,
+          "line": 3,
+          "offset": 22
+        }
+      },
       "params": {
         "class": "UDE"
       },
@@ -10,6 +22,18 @@
     },
     {
       "id": "c",
+      "labelRange": {
+        "end": {
+          "column": 15,
+          "line": 4,
+          "offset": 59
+        },
+        "start": {
+          "column": 8,
+          "line": 4,
+          "offset": 52
+        }
+      },
       "params": {},
       "text": "cause",
       "type": "node"

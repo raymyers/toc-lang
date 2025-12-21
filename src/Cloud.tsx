@@ -12,10 +12,14 @@ import {
 
 export default function Cloud({
   ast,
-  setSvgElem
+  setSvgElem,
+  isEditing,
+  onLabelUpdate
 }: {
   ast: any
   setSvgElem: (svgElem: SVGElement | null) => void
+  isEditing?: boolean
+  onLabelUpdate?: (nodeId: string, newLabel: string) => void
 }) {
   if (ast) {
     React.useEffect(() => {
@@ -26,11 +30,11 @@ export default function Cloud({
         computeResizeTransform(g, svgContainer, 10, 0) + ", translate(-10, 0)"
       )
       setSvgElem(document.getElementById("cloudSvg") as any as SVGElement)
-    }, [ast])
+    }, [ast, isEditing])
   }
   return (
     <div id="cloudSvgContainer" style={{ width: "100%", height: "500" }}>
-      {ast && drawCloud(ast)};
+      {ast && drawCloud(ast, isEditing, onLabelUpdate)};
     </div>
   )
 }

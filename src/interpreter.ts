@@ -31,12 +31,24 @@ const parsersPromise = Promise.all([tocLangParserPromise]).then(([tocLang]) => {
   }
 })
 
+export interface SourceLocation {
+  line: number
+  column: number
+  offset: number
+}
+
+export interface Range {
+  start: SourceLocation
+  end: SourceLocation
+}
+
 export interface Node {
   key: string
   label: string
   statusPercentage?: number
   annotation?: string
   intermediate?: boolean
+  labelRange?: Range
 }
 
 export interface Edge {
@@ -72,7 +84,9 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
   const goalStatement = ast.statements.find(isGoalNodeStatement)
   if (goalStatement) {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    nodes.get("Goal")!.label = goalStatement.text
+    const goalNode = nodes.get("Goal")!
+    goalNode.label = goalStatement.text
+    goalNode.labelRange = goalStatement.labelRange
     // nodes.get("goal")!.statusPercentage = ast.goal.params.status
   }
 
@@ -81,7 +95,8 @@ export const parseGoalTreeSemantics = (ast): TreeSemantics => {
     .forEach((statement) => {
       const node: Node = {
         key: statement.id,
-        label: statement.text
+        label: statement.text,
+        labelRange: statement.labelRange
       }
       if (statement.params.class) {
         node.annotation = statement.params.class
@@ -138,7 +153,8 @@ export const parseProblemTreeSemantics = (ast): TreeSemantics => {
       nodes.set(statement.id, {
         annotation: findNodeAnnotation(statement),
         key: statement.id,
-        label: statement.text
+        label: statement.text,
+        labelRange: statement.labelRange
       })
     })
 
@@ -182,9 +198,12 @@ interface StatementAst {
   toId?: string
   biDir?: boolean
   params?: ParamsAst
+  labelRange?: Range
 }
 
 type ParamsAst = Record<string, number | string>
+
+// Source location tracking is now handled directly by the PeggyJS parser
 
 const normalizeAstIds = (ast: Ast): Ast => {
   const { statements: oldStatments, ...etc } = ast
@@ -236,4 +255,51 @@ export const parseTextToAst = async (
       `Invalid type '${parserType}'. Must be one of: problem, conflict, goal`
     )
   }
+}
+
+export const updateLabel = async (sourceText: string, nodeId: string, newLabel: string): Promise<string> => {
+  try {
+    // Try to parse the source to get AST with source locations
+    const parseResult = await parseTextToAst(sourceText)
+    const ast = parseResult.ast
+
+    // Find the node by ID
+    const targetNode = ast.statements.find(statement =>
+      statement.type === 'node' && statement.id === nodeId
+    )
+
+    if (targetNode?.labelRange) {
+      // Escape quotes in the new label and wrap in quotes
+      const escapedLabel = newLabel.replace(/"/g, '\\"')
+      const quotedLabel = `"${escapedLabel}"`
+
+      // Use the labelRange to replace exactly the label text
+      const startOffset = targetNode.labelRange.start.offset
+      const endOffset = targetNode.labelRange.end.offset
+
+      // Get the text before and after the label
+      const beforeLabel = sourceText.substring(0, startOffset)
+      const afterLabelText = sourceText.substring(endOffset)
+
+      // Check if there's whitespace followed by a parameter block
+      // If so, ensure there's a space between the quoted label and the parameter block
+      if (afterLabelText.match(/^\s*\{/)) {
+        // There's a parameter block after the label
+        const trimmedAfter = afterLabelText.trimStart()
+        if (trimmedAfter.startsWith('{')) {
+          // Add a space before the parameter block
+          return beforeLabel + quotedLabel + ' ' + trimmedAfter
+        }
+      }
+
+      return beforeLabel + quotedLabel + afterLabelText
+    }
+  } catch (error) {
+    // If parsing fails, return original text
+    console.error('Parsing failed:', error)
+    return sourceText
+  }
+
+  // If node not found, return original text
+  return sourceText
 }
