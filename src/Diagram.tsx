@@ -39,11 +39,10 @@ export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
   }
   return (
     <div className={isEditing ? 'diagram-container editing' : 'diagram-container'}>
-      <div className="diagram-controls">
+      <div className="diagram-controls" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <button 
           onClick={toggleEditing}
           style={{ 
-            marginRight: '10px',
             backgroundColor: isEditing ? '#007bff' : '#f8f9fa',
             color: isEditing ? 'white' : 'black',
             border: '1px solid #ccc',
@@ -54,22 +53,21 @@ export function Diagram({ ast, semantics, diagramType, onLabelUpdate }) {
         >
           {isEditing ? 'Editing: ON' : 'Editing: OFF'}
         </button>
-        {downloadUrl && pngDownloadUrl ? (
-          <></>
-        ) : (
-          <button onClick={genUrls}>Export</button>
-        )}
-        {downloadUrl && pngDownloadUrl && (
-          <div>
-            <a href={downloadUrl} download={`${diagramType}.svg`}>
-              Download SVG
-            </a>
-            <span> | </span>
-            <a href={pngDownloadUrl} download={`${diagramType}.png`}>
-              PNG
-            </a>
-          </div>
-        )}
+        <div>
+          {downloadUrl && pngDownloadUrl ? (
+            <div>
+              <a href={downloadUrl} download={`${diagramType}.svg`}>
+                Download SVG
+              </a>
+              <span> | </span>
+              <a href={pngDownloadUrl} download={`${diagramType}.png`}>
+                PNG
+              </a>
+            </div>
+          ) : (
+            <button onClick={genUrls}>Export</button>
+          )}
+        </div>
       </div>
 
       {diagramType === "conflict" && (

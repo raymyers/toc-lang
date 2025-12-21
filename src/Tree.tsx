@@ -188,56 +188,28 @@ export default function Tree({
         return semantics?.nodes.get(this.parentNode.__data__)?.annotation
       })
 
-    // Add pencil icons when in edit mode
+    // Make text labels clickable when in edit mode
     inner.selectAll("g.node .edit-pencil").remove()
-    if (isEditing) {
-      const allNodes = inner.selectAll("g.node").filter(function (v) {
-        return !semantics?.nodes.get(v)?.intermediate
-      })
-      allNodes
-        .append("text")
-        .attr("class", "edit-pencil")
-        .style("font-family", "Arial, sans-serif")
-        .style("font-size", "12px")
-        .style("fill", "#888")
-        .style("cursor", "pointer")
-        .style("opacity", "0.7")
-        .style("user-select", "none")
-        .attr("x", function () {
-          const elem = this.parentNode
-          const rectElem = elem.getElementsByTagName("rect")[0]
-          if (!rectElem) {
-            return 0
-          }
-          const width = rectElem.width.baseVal.value
-          return width / 2 - 12
-        })
-        .attr("y", function () {
-          const elem = this.parentNode
-          const rectElem = elem.getElementsByTagName("rect")[0]
-          if (!rectElem) {
-            return 0
-          }
-          const height = rectElem.height.baseVal.value
-          return height / 2 - 8
-        })
-        .text("✏️")
-        .on("mouseover", function() {
-          d3.select(this).style("opacity", "1").style("fill", "#555")
-        })
-        .on("mouseout", function() {
-          d3.select(this).style("opacity", "0.7").style("fill", "#888")
-        })
-        .on("click", function(event, nodeId) {
-          if (onLabelUpdate) {
-            const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
-            const newLabel = prompt("Edit label:", currentLabel)
-            if (newLabel !== null && newLabel !== currentLabel) {
-              onLabelUpdate(nodeId, newLabel)
-            }
-          }
-        })
-    }
+    const allNodes = inner.selectAll("g.node").filter(function (v) {
+      return !semantics?.nodes.get(v)?.intermediate
+    })
+    
+    // Add click handlers to the main text labels
+    allNodes.selectAll("text").filter(function() {
+      // Filter to get the main label text (not annotation text)
+      return !d3.select(this).classed("annotation-label")
+    })
+    .style("cursor", isEditing ? "pointer" : "default")
+    .style("user-select", "none")
+    .on("click", function(event, nodeId) {
+      if (isEditing && onLabelUpdate) {
+        const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
+        const newLabel = prompt("Edit label:", currentLabel)
+        if (newLabel !== null && newLabel !== currentLabel) {
+          onLabelUpdate(nodeId, newLabel)
+        }
+      }
+    })
 
     setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
   }, [semantics, isEditing])

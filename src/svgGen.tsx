@@ -112,7 +112,22 @@ export const CloudNode = ({ text, x, y, width, height, annotation, isEditing, on
   return (
     <>
       <rect x={x} y={y} rx="10" ry="10" width={width} height={height} />
-      <text x={textX} y={textY}>
+      <text 
+        x={textX} 
+        y={textY}
+        style={{ 
+          cursor: isEditing ? 'pointer' : 'default',
+          userSelect: 'none'
+        }}
+        onClick={() => {
+          if (isEditing && onLabelUpdate) {
+            const newLabel = prompt("Edit label:", text)
+            if (newLabel !== null && newLabel !== text) {
+              onLabelUpdate(annotation, newLabel)
+            }
+          }
+        }}
+      >
         {lines.map((line, i) => {
           return (
             <tspan key={i} x={textX} dy={lineHeight}>
@@ -130,40 +145,6 @@ export const CloudNode = ({ text, x, y, width, height, annotation, isEditing, on
       <text x={x - 4} y={y + 4}>
         {annotation}
       </text>
-      {isEditing && (
-        <text 
-          x={x + width - 18} 
-          y={y + height / 2 + 4} 
-          style={{ 
-            fontSize: '12px', 
-            fill: '#888', 
-            cursor: 'pointer',
-            fontFamily: 'Arial, sans-serif',
-            opacity: '0.7',
-            userSelect: 'none'
-          }}
-          onMouseOver={(e) => {
-            const target = e.target as SVGTextElement
-            target.style.opacity = '1'
-            target.style.fill = '#555'
-          }}
-          onMouseOut={(e) => {
-            const target = e.target as SVGTextElement
-            target.style.opacity = '0.7'
-            target.style.fill = '#888'
-          }}
-          onClick={() => {
-            if (onLabelUpdate) {
-              const newLabel = prompt("Edit label:", text)
-              if (newLabel !== null && newLabel !== text) {
-                onLabelUpdate(annotation, newLabel)
-              }
-            }
-          }}
-        >
-          ✏️
-        </text>
-      )}
     </>
   )
 }
