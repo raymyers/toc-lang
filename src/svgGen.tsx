@@ -118,20 +118,16 @@ export const CloudNode = ({
   const textHeight = lines.length * lineHeight
   const textY = y + height / 2 - textHeight / 2 - 4
   const textX = x + textMargin
-  const lastLineY = textY + lines.length * lineHeight
-  // Calculate text width for pencil positioning (approximate)
-  const maxLineLength = Math.max(...lines.map((line) => line.length))
-  const charWidth = 7 // approximate character width
-  const textWidth = maxLineLength * charWidth
-  const pencilX = textX + textWidth + 4
-  const pencilY = textY + textHeight / 2 + lineHeight / 2
   return (
     <>
       <rect x={x} y={y} rx="10" ry="10" width={width} height={height} />
-      <g
-        className={isEditing ? "editable-label" : ""}
+      <text
+        className="cloud-label"
+        x={textX}
+        y={textY}
         style={{
-          cursor: isEditing ? "pointer" : "default"
+          cursor: isEditing ? "pointer" : "default",
+          userSelect: "none"
         }}
         onClick={() => {
           if (isEditing && onLabelUpdate) {
@@ -142,36 +138,17 @@ export const CloudNode = ({
           }
         }}
       >
-        <text
-          x={textX}
-          y={textY}
-          style={{
-            userSelect: "none"
-          }}
-        >
-          {lines.map((line, i) => {
-            return (
-              <tspan key={i} x={textX} dy={lineHeight}>
-                {line}
-              </tspan>
-            )
-          })}
-        </text>
-        {isEditing && (
-          <text
-            x={pencilX}
-            y={pencilY}
-            className="edit-pencil"
-            style={{
-              fontSize: "12px",
-              opacity: 0,
-              userSelect: "none"
-            }}
-          >
-            ✎
-          </text>
-        )}
-      </g>
+        {lines.map((line, i) => {
+          return (
+            <tspan key={i} x={textX} dy={lineHeight}>
+              {line}
+            </tspan>
+          )
+        })}
+        <tspan className="edit-pencil" dx="4" style={{ fontSize: "12px" }}>
+          ✎
+        </tspan>
+      </text>
       <circle
         cx={x}
         cy={y}
@@ -262,17 +239,18 @@ export const drawCloud = (
     stroke: black;
     stroke-width: 2;
   }
-  .editable-label .edit-pencil {
+  .edit-pencil {
     opacity: 0;
     transition: opacity 0.15s ease-in-out;
   }
-  .editable-label:hover .edit-pencil {
+  svg.edit-mode .cloud-label:hover .edit-pencil {
     opacity: 1;
   }
   `
   return (
     <svg
       id="cloudSvg"
+      className={isEditing ? "edit-mode" : ""}
       width="100%"
       height="100%"
       version="1.1"

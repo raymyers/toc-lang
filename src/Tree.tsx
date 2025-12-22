@@ -188,6 +188,9 @@ export default function Tree({
         return semantics?.nodes.get(this.parentNode.__data__)?.annotation
       })
 
+    // Set edit mode class on SVG for CSS-only hover effects
+    svg.classed("edit-mode", isEditing)
+
     // Make text labels clickable when in edit mode
     inner.selectAll("g.node .edit-pencil").remove()
     const allNodes = inner.selectAll("g.node").filter(function (v) {
@@ -198,7 +201,6 @@ export default function Tree({
     allNodes
       .selectAll("text")
       .filter(function () {
-        // Filter to get the main label text (not annotation text)
         return !d3.select(this).classed("annotation-label")
       })
       .style("cursor", isEditing ? "pointer" : "default")
@@ -213,43 +215,37 @@ export default function Tree({
         }
       })
 
-    // Add pencil icon next to labels when in edit mode
-    if (isEditing) {
-      allNodes.classed("editable-label", true)
-      allNodes.each(function () {
-        const node = d3.select(this)
-        const textElem = node
-          .selectAll("text")
-          .filter(function () {
-            return !d3.select(this).classed("annotation-label")
-          })
-          .node() as SVGTextElement | null
-        if (textElem) {
-          const bbox = textElem.getBBox()
-          node
-            .append("text")
-            .attr("class", "edit-pencil")
-            .attr("x", bbox.x + bbox.width + 4)
-            .attr("y", bbox.y + bbox.height / 2 + 4)
-            .style("font-size", "12px")
-            .style("opacity", 0)
-            .style("user-select", "none")
-            .style("cursor", "pointer")
-            .text("✎")
-            .on("click", function (event, nodeId) {
-              if (onLabelUpdate) {
-                const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
-                const newLabel = prompt("Edit label:", currentLabel)
-                if (newLabel !== null && newLabel !== currentLabel) {
-                  onLabelUpdate(nodeId, newLabel)
-                }
+    // Always add pencil icons - CSS controls visibility based on edit mode
+    allNodes.each(function () {
+      const node = d3.select(this)
+      const textElem = node
+        .selectAll("text")
+        .filter(function () {
+          return !d3.select(this).classed("annotation-label")
+        })
+        .node() as SVGTextElement | null
+      if (textElem) {
+        const bbox = textElem.getBBox()
+        node
+          .append("text")
+          .attr("class", "edit-pencil")
+          .attr("x", bbox.x + bbox.width + 4)
+          .attr("y", bbox.y + bbox.height / 2 + 4)
+          .style("font-size", "12px")
+          .style("user-select", "none")
+          .style("cursor", "pointer")
+          .text("✎")
+          .on("click", function (event, nodeId) {
+            if (isEditing && onLabelUpdate) {
+              const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
+              const newLabel = prompt("Edit label:", currentLabel)
+              if (newLabel !== null && newLabel !== currentLabel) {
+                onLabelUpdate(nodeId, newLabel)
               }
-            })
-        }
-      })
-    } else {
-      allNodes.classed("editable-label", false)
-    }
+            }
+          })
+      }
+    })
 
     setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
   }, [semantics, isEditing])
@@ -288,11 +284,11 @@ export default function Tree({
     font-weight: bold;
     alignment-baseline: middle;
   }
-  .editable-label .edit-pencil {
+  .edit-pencil {
     opacity: 0;
     transition: opacity 0.15s ease-in-out;
   }
-  .editable-label:hover .edit-pencil {
+  svg.edit-mode g.node:hover .edit-pencil {
     opacity: 1;
   }
   `
