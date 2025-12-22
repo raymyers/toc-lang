@@ -213,6 +213,44 @@ export default function Tree({
         }
       })
 
+    // Add pencil icon next to labels when in edit mode
+    if (isEditing) {
+      allNodes.classed("editable-label", true)
+      allNodes.each(function () {
+        const node = d3.select(this)
+        const textElem = node
+          .selectAll("text")
+          .filter(function () {
+            return !d3.select(this).classed("annotation-label")
+          })
+          .node() as SVGTextElement | null
+        if (textElem) {
+          const bbox = textElem.getBBox()
+          node
+            .append("text")
+            .attr("class", "edit-pencil")
+            .attr("x", bbox.x + bbox.width + 4)
+            .attr("y", bbox.y + bbox.height / 2 + 4)
+            .style("font-size", "12px")
+            .style("opacity", 0)
+            .style("user-select", "none")
+            .style("cursor", "pointer")
+            .text("✎")
+            .on("click", function (event, nodeId) {
+              if (onLabelUpdate) {
+                const currentLabel = semantics?.nodes.get(nodeId)?.label || ""
+                const newLabel = prompt("Edit label:", currentLabel)
+                if (newLabel !== null && newLabel !== currentLabel) {
+                  onLabelUpdate(nodeId, newLabel)
+                }
+              }
+            })
+        }
+      })
+    } else {
+      allNodes.classed("editable-label", false)
+    }
+
     setSvgElem(document.getElementById("treeSvg") as any as SVGElement)
   }, [semantics, isEditing])
   if (!semantics) {
@@ -249,6 +287,13 @@ export default function Tree({
     text-anchor: middle;
     font-weight: bold;
     alignment-baseline: middle;
+  }
+  .editable-label .edit-pencil {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+  }
+  .editable-label:hover .edit-pencil {
+    opacity: 1;
   }
   `
   return (
