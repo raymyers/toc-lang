@@ -122,6 +122,7 @@ export const CloudNode = ({
     <>
       <rect x={x} y={y} rx="10" ry="10" width={width} height={height} />
       <text
+        className="cloud-label"
         x={textX}
         y={textY}
         style={{
@@ -144,6 +145,9 @@ export const CloudNode = ({
             </tspan>
           )
         })}
+        <tspan className="edit-pencil" dx="4" style={{ fontSize: "12px" }}>
+          ✎
+        </tspan>
       </text>
       <circle
         cx={x}
@@ -235,10 +239,18 @@ export const drawCloud = (
     stroke: black;
     stroke-width: 2;
   }
+  .edit-pencil {
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+  }
+  svg.edit-mode .cloud-label:hover .edit-pencil {
+    opacity: 1;
+  }
   `
   return (
     <svg
       id="cloudSvg"
+      className={isEditing ? "edit-mode" : ""}
       width="100%"
       height="100%"
       version="1.1"
